@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Section extends Model
 {
     use HasFactory;
+    protected $fillable = ['section_name'];
 
     public function section(){
         return $this->belongsTo(Position::class);

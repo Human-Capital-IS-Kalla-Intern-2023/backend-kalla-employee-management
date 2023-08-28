@@ -1,24 +1,24 @@
 <?php
 
-namespace App\Http\Controllers\API;
+namespace App\Http\Controllers;
 
 use App\Helpers\ResponseFormatter;
-use App\Http\Controllers\Controller;
-use App\Models\Location;
+use App\Models\Employee;
 use Illuminate\Http\Request;
+use Spatie\FlareClient\Api;
 
-class LocationController extends Controller
+class EmployeeController extends Controller
 {
     public function all(Request $request) {
         $id = $request->input('id');
-        $location_name = $request->input('location_name');
+        $location_name = $request->input('employee_id');
 
         if($id) {
-            $location = Location::find($id);
+            $data = Employee::all();
 
-            if($location) {
+            if($data) {
                 return ResponseFormatter::success(
-                    $location,
+                    $data,
                     'Data Berhasil Diambil'
                 );
             } else {
@@ -31,6 +31,6 @@ class LocationController extends Controller
 
         }
 
-        $location = Location::all();
+        $location = Employee::all();
     }
 }
