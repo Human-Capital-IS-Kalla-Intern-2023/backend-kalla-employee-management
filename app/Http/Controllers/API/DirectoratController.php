@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API;
 use App\Helpers\ResponseFormatter;
 use App\Http\Controllers\Controller;
 use App\Models\Directorat;
+use Exception;
 use Illuminate\Http\Request;
 
 class DirectoratController extends Controller
@@ -55,9 +56,28 @@ class DirectoratController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
-    {
-        //
+    public function store(Request $request) {
+        try {
+            $request->validate([
+                'directorat_name' => ['required','string','max:255'],
+            ]);
+
+            $data = Directorat::create([
+                'directorat_name' => $request->directorat_name,
+            ]);
+
+
+            return ResponseFormatter::success(
+                $data,
+                'Data Berhasil Diupdate'
+            );
+
+        } catch (Exception $error) {
+            return ResponseFormatter::error([
+                        'message' => 'Something went wrong',
+                        'error' => $error,
+            ], 'Error', 500);
+        }
     }
 
     /**
