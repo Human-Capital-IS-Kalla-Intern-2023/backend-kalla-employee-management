@@ -95,6 +95,9 @@ class LocationController extends Controller
         //delete post
         $location->delete();
 
+
+        $location = Location::all();
+
         return ResponseFormatter::success(
             'Data Berhasil Dihapus'
         );
