@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\API\CompanyController;
+use App\Http\Controllers\API\DirectoratController;
 use App\Http\Controllers\API\LocationController;
 use App\Http\Controllers\API\UserController;
 use Illuminate\Http\Request;
@@ -38,4 +39,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('location/', [LocationController::class, 'store']);
     Route::put('location/{id}', [LocationController::class, 'update']);
     Route::delete('location/{id}', [LocationController::class, 'destroy']);
+
+    // Location
+    Route::get('directorat', [DirectoratController::class, 'index']);
 });
