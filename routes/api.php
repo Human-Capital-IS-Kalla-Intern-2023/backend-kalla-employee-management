@@ -6,6 +6,9 @@ use App\Http\Controllers\API\JobGradeController;
 use App\Http\Controllers\API\LocationController;
 use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\API\UserController;
+use App\Http\Controllers\DivisionController;
+use App\Http\Controllers\PositionController;
+use App\Http\Controllers\SectionController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -51,4 +54,24 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('job-grade', [JobGradeController::class, 'index']);
     Route::post('job-grade/', [JobGradeController::class, 'store']);
     Route::put('job-grade/{id}', [JobGradeController::class, 'update']);
+
+    // Employee
+    Route::get('employee', [EmployeeController::class, 'index']);
+    Route::post('employee/', [EmployeeController::class, 'store']);
+    Route::put('employee/{id}', [EmployeeController::class, 'update']);
+
+    // Position
+    Route::get('position', [PositionController::class, 'index']);
+    Route::post('position/', [PositionController::class, 'store']);
+    Route::put('position/{id}', [PositionController::class, 'update']);
+
+    // Division
+    Route::get('division', [DivisionController::class, 'index']);
+    Route::post('division/', [DivisionController::class, 'store']);
+    Route::put('division/{id}', [DivisionController::class, 'update']);
+
+    // Section
+    Route::get('section', [SectionController::class, 'index']);
+    Route::post('section/', [SectionController::class, 'store']);
+    Route::put('section/{id}', [SectionController::class, 'update']);
 });
