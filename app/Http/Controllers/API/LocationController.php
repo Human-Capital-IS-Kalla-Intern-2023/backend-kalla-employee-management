@@ -9,7 +9,7 @@ use Illuminate\Http\Request;
 
 class LocationController extends Controller
 {
-    public function all(Request $request) {
+    public function index(Request $request) {
         $id = $request->input('id');
         $location_name = $request->input('location_name');
 
@@ -31,6 +31,12 @@ class LocationController extends Controller
 
         }
 
-        $location = Locationz::all();
+        $location = Location::all();
+
+
+        return ResponseFormatter::success(
+            $location,
+            'Data Perusahaan berhasil diambil'
+        );
     }
 }

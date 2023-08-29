@@ -19,6 +19,6 @@ class Company extends Model
      */
     public function Location(): HasMany
     {
-        return $this->hasMany(Location::class);
+        return $this->hasMany(Location::class, 'id', 'locations_id');
     }
 }
