@@ -43,4 +43,5 @@ Route::middleware('auth:sanctum')->group(function () {
     // Location
     Route::get('directorat', [DirectoratController::class, 'index']);
     Route::post('directorat/', [DirectoratController::class, 'store']);
+    Route::put('directorat/{id}', [DirectoratController::class, 'update']);
 });

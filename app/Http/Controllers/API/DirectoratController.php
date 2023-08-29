@@ -69,7 +69,7 @@ class DirectoratController extends Controller
 
             return ResponseFormatter::success(
                 $data,
-                'Data Berhasil Diupdate'
+                'Data Berhasil Dtambahkan'
             );
 
         } catch (Exception $error) {
@@ -99,9 +99,28 @@ class DirectoratController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
-    {
-        //
+
+    public function update(Request $request, string $id) {
+        try {
+            $data = $request->validate([
+                'directorat_name' => ['required','string','max:255'],
+            ]);
+    
+            $item = Directorat::findOrFail($id);
+    
+            $item->update($data);
+    
+            return ResponseFormatter::success(
+                $data,
+                'Data Berhasil Diubah'
+            );
+        } catch (Exception $error) {
+            return ResponseFormatter::error([
+                        'message' => 'Something went wrong',
+                        'error' => $error,
+            ], 'Error', 500);
+        }
+        
     }
 
     /**
