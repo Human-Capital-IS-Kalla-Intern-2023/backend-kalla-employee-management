@@ -25,12 +25,17 @@ Route::post('login', [UserController::class, 'login']);
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('user', [UserController::class, 'fetch']);
     Route::post('logout', [UserController::class, 'logout']);
-    Route::get('location', [LocationController::class, 'all']);
+    // Route::get('location', [LocationController::class, 'all']);
 
     // Company
     Route::get('company', [CompanyController::class, 'index']);
-    // Route::resource('company', [CompanyController::class]);
     Route::post('company/', [CompanyController::class, 'store']);
     Route::put('company/{id}', [CompanyController::class, 'update']);
     Route::delete('company/{id}', [CompanyController::class, 'destroy']);
+
+    // Location
+    Route::get('location', [LocationController::class, 'index']);
+    Route::post('location/', [LocationController::class, 'store']);
+    Route::put('location/{id}', [LocationController::class, 'update']);
+    Route::delete('location/{id}', [LocationController::class, 'destroy']);
 });

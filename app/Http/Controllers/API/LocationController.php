@@ -5,30 +5,30 @@ namespace App\Http\Controllers\API;
 use App\Helpers\ResponseFormatter;
 use App\Http\Controllers\Controller;
 use App\Models\Location;
+use Exception;
 use Illuminate\Http\Request;
 
 class LocationController extends Controller
 {
     public function index(Request $request) {
         $id = $request->input('id');
-        $location_name = $request->input('location_name');
 
         if($id) {
             $location = Location::find($id);
 
-            if($location) {
+            if($location)
+            {
                 return ResponseFormatter::success(
                     $location,
-                    'Data Berhasil Diambil'
-                );
-            } else {
+                    'Data lokasi berhasil diambil'
+                );   
+            }  else {
                 return ResponseFormatter::error(
                     null,
-                    'Data produk tidak ada',
+                    'Data lokasi tidak ada',
                     404
                 );
-            }
-
+            };
         }
 
         $location = Location::all();
@@ -37,6 +37,66 @@ class LocationController extends Controller
         return ResponseFormatter::success(
             $location,
             'Data Perusahaan berhasil diambil'
+        );
+
+       
+    }
+
+    public function store(Request $request) {
+        try {
+            $request->validate([
+                'location_name' => ['required','string','max:255'],
+            ]);
+
+            $data = Location::create([
+                'location_name' => $request->location_name,
+            ]);
+
+
+            return ResponseFormatter::success(
+                $data,
+                'Data Berhasil Diupdate'
+            );
+
+        } catch (Exception $error) {
+            return ResponseFormatter::error([
+                        'message' => 'Something went wrong',
+                        'error' => $error,
+            ], 'Error', 500);
+        }
+    }
+
+    public function update(Request $request, $id) {
+        try {
+            $data = $request->validate([
+                'location_name' => ['required','string','max:255'],
+            ]);
+    
+            $item = Location::findOrFail($id);
+    
+            $item->update($data);
+    
+            return ResponseFormatter::success(
+                $data,
+                'Data Berhasil Diubah'
+            );
+        } catch (Exception $error) {
+            return ResponseFormatter::error([
+                        'message' => 'Something went wrong',
+                        'error' => $error,
+            ], 'Error', 500);
+        }
+        
+    }
+
+    public function destroy(string $id) {
+        $location =Location::findOrFail($id);
+
+        //delete post
+        $location->delete();
+
+        return ResponseFormatter::success(
+            'Data Berhasil Dihapus'
         );
     }
 }
