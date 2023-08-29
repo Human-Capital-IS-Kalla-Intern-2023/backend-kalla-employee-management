@@ -17,7 +17,7 @@ class SectionFactory extends Factory
     public function definition(): array
     {
         return [
-            //
+            'section_name' => $this->faker->company()
         ];
     }
 }
