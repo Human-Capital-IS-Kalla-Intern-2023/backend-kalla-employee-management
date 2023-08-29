@@ -1,7 +1,11 @@
 <?php
 
+use App\Http\Controllers\API\CompanyController;
+use App\Http\Controllers\API\DirectoratController;
+use App\Http\Controllers\API\JobGradeController;
 use App\Http\Controllers\API\LocationController;
 use App\Http\Controllers\EmployeeController;
+use App\Http\Controllers\API\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -16,10 +20,35 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
+
+
+Route::post('register', [UserController::class, 'register']);
+Route::post('login', [UserController::class, 'login']);
+
+Route::middleware('auth:sanctum')->group(function () {
+    Route::get('user', [UserController::class, 'fetch']);
+    Route::post('logout', [UserController::class, 'logout']);
+    // Route::get('location', [LocationController::class, 'all']);
+
+    // Company
+    Route::get('company', [CompanyController::class, 'index']);
+    Route::post('company/', [CompanyController::class, 'store']);
+    Route::put('company/{id}', [CompanyController::class, 'update']);
+    Route::delete('company/{id}', [CompanyController::class, 'destroy']);
+
+    // Location
+    Route::get('location', [LocationController::class, 'index']);
+    Route::post('location/', [LocationController::class, 'store']);
+    Route::put('location/{id}', [LocationController::class, 'update']);
+    Route::delete('location/{id}', [LocationController::class, 'destroy']);
+
+    // Location
+    Route::get('directorat', [DirectoratController::class, 'index']);
+    Route::post('directorat/', [DirectoratController::class, 'store']);
+    Route::put('directorat/{id}', [DirectoratController::class, 'update']);
+
+    // Job Grade
+    Route::get('job-grade', [JobGradeController::class, 'index']);
+    Route::post('job-grade/', [JobGradeController::class, 'store']);
+    Route::put('job-grade/{id}', [JobGradeController::class, 'update']);
 });
-
-Route::get('location', [LocationController::class, 'all']);
-
-Route::get('/post', 'EmployeeController@index');

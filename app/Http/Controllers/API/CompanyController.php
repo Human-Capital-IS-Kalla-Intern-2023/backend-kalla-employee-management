@@ -4,38 +4,38 @@ namespace App\Http\Controllers\API;
 
 use App\Helpers\ResponseFormatter;
 use App\Http\Controllers\Controller;
-use App\Models\Location;
+use App\Models\Company;
 use Exception;
 use Illuminate\Http\Request;
 
-class LocationController extends Controller
+class CompanyController extends Controller
 {
     public function index(Request $request) {
         $id = $request->input('id');
 
         if($id) {
-            $location = Location::find($id);
+            $company = Company::with('Location')->find($id);
 
-            if($location)
+            if($company)
             {
                 return ResponseFormatter::success(
-                    $location,
-                    'Data lokasi berhasil diambil'
+                    $company,
+                    'Data perusahaan berhasil diambil'
                 );   
             }  else {
                 return ResponseFormatter::error(
                     null,
-                    'Data lokasi tidak ada',
+                    'Data perusahaan tidak ada',
                     404
                 );
             };
         }
 
-        $location = Location::all();
+        $company = Company::with('Location')->get();
 
 
         return ResponseFormatter::success(
-            $location,
+            $company,
             'Data Perusahaan berhasil diambil'
         );
 
@@ -45,11 +45,13 @@ class LocationController extends Controller
     public function store(Request $request) {
         try {
             $request->validate([
-                'location_name' => ['required','string','max:255'],
+                'company_name' => ['required','string','max:255'],
+                'locations_id' => ['required','exists:locations,id'],
             ]);
 
-            $data = Location::create([
-                'location_name' => $request->location_name,
+            $data = Company::create([
+                'company_name' => $request->company_name,
+                'locations_id' => $request->locations_id,
             ]);
 
 
@@ -69,10 +71,11 @@ class LocationController extends Controller
     public function update(Request $request, $id) {
         try {
             $data = $request->validate([
-                'location_name' => ['required','string','max:255'],
+                'company_name' => ['required','string','max:255'],
+                'locations_id' => ['required','exists:locations,id'],
             ]);
     
-            $item = Location::findOrFail($id);
+            $item = Company::findOrFail($id);
     
             $item->update($data);
     
@@ -90,16 +93,14 @@ class LocationController extends Controller
     }
 
     public function destroy(string $id) {
-        $location =Location::findOrFail($id);
+        $company = Company::findOrFail($id);
 
         //delete post
-        $location->delete();
-
-
-        $location = Location::all();
+        $company->delete();
 
         return ResponseFormatter::success(
             'Data Berhasil Dihapus'
         );
     }
+
 }

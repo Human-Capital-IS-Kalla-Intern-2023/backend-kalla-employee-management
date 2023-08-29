@@ -4,58 +4,64 @@ namespace App\Http\Controllers\API;
 
 use App\Helpers\ResponseFormatter;
 use App\Http\Controllers\Controller;
-use App\Models\Location;
+use App\Models\JobGrade;
 use Exception;
 use Illuminate\Http\Request;
 
-class LocationController extends Controller
+class JobGradeController extends Controller
 {
+    /**
+     * Display a listing of the resource.
+     */
     public function index(Request $request) {
         $id = $request->input('id');
 
         if($id) {
-            $location = Location::find($id);
+            $jobGrade = JobGrade::find($id);
 
-            if($location)
+            if($jobGrade)
             {
                 return ResponseFormatter::success(
-                    $location,
-                    'Data lokasi berhasil diambil'
+                    $jobGrade,
+                    'Data berhasil diambil'
                 );   
             }  else {
                 return ResponseFormatter::error(
                     null,
-                    'Data lokasi tidak ada',
+                    'Data tidak ada',
                     404
                 );
             };
         }
 
-        $location = Location::all();
+        $jobGrade = JobGrade::all();
 
 
         return ResponseFormatter::success(
-            $location,
-            'Data Perusahaan berhasil diambil'
+            $jobGrade,
+            'Data  berhasil diambil'
         );
 
        
     }
 
+    /**
+     * Store a newly created resource in storage.
+     */
     public function store(Request $request) {
         try {
             $request->validate([
-                'location_name' => ['required','string','max:255'],
+                'salary' => ['required','string','max:255'],
             ]);
 
-            $data = Location::create([
-                'location_name' => $request->location_name,
+            $data = JobGrade::create([
+                'salary' => $request->salary,
             ]);
 
 
             return ResponseFormatter::success(
                 $data,
-                'Data Berhasil Diupdate'
+                'Data Berhasil Dtambahkan'
             );
 
         } catch (Exception $error) {
@@ -66,13 +72,17 @@ class LocationController extends Controller
         }
     }
 
-    public function update(Request $request, $id) {
+    /**
+     * Update the specified resource in storage.
+     */
+
+     public function update(Request $request, string $id) {
         try {
             $data = $request->validate([
-                'location_name' => ['required','string','max:255'],
+                'salary' => ['required','string','max:255'],
             ]);
     
-            $item = Location::findOrFail($id);
+            $item = JobGrade::findOrFail($id);
     
             $item->update($data);
     
@@ -87,19 +97,5 @@ class LocationController extends Controller
             ], 'Error', 500);
         }
         
-    }
-
-    public function destroy(string $id) {
-        $location =Location::findOrFail($id);
-
-        //delete post
-        $location->delete();
-
-
-        $location = Location::all();
-
-        return ResponseFormatter::success(
-            'Data Berhasil Dihapus'
-        );
     }
 }

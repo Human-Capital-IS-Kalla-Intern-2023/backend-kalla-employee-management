@@ -4,17 +4,20 @@ namespace App\Http\Controllers\API;
 
 use App\Helpers\ResponseFormatter;
 use App\Http\Controllers\Controller;
-use App\Models\Location;
+use App\Models\Directorat;
 use Exception;
 use Illuminate\Http\Request;
 
-class LocationController extends Controller
+class DirectoratController extends Controller
 {
+    /**
+     * Display a listing of the resource.
+     */
     public function index(Request $request) {
         $id = $request->input('id');
 
         if($id) {
-            $location = Location::find($id);
+            $location = Directorat::find($id);
 
             if($location)
             {
@@ -31,31 +34,42 @@ class LocationController extends Controller
             };
         }
 
-        $location = Location::all();
+        $location = Directorat::all();
 
 
         return ResponseFormatter::success(
             $location,
-            'Data Perusahaan berhasil diambil'
+            'Data Directorat berhasil diambil'
         );
 
        
     }
 
+    /**
+     * Show the form for creating a new resource.
+     */
+    public function create()
+    {
+        //
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     */
     public function store(Request $request) {
         try {
             $request->validate([
-                'location_name' => ['required','string','max:255'],
+                'directorat_name' => ['required','string','max:255'],
             ]);
 
-            $data = Location::create([
-                'location_name' => $request->location_name,
+            $data = Directorat::create([
+                'directorat_name' => $request->directorat_name,
             ]);
 
 
             return ResponseFormatter::success(
                 $data,
-                'Data Berhasil Diupdate'
+                'Data Berhasil Dtambahkan'
             );
 
         } catch (Exception $error) {
@@ -66,13 +80,33 @@ class LocationController extends Controller
         }
     }
 
-    public function update(Request $request, $id) {
+    /**
+     * Display the specified resource.
+     */
+    public function show(string $id)
+    {
+        //
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     */
+    public function edit(string $id)
+    {
+        //
+    }
+
+    /**
+     * Update the specified resource in storage.
+     */
+
+    public function update(Request $request, string $id) {
         try {
             $data = $request->validate([
-                'location_name' => ['required','string','max:255'],
+                'directorat_name' => ['required','string','max:255'],
             ]);
     
-            $item = Location::findOrFail($id);
+            $item = Directorat::findOrFail($id);
     
             $item->update($data);
     
@@ -89,17 +123,11 @@ class LocationController extends Controller
         
     }
 
-    public function destroy(string $id) {
-        $location =Location::findOrFail($id);
-
-        //delete post
-        $location->delete();
-
-
-        $location = Location::all();
-
-        return ResponseFormatter::success(
-            'Data Berhasil Dihapus'
-        );
+    /**
+     * Remove the specified resource from storage.
+     */
+    public function destroy(string $id)
+    {
+        //
     }
 }
