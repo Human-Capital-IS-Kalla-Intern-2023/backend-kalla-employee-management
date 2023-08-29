@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\API\CompanyController;
 use App\Http\Controllers\API\DirectoratController;
+use App\Http\Controllers\API\JobGradeController;
 use App\Http\Controllers\API\LocationController;
 use App\Http\Controllers\API\UserController;
 use Illuminate\Http\Request;
@@ -44,4 +45,9 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('directorat', [DirectoratController::class, 'index']);
     Route::post('directorat/', [DirectoratController::class, 'store']);
     Route::put('directorat/{id}', [DirectoratController::class, 'update']);
+
+    // Job Grade
+    Route::get('job-grade', [JobGradeController::class, 'index']);
+    Route::post('job-grade/', [JobGradeController::class, 'store']);
+    Route::put('job-grade/{id}', [JobGradeController::class, 'update']);
 });
