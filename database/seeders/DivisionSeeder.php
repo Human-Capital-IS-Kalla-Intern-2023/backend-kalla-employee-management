@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use App\Models\Division;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 
 class DivisionSeeder extends Seeder
 {
@@ -13,19 +14,9 @@ class DivisionSeeder extends Seeder
      */
     public function run(): void
     {
-        $division = [
-            [
-                'division_name' => 'Accounting',
-            ],
-            [
-                'division_name' => 'CICT',
-            ],
-            [
-                'division_name' => 'HC',
-            ],
-            
-        ];
-
-        Division::insert($division);
+        Db::table('divisions')->insert([
+            'id' => '1',
+            'division_name' => 'CICT'
+        ]);
     }
 }
