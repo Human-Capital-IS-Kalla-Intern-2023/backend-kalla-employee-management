@@ -14,9 +14,39 @@ class DivisionSeeder extends Seeder
      */
     public function run(): void
     {
-        Db::table('divisions')->insert([
-            'id' => '1',
-            'division_name' => 'CICT'
-        ]);
+        $division = [
+            [
+                'division_name' => 'CICT',
+            ],
+            [
+                'division_name' => 'CICT',
+            ],
+            [
+                'division_name' => 'Database',
+            ],
+            [
+                'division_name' => 'Marketing',
+            ],
+            [
+                'division_name' => 'CICT',
+            ],
+            [
+                'division_name' => 'CICT',
+            ],
+            [
+                'division_name' => 'CICT',
+            ],
+            [
+                'division_name' => 'CICT',
+            ],
+            [
+                'division_name' => 'CICT',
+            ],
+            [
+                'division_name' => 'CICT',
+            ],
+        ];
+
+        Division::insert($division);
     }
 }

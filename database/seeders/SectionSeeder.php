@@ -20,6 +20,30 @@ class SectionSeeder extends Seeder
             [
                 'section_name' => 'IT Support',
             ],
+            [
+                'section_name' => 'Database',
+            ],
+            [
+                'section_name' => 'Marketing',
+            ],
+            [
+                'section_name' => 'IT Support',
+            ],
+            [
+                'section_name' => 'IT Support',
+            ],
+            [
+                'section_name' => 'IT Support',
+            ],
+            [
+                'section_name' => 'IT Support',
+            ],
+            [
+                'section_name' => 'IT Support',
+            ],
+            [
+                'section_name' => 'IT Support',
+            ],
         ];
 
         Section::insert($section);
