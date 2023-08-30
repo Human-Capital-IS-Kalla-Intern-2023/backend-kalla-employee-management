@@ -13,6 +13,19 @@ class DivisionSeeder extends Seeder
      */
     public function run(): void
     {
-        Division::factory(10)->create();
+        $division = [
+            [
+                'division_name' => 'Accounting',
+            ],
+            [
+                'division_name' => 'CICT',
+            ],
+            [
+                'division_name' => 'HC',
+            ],
+            
+        ];
+
+        Division::insert($division);
     }
 }
