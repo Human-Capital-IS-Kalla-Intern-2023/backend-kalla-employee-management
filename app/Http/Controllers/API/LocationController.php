@@ -55,7 +55,7 @@ class LocationController extends Controller
 
             return ResponseFormatter::success(
                 $data,
-                'Data Berhasil Diupdate'
+                'Data Berhasil Ditambahkan'
             );
 
         } catch (Exception $error) {
