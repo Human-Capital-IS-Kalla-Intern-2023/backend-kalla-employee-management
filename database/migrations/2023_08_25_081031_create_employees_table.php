@@ -18,8 +18,13 @@ return new class extends Migration
             $table->string('nickname');
             $table->date('hire_date');
             $table->string('company_email');
-            $table->foreignId('main_position')->constrained('positions');
-            $table->foreignId('secondary_position')->constrained('positions');
+            $table->unsignedBigInteger('main_position');
+            $table->unsignedBigInteger('secondary_position');
+            $table->timestamps();
+
+            $table->foreign('main_position')->references('id')->on('positions')->onDelete('cascade');
+            $table->foreign('secondary_position')->references('id')->on('positions')->onDelete('cascade');
+
         });
     }
 
