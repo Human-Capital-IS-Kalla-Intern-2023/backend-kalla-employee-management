@@ -36,12 +36,12 @@ class UserController extends Controller
                 'access_token' => $tokenResult,
                 'token_type' => 'Bearer',
                 'user' => $user
-            ], 'User Registered');
+            ], 'Buat akun berhasil');
         } catch (Exception $error) {
             return ResponseFormatter::error([
                         'message' => 'Something went wrong',
                         'error' => $error,
-            ], 'Authentication Failed', 500);
+            ], 'Login Gagal', 500);
         }
     }
 
@@ -58,7 +58,7 @@ class UserController extends Controller
             if(!Auth::attempt($credentials)) {
                 return ResponseFormatter::error([
                     'message' => 'Unauthorized'
-                ], 'Authentication Failed', 500);
+                ], 'Login Gagal', 500);
             }
 
             $user = User::where('email', $request->email)->first();
@@ -72,14 +72,14 @@ class UserController extends Controller
                 'access_token' => $tokenResult,
                 'token_type' => 'Bearer',
                 'user' => $user
-            ], 'Authenticated');
+            ], 'Login Berhasil');
 
         } catch(Exception $error) {
             return ResponseFormatter::error([
                 'message' => 'Something went wrong',
                 'error' => $error,
 
-            ], 'Authentication Failed', 500);
+            ], 'Login Gagal', 500);
         }
     }
 
