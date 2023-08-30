@@ -89,17 +89,5 @@ class LocationController extends Controller
         
     }
 
-    public function destroy(string $id) {
-        $location =Location::findOrFail($id);
 
-        //delete post
-        $location->delete();
-
-
-        $location = Location::all();
-
-        return ResponseFormatter::success(
-            'Data Berhasil Dihapus'
-        );
-    }
 }
