@@ -4,6 +4,7 @@ use App\Http\Controllers\API\CompanyController;
 use App\Http\Controllers\API\DirectoratController;
 use App\Http\Controllers\API\JobGradeController;
 use App\Http\Controllers\API\LocationController;
+use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\API\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
