@@ -3,6 +3,7 @@
 namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Validation\Rules\Unique;
 
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Employee>
@@ -24,6 +25,7 @@ class EmployeeFactory extends Factory
             'company_email' => $this->faker->email(),
             'main_position' => rand(1, 5),
             'secondary_position' => rand(6, 10),
+
         ];
     }
     
