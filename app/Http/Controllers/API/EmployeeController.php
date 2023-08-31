@@ -67,7 +67,7 @@ class EmployeeController extends Controller
                 'secondary_position' => ['required', 'string', 'max:255'],
             ]);
 
-            $data = Employee::create([
+            $employee = Employee::create([
                 'fullname' => $request->fullname,
                 'nickname' => $request->nickname,
                 'hire_date' => $request->hire_date,
@@ -78,7 +78,7 @@ class EmployeeController extends Controller
 
 
             return ResponseFormatter::success(
-                $data,
+                $employee,
                 'Data Berhasil Dtambahkan'
             );
 
@@ -96,9 +96,7 @@ class EmployeeController extends Controller
     public function show(string $id)
     {
         try {
-
             $employee = Employee::findOrFail($id);
-            // return response()->json($employee);
     
             return ResponseFormatter::success(
                 $employee,
@@ -115,9 +113,36 @@ class EmployeeController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit(Request $request, string $id)
     {
-        
+        try {
+
+            $employee = Employee::findOrFail($id);
+    
+            
+
+            $update = $request->validate([
+                'fullname' => $request->fullname,
+                'nickname' => $request->nickname,
+                'hire_date' => $request->hire_date,
+                'company_email' => $request->company_email,
+                'main_position' => $request->main_position,
+                'secondary_position' => $request->secondary_position,
+            ]);
+
+            $employee->update($update);
+
+            return ResponseFormatter::success(
+                $employee,
+                'Data berhasil diupdate'
+            );
+
+        } catch (Exception $error) {
+            return ResponseFormatter::error([
+                        'message' => 'Something went wrong',
+                        'error' => $error,
+            ], 'Error', 500);
+        }
     }
 
     /**
@@ -126,16 +151,16 @@ class EmployeeController extends Controller
 
     public function update(Request $request, string $id) {
         try {
-            $data = $request->validate([
+            $employee = $request->validate([
                 'fullname' => ['required','string','max:255'],
             ]);
     
-            $item = Employee::findOrFail($id);
+            $employee = Employee::findOrFail($id);
     
-            $item->update($data);
+            $employee->update($employee);
     
             return ResponseFormatter::success(
-                $data,
+                $employee,
                 'Data Berhasil Diubah'
             );
         } catch (Exception $error) {

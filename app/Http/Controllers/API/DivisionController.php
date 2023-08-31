@@ -84,7 +84,6 @@ class DivisionController extends Controller
         try {
 
             $division = Division::findOrFail($id);
-            // return response()->json($division);
     
             return ResponseFormatter::success(
                 $division,
@@ -120,9 +119,9 @@ class DivisionController extends Controller
                 'division_name' => ['required','string','max:255'],
             ]);
     
-            $item = Division::findOrFail($id);
+            $division = Division::findOrFail($id);
     
-            $item->update($division);
+            $division->update($division);
     
             return ResponseFormatter::success(
                 $division,

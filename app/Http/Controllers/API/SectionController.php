@@ -87,7 +87,6 @@ class SectionController extends Controller
         try {
 
             $section = Section::findOrFail($id);
-            // return response()->json($section);
     
             return ResponseFormatter::success(
                 $section,
@@ -119,9 +118,9 @@ class SectionController extends Controller
                 'section_name' => ['required','string','max:255'],
             ]);
     
-            $item = Section::findOrFail($id);
+            $section = Section::findOrFail($id);
     
-            $item->update($section);
+            $section->update($section);
     
             return ResponseFormatter::success(
                 $section,

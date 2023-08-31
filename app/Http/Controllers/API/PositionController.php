@@ -60,13 +60,13 @@ class PositionController extends Controller
                 'fullname' => ['required','string','max:255'],
             ]);
 
-            $data = Position::create([
+            $position = Position::create([
                 'fullname' => $request->fullname,
             ]);
 
 
             return ResponseFormatter::success(
-                $data,
+                $position,
                 'Data Berhasil Dtambahkan'
             );
 
@@ -86,7 +86,6 @@ class PositionController extends Controller
         try {
 
             $position = Position::findOrFail($id);
-            // return response()->json($position);
     
             return ResponseFormatter::success(
                 $position,
@@ -114,16 +113,16 @@ class PositionController extends Controller
 
     public function update(Request $request, string $id) {
         try {
-            $data = $request->validate([
+            $position = $request->validate([
                 'fullname' => ['required','string','max:255'],
             ]);
     
             $item = Position::findOrFail($id);
     
-            $item->update($data);
+            $item->update($position);
     
             return ResponseFormatter::success(
-                $data,
+                $position,
                 'Data Berhasil Diubah'
             );
         } catch (Exception $error) {
