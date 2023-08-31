@@ -83,7 +83,21 @@ class PositionController extends Controller
      */
     public function show(string $id)
     {
-        
+        try {
+
+            $position = Position::findOrFail($id);
+            // return response()->json($position);
+    
+            return ResponseFormatter::success(
+                $position,
+                'Data berhasil diambil'
+            );
+        } catch (Exception $error) {
+            return ResponseFormatter::error([
+                        'message' => 'Something went wrong',
+                        'error' => $error,
+            ], 'Error', 500);
+        }
     }
 
     /**
@@ -126,7 +140,14 @@ class PositionController extends Controller
      */
     public function destroy(string $id)
     {
-        $post = Position::findOrFail($id);
-        $post->delete();
+        $position = Position::findOrFail($id);
+        
+        $position->delete();
+        
+        $position = Position::all();
+
+        return ResponseFormatter::success(
+            "Data berhasil dihapus"
+        );
     }
 }

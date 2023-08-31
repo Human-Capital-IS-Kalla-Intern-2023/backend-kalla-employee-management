@@ -60,10 +60,20 @@ class EmployeeController extends Controller
         try {
             $request->validate([
                 'fullname' => ['required','string','max:255'],
+                'nickname' => ['required','string','max:255'],
+                'hire_date' => ['required','date_format:d-m-Y'],
+                'company_email' => ['required', 'email', 'max:255'],
+                'main_position' => ['required', 'string', 'max:255'],
+                'secondary_position' => ['required', 'string', 'max:255'],
             ]);
 
             $data = Employee::create([
                 'fullname' => $request->fullname,
+                'nickname' => $request->nickname,
+                'hire_date' => $request->hire_date,
+                'company_email' => $request->company_email,
+                'main_position' => $request->main_position,
+                'secondary_position' => $request->secondary_position,
             ]);
 
 
@@ -85,7 +95,21 @@ class EmployeeController extends Controller
      */
     public function show(string $id)
     {
-        $data = Division::find($id);
+        try {
+
+            $employee = Employee::findOrFail($id);
+            // return response()->json($employee);
+    
+            return ResponseFormatter::success(
+                $employee,
+                'Data berhasil diambil'
+            );
+        } catch (Exception $error) {
+            return ResponseFormatter::error([
+                        'message' => 'Something went wrong',
+                        'error' => $error,
+            ], 'Error', 500);
+        }
     }
 
     /**
@@ -128,7 +152,14 @@ class EmployeeController extends Controller
      */
     public function destroy(string $id)
     {
-        $post = Employee::findOrFail($id);
-        $post->delete();
+        $employee = Employee::findOrFail($id);
+        
+        $employee->delete();
+        
+        $employee = Employee::all();
+
+        return ResponseFormatter::success(
+            "Data berhasil dihapus"
+        );
     }
 }

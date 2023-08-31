@@ -58,13 +58,13 @@ class DivisionController extends Controller
                 'division_name' => ['required','string','max:255'],
             ]);
 
-            $data = Division::create([
+            $division = Division::create([
                 'division_name' => $request->division_name,
             ]);
 
 
             return ResponseFormatter::success(
-                $data,
+                $division,
                 'Data Berhasil Dtambahkan'
             );
 
@@ -81,15 +81,33 @@ class DivisionController extends Controller
      */
     public function show(string $id)
     {
-        //
+        try {
+
+            $division = Division::findOrFail($id);
+            // return response()->json($division);
+    
+            return ResponseFormatter::success(
+                $division,
+                'Data berhasil diambil'
+            );
+        } catch (Exception $error) {
+            return ResponseFormatter::error([
+                        'message' => 'Something went wrong',
+                        'error' => $error,
+            ], 'Error', 500);
+        }
     }
 
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit(Request $request, string $id)
     {
-        // $data = Division::find($id);
+        $division =  $request->validate([
+            'division_name'=>['required', 'string', 'max:255'],
+        ]);
+
+        $division = Division::findOrFail($id);
     }
 
     /**
@@ -98,16 +116,16 @@ class DivisionController extends Controller
 
     public function update(Request $request, string $id) {
         try {
-            $data = $request->validate([
+            $division = $request->validate([
                 'division_name' => ['required','string','max:255'],
             ]);
     
             $item = Division::findOrFail($id);
     
-            $item->update($data);
+            $item->update($division);
     
             return ResponseFormatter::success(
-                $data,
+                $division,
                 'Data Berhasil Diubah'
             );
         } catch (Exception $error) {
@@ -124,7 +142,14 @@ class DivisionController extends Controller
      */
     public function destroy(string $id)
     {
-        $post = Division::findOrFail($id);
-        $post->delete();
+        $division = Division::findOrFail($id);
+        
+        $division->delete();
+        
+        $division = Division::all();
+
+        return ResponseFormatter::success(
+            "Data berhasil dihapus"
+        );
     }
 }

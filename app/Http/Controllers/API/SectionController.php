@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Helpers\ResponseFormatter;
+use App\Models\Location;
 use App\Models\Section;
 use Illuminate\Http\Request;
 use Exception;
@@ -60,13 +61,13 @@ class SectionController extends Controller
                 'section_name' => ['required','string','max:255'],
             ]);
 
-            $data = Section::create([
+            $section = Section::create([
                 'section_name' => $request->section_name,
             ]);
 
 
             return ResponseFormatter::success(
-                $data,
+                $section,
                 'Data Berhasil Dtambahkan'
             );
 
@@ -83,7 +84,21 @@ class SectionController extends Controller
      */
     public function show(string $id)
     {
-        //
+        try {
+
+            $section = Section::findOrFail($id);
+            // return response()->json($section);
+    
+            return ResponseFormatter::success(
+                $section,
+                'Data berhasil diambil'
+            );
+        } catch (Exception $error) {
+            return ResponseFormatter::error([
+                        'message' => 'Something went wrong',
+                        'error' => $error,
+            ], 'Error', 500);
+        }
     }
 
     /**
@@ -91,7 +106,7 @@ class SectionController extends Controller
      */
     public function edit(string $id)
     {
-        //
+        
     }
 
     /**
@@ -100,16 +115,16 @@ class SectionController extends Controller
 
     public function update(Request $request, string $id) {
         try {
-            $data = $request->validate([
+            $section = $request->validate([
                 'section_name' => ['required','string','max:255'],
             ]);
     
             $item = Section::findOrFail($id);
     
-            $item->update($data);
+            $item->update($section);
     
             return ResponseFormatter::success(
-                $data,
+                $section,
                 'Data Berhasil Diubah'
             );
         } catch (Exception $error) {
@@ -126,8 +141,14 @@ class SectionController extends Controller
      */
     public function destroy(string $id)
     {
-        $post = Section::findOrFail($id);
-        $post->delete();
+        $section = Section::findOrFail($id);
         
+        $section->delete();
+        
+        $section = Section::all();
+
+        return ResponseFormatter::success(
+            "Data berhasil dihapus"
+        );
     }
 }
