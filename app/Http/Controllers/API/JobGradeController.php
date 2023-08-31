@@ -51,7 +51,7 @@ class JobGradeController extends Controller
     public function store(Request $request) {
         try {
             $request->validate([
-                'salary' => ['required','string','max:255'],
+                'salary' => ['required','integer'],
             ]);
 
             $data = JobGrade::create([
@@ -79,7 +79,7 @@ class JobGradeController extends Controller
      public function update(Request $request, string $id) {
         try {
             $data = $request->validate([
-                'salary' => ['required','string','max:255'],
+                'salary' => ['required','integer'],
             ]);
     
             $item = JobGrade::findOrFail($id);

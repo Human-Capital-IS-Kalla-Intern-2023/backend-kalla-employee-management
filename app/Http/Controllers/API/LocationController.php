@@ -11,26 +11,7 @@ use Illuminate\Http\Request;
 class LocationController extends Controller
 {
     public function index(Request $request) {
-        $id = $request->input('id');
-
-        if($id) {
-            $location = Location::find($id);
-
-            if($location)
-            {
-                return ResponseFormatter::success(
-                    $location,
-                    'Data lokasi berhasil diambil'
-                );   
-            }  else {
-                return ResponseFormatter::error(
-                    null,
-                    'Data lokasi tidak ada',
-                    404
-                );
-            };
-        }
-
+        
         $location = Location::all();
 
 
@@ -55,9 +36,27 @@ class LocationController extends Controller
 
             return ResponseFormatter::success(
                 $data,
-                'Data Berhasil Diupdate'
+                'Data Berhasil Ditambahkan'
             );
 
+        } catch (Exception $error) {
+            return ResponseFormatter::error([
+                        'message' => 'Something went wrong',
+                        'error' => $error,
+            ], 'Error', 500);
+        }
+    }
+
+    public function show(string $id)
+    {
+        try {
+
+            $location = Location::findOrFail($id);
+    
+            return ResponseFormatter::success(
+                $location,
+                'Data berhasil diambil'
+            );
         } catch (Exception $error) {
             return ResponseFormatter::error([
                         'message' => 'Something went wrong',
@@ -89,17 +88,5 @@ class LocationController extends Controller
         
     }
 
-    public function destroy(string $id) {
-        $location =Location::findOrFail($id);
 
-        //delete post
-        $location->delete();
-
-
-        $location = Location::all();
-
-        return ResponseFormatter::success(
-            'Data Berhasil Dihapus'
-        );
-    }
 }

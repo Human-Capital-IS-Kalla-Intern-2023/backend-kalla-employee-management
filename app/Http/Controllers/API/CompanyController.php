@@ -57,7 +57,7 @@ class CompanyController extends Controller
 
             return ResponseFormatter::success(
                 $data,
-                'Data Berhasil Diupdate'
+                'Data Berhasil Ditambah'
             );
 
         } catch (Exception $error) {
