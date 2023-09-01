@@ -68,6 +68,24 @@ class CompanyController extends Controller
         }
     }
 
+    public function show(string $id)
+    {
+        try {
+
+            $company = Company::with('Location')->findOrFail($id);
+    
+            return ResponseFormatter::success(
+                $company,
+                'Data berhasil diambil'
+            );
+        } catch (Exception $error) {
+            return ResponseFormatter::error([
+                        'message' => 'Something went wrong',
+                        'error' => $error,
+            ], 'Error', 500);
+        }
+    }
+
     public function update(Request $request, $id) {
         try {
             $data = $request->validate([

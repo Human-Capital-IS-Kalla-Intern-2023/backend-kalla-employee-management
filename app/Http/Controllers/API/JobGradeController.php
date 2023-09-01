@@ -14,25 +14,6 @@ class JobGradeController extends Controller
      * Display a listing of the resource.
      */
     public function index(Request $request) {
-        $id = $request->input('id');
-
-        if($id) {
-            $jobGrade = JobGrade::find($id);
-
-            if($jobGrade)
-            {
-                return ResponseFormatter::success(
-                    $jobGrade,
-                    'Data berhasil diambil'
-                );   
-            }  else {
-                return ResponseFormatter::error(
-                    null,
-                    'Data tidak ada',
-                    404
-                );
-            };
-        }
 
         $jobGrade = JobGrade::all();
 
@@ -64,6 +45,24 @@ class JobGradeController extends Controller
                 'Data Berhasil Dtambahkan'
             );
 
+        } catch (Exception $error) {
+            return ResponseFormatter::error([
+                        'message' => 'Something went wrong',
+                        'error' => $error,
+            ], 'Error', 500);
+        }
+    }
+
+    public function show(string $id)
+    {
+        try {
+
+            $jobGrade = JobGrade::findOrFail($id);
+    
+            return ResponseFormatter::success(
+                $jobGrade,
+                'Data berhasil diambil'
+            );
         } catch (Exception $error) {
             return ResponseFormatter::error([
                         'message' => 'Something went wrong',

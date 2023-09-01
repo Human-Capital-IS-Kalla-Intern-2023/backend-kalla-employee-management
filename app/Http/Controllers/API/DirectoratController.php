@@ -85,7 +85,20 @@ class DirectoratController extends Controller
      */
     public function show(string $id)
     {
-        //
+        try {
+
+            $data = Directorat::findOrFail($id);
+    
+            return ResponseFormatter::success(
+                $data,
+                'Data berhasil diambil'
+            );
+        } catch (Exception $error) {
+            return ResponseFormatter::error([
+                        'message' => 'Something went wrong',
+                        'error' => $error,
+            ], 'Error', 500);
+        }
     }
 
     /**
