@@ -11,27 +11,8 @@ use Illuminate\Http\Request;
 class CompanyController extends Controller
 {
     public function index(Request $request) {
-        $id = $request->input('id');
 
-        if($id) {
-            $company = Company::with('Location')->find($id);
-
-            if($company)
-            {
-                return ResponseFormatter::success(
-                    $company,
-                    'Data perusahaan berhasil diambil'
-                );   
-            }  else {
-                return ResponseFormatter::error(
-                    null,
-                    'Data perusahaan tidak ada',
-                    404
-                );
-            };
-        }
-
-        $company = Company::with('Location')->get();
+        $company = Company::with('location')->get();
 
 
         return ResponseFormatter::success(
@@ -72,7 +53,7 @@ class CompanyController extends Controller
     {
         try {
 
-            $company = Company::with('Location')->findOrFail($id);
+            $company = Company::with('location')->findOrFail($id);
     
             return ResponseFormatter::success(
                 $company,

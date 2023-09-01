@@ -17,7 +17,7 @@ class Company extends Model
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function Location(): HasMany
+    public function location(): HasMany
     {
         return $this->hasMany(Location::class, 'id', 'locations_id');
     }
