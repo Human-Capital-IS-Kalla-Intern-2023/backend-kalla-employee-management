@@ -64,22 +64,26 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('employee/', [EmployeeController::class, 'store']);
     Route::get('employee/{id}', [EmployeeController::class, 'store']);
     Route::put('employee/{id}', [EmployeeController::class, 'update']);
+    Route::delete('location/{id}', [LocationController::class, 'destroy']);
 
     // Position
     Route::get('position', [PositionController::class, 'index']);
     Route::post('position/', [PositionController::class, 'store']);
     Route::get('position/{id}', [PositionController::class, 'show']);
     Route::put('position/{id}', [PositionController::class, 'update']);
+    Route::delete('location/{id}', [LocationController::class, 'destroy']);
 
     // Division
     Route::get('division', [DivisionController::class, 'index']);
     Route::post('division/', [DivisionController::class, 'store']);
     Route::get('division/{id}', [DivisionController::class, 'show']);
     Route::put('division/{id}', [DivisionController::class, 'update']);
+    Route::delete('location/{id}', [LocationController::class, 'destroy']);
 
     // Section
     Route::get('section', [SectionController::class, 'index']);
     Route::post('section/', [SectionController::class, 'store']);
     Route::get('section/{id}', [SectionController::class, 'show']);
     Route::put('section/{id}', [SectionController::class, 'update']);
+    Route::delete('location/{id}', [LocationController::class, 'destroy']);
 });
