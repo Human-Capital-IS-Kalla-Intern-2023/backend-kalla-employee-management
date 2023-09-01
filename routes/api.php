@@ -52,6 +52,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('directorat/', [DirectoratController::class, 'store']);
     Route::get('directorat/{id}', [DirectoratController::class, 'show']);
     Route::put('directorat/{id}', [DirectoratController::class, 'update']);
+    Route::delete('directorat/{id}', [DirectoratController::class, 'destroy']);
 
     // Job Grade
     Route::get('job-grade', [JobGradeController::class, 'index']);

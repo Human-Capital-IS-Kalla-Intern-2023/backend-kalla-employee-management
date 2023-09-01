@@ -21,10 +21,10 @@ return new class extends Migration
             $table->unsignedBigInteger('section');
             $table->timestamps();
 
-            $table->foreign('job_grade')->references('id')->on('job_grades')->onDelete('rescrict');
-            $table->foreign('directorate')->references('id')->on('directorats')->onDelete('rescrict');
-            $table->foreign('division')->references('id')->on('divisions')->onDelete('rescrict');
-            $table->foreign('section')->references('id')->on('sections')->onDelete('rescrict');
+            $table->foreign('job_grade')->references('id')->on('job_grades')->onDelete('restrict');
+            $table->foreign('directorate')->references('id')->on('directorats')->onDelete('restrict');
+            $table->foreign('division')->references('id')->on('divisions')->onDelete('restrict');
+            $table->foreign('section')->references('id')->on('sections')->onDelete('restrict');
 
         });
     }

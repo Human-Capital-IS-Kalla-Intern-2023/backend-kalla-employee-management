@@ -141,6 +141,22 @@ class DirectoratController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        
+
+        try {
+            $directorat = Directorat::findOrFail($id);
+
+            //delete post
+            $directorat->delete();
+
+            return ResponseFormatter::success(
+                'Data Berhasil Dihapus'
+            );
+        } catch (Exception $error) {
+            return ResponseFormatter::error([
+                        'message' => 'Something went wrong',
+                        'error' => $error,
+            ], 'Error', 500);
+        }
     }
 }
