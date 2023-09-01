@@ -59,32 +59,34 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('job-grade/', [JobGradeController::class, 'store']);
     Route::get('job-grade/{id}', [JobGradeController::class, 'show']);
     Route::put('job-grade/{id}', [JobGradeController::class, 'update']);
+    Route::delete('job-gradet/{id}', [JobGradeController::class, 'destroy']);
+
 
     // Employee
     Route::get('employee', [EmployeeController::class, 'index']);
     Route::post('employee/', [EmployeeController::class, 'store']);
     Route::get('employee/{id}', [EmployeeController::class, 'store']);
     Route::put('employee/{id}', [EmployeeController::class, 'update']);
-    Route::delete('location/{id}', [LocationController::class, 'destroy']);
+    Route::delete('employee/{id}', [EmployeeController::class, 'destroy']);
 
     // Position
     Route::get('position', [PositionController::class, 'index']);
     Route::post('position/', [PositionController::class, 'store']);
     Route::get('position/{id}', [PositionController::class, 'show']);
     Route::put('position/{id}', [PositionController::class, 'update']);
-    Route::delete('location/{id}', [LocationController::class, 'destroy']);
+    Route::delete('position/{id}', [positionController::class, 'destroy']);
 
     // Division
     Route::get('division', [DivisionController::class, 'index']);
     Route::post('division/', [DivisionController::class, 'store']);
     Route::get('division/{id}', [DivisionController::class, 'show']);
     Route::put('division/{id}', [DivisionController::class, 'update']);
-    Route::delete('location/{id}', [LocationController::class, 'destroy']);
+    Route::delete('division/{id}', [DivisionController::class, 'destroy']);
 
     // Section
     Route::get('section', [SectionController::class, 'index']);
     Route::post('section/', [SectionController::class, 'store']);
     Route::get('section/{id}', [SectionController::class, 'show']);
     Route::put('section/{id}', [SectionController::class, 'update']);
-    Route::delete('location/{id}', [LocationController::class, 'destroy']);
+    Route::delete('section/{id}', [SectionController::class, 'destroy']);
 });

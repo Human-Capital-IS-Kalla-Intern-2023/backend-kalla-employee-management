@@ -91,15 +91,24 @@ class CompanyController extends Controller
         
     }
 
-    public function destroy(string $id) {
-        $company = Company::findOrFail($id);
 
-        //delete post
-        $company->delete();
+    public function destroy(string $id)
+    {
+        try {
+            $company = Company::findOrFail($id);
 
-        return ResponseFormatter::success(
-            'Data Berhasil Dihapus'
-        );
+            //delete post
+            $company->delete();
+
+            return ResponseFormatter::success(
+                'Data Berhasil Dihapus'
+            );
+        } catch (Exception $error) {
+            return ResponseFormatter::error([
+                        'message' => 'Something went wrong',
+                        'error' => $error,
+            ], 'Error', 500);
+        }
     }
 
 }

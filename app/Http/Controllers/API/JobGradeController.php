@@ -75,7 +75,7 @@ class JobGradeController extends Controller
      * Update the specified resource in storage.
      */
 
-     public function update(Request $request, string $id) {
+    public function update(Request $request, string $id) {
         try {
             $data = $request->validate([
                 'salary' => ['required','integer'],
@@ -96,5 +96,24 @@ class JobGradeController extends Controller
             ], 'Error', 500);
         }
         
+    }
+
+    public function destroy(string $id)
+    {
+        try {
+            $jobGrade = JobGrade::findOrFail($id);
+
+            //delete post
+            $jobGrade->delete();
+
+            return ResponseFormatter::success(
+                'Data Berhasil Dihapus'
+            );
+        } catch (Exception $error) {
+            return ResponseFormatter::error([
+                        'message' => 'Something went wrong',
+                        'error' => $error,
+            ], 'Error', 500);
+        }
     }
 }
