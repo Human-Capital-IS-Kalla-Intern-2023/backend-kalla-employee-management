@@ -59,7 +59,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('job-grade/', [JobGradeController::class, 'store']);
     Route::get('job-grade/{id}', [JobGradeController::class, 'show']);
     Route::put('job-grade/{id}', [JobGradeController::class, 'update']);
-    Route::delete('job-gradet/{id}', [JobGradeController::class, 'destroy']);
+    Route::delete('job-grade/{id}', [JobGradeController::class, 'destroy']);
 
 
     // Employee
