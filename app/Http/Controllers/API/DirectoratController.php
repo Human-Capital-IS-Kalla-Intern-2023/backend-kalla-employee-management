@@ -14,25 +14,7 @@ class DirectoratController extends Controller
      * Display a listing of the resource.
      */
     public function index(Request $request) {
-        $id = $request->input('id');
-
-        if($id) {
-            $location = Directorat::find($id);
-
-            if($location)
-            {
-                return ResponseFormatter::success(
-                    $location,
-                    'Data lokasi berhasil diambil'
-                );   
-            }  else {
-                return ResponseFormatter::error(
-                    null,
-                    'Data lokasi tidak ada',
-                    404
-                );
-            };
-        }
+        
 
         $location = Directorat::all();
 
