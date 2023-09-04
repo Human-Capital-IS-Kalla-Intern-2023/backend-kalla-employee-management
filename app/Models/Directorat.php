@@ -17,7 +17,7 @@ class Directorat extends Model
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function Postion(): BelongsTo
+    public function position(): BelongsTo
     {
         return $this->belongsTo(Position::class, 'directorat', 'id');
     }

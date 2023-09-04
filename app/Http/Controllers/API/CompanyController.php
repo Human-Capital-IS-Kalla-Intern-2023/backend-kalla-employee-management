@@ -11,27 +11,8 @@ use Illuminate\Http\Request;
 class CompanyController extends Controller
 {
     public function index(Request $request) {
-        $id = $request->input('id');
 
-        if($id) {
-            $company = Company::with('Location')->find($id);
-
-            if($company)
-            {
-                return ResponseFormatter::success(
-                    $company,
-                    'Data perusahaan berhasil diambil'
-                );   
-            }  else {
-                return ResponseFormatter::error(
-                    null,
-                    'Data perusahaan tidak ada',
-                    404
-                );
-            };
-        }
-
-        $company = Company::with('Location')->get();
+        $company = Company::with('location')->get();
 
 
         return ResponseFormatter::success(
@@ -68,6 +49,24 @@ class CompanyController extends Controller
         }
     }
 
+    public function show(string $id)
+    {
+        try {
+
+            $company = Company::with('location')->findOrFail($id);
+    
+            return ResponseFormatter::success(
+                $company,
+                'Data berhasil diambil'
+            );
+        } catch (Exception $error) {
+            return ResponseFormatter::error([
+                        'message' => 'Something went wrong',
+                        'error' => $error,
+            ], 'Error', 500);
+        }
+    }
+
     public function update(Request $request, $id) {
         try {
             $data = $request->validate([
@@ -92,15 +91,24 @@ class CompanyController extends Controller
         
     }
 
-    public function destroy(string $id) {
-        $company = Company::findOrFail($id);
 
-        //delete post
-        $company->delete();
+    public function destroy(string $id)
+    {
+        try {
+            $company = Company::findOrFail($id);
 
-        return ResponseFormatter::success(
-            'Data Berhasil Dihapus'
-        );
+            //delete post
+            $company->delete();
+
+            return ResponseFormatter::success(
+                'Data Berhasil Dihapus'
+            );
+        } catch (Exception $error) {
+            return ResponseFormatter::error([
+                        'message' => 'Something went wrong',
+                        'error' => $error,
+            ], 'Error', 500);
+        }
     }
 
 }

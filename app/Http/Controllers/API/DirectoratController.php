@@ -14,25 +14,7 @@ class DirectoratController extends Controller
      * Display a listing of the resource.
      */
     public function index(Request $request) {
-        $id = $request->input('id');
-
-        if($id) {
-            $location = Directorat::find($id);
-
-            if($location)
-            {
-                return ResponseFormatter::success(
-                    $location,
-                    'Data lokasi berhasil diambil'
-                );   
-            }  else {
-                return ResponseFormatter::error(
-                    null,
-                    'Data lokasi tidak ada',
-                    404
-                );
-            };
-        }
+        
 
         $location = Directorat::all();
 
@@ -85,7 +67,20 @@ class DirectoratController extends Controller
      */
     public function show(string $id)
     {
-        //
+        try {
+
+            $data = Directorat::findOrFail($id);
+    
+            return ResponseFormatter::success(
+                $data,
+                'Data berhasil diambil'
+            );
+        } catch (Exception $error) {
+            return ResponseFormatter::error([
+                        'message' => 'Something went wrong',
+                        'error' => $error,
+            ], 'Error', 500);
+        }
     }
 
     /**
@@ -128,6 +123,22 @@ class DirectoratController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        
+
+        try {
+            $directorat = Directorat::findOrFail($id);
+
+            //delete post
+            $directorat->delete();
+
+            return ResponseFormatter::success(
+                'Data Berhasil Dihapus'
+            );
+        } catch (Exception $error) {
+            return ResponseFormatter::error([
+                        'message' => 'Something went wrong',
+                        'error' => $error,
+            ], 'Error', 500);
+        }
     }
 }

@@ -22,8 +22,8 @@ return new class extends Migration
             $table->unsignedBigInteger('secondary_position');
             $table->timestamps();
 
-            $table->foreign('main_position')->references('id')->on('positions')->onDelete('cascade');
-            $table->foreign('secondary_position')->references('id')->on('positions')->onDelete('cascade');
+            $table->foreign('main_position')->references('id')->on('positions')->onDelete('restrict');
+            $table->foreign('secondary_position')->references('id')->on('positions')->onDelete('restrict');
 
         });
     }

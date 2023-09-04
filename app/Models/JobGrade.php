@@ -18,7 +18,7 @@ class JobGrade extends Model
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function Position(): BelongsTo
+    public function position(): BelongsTo
     {
         return $this->belongsTo(Position::class, 'job_grade', 'id');
     }
