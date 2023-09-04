@@ -1,74 +1,53 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\API;
 
 use App\Helpers\ResponseFormatter;
-use App\Models\Location;
+use App\Http\Controllers\Controller;
 use App\Models\Section;
 use Illuminate\Http\Request;
 use Exception;
-
+use Illuminate\Support\Facades\Validator;
 
 class SectionController extends Controller
 {
     public function index(Request $request) {
-        $id = $request->input('id');
-        $location_name = $request->input('id');
-
-        if($id) {
-            $section = Section::find($id);
-
-            if($section)
-            {
-                return ResponseFormatter::success(
-                    $section,
-                    'Data Section berhasil diambil'
-                );   
-            }  else {
-                return ResponseFormatter::error(
-                    null,
-                    'Data Section tidak ada',
-                    404
-                );
-            };
-        }
-
+        
         $section = Section::all();
 
 
         return ResponseFormatter::success(
             $section,
-            'Data Section berhasil diambil'
+            'Data Perusahaan berhasil diambil'
         );
 
        
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request) {
         try {
-            $request->validate([
-                'section_name' => ['required','string','max:255'],
+            //define validation rules
+            $validator = Validator::make($request->all(), [
+                'section_name'     => 'required|string',
             ]);
 
-            $section = Section::create([
+             //check if validation fails
+            if ($validator->fails()) {
+                return ResponseFormatter::error([
+                    'message' => 'Validation Error',
+                    'error' => $validator->errors(),
+                ], 'Validation Error', 422);
+            }
+
+
+            $data = Section::create([
                 'section_name' => $request->section_name,
             ]);
 
 
             return ResponseFormatter::success(
-                $section,
-                'Data Berhasil Dtambahkan'
+                $data,
+                'Data Berhasil Ditambahkan'
             );
 
         } catch (Exception $error) {
@@ -79,15 +58,11 @@ class SectionController extends Controller
         }
     }
 
-    /**
-     * Display the specified resource.
-     */
     public function show(string $id)
     {
         try {
 
             $section = Section::findOrFail($id);
-            // return response()->json($section);
     
             return ResponseFormatter::success(
                 $section,
@@ -101,30 +76,30 @@ class SectionController extends Controller
         }
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-
-    public function update(Request $request, string $id) {
+    public function update(Request $request, $id) {
         try {
-            $section = $request->validate([
-                'section_name' => ['required','string','max:255'],
+
+            //define validation rules
+            $validator = Validator::make($request->all(), [
+                'section_name'     => 'required|string',
             ]);
+
+             //check if validation fails
+            if ($validator->fails()) {
+                return ResponseFormatter::error([
+                    'message' => 'Validation Error',
+                    'error' => $validator->errors(),
+                ], 'Validation Error', 422);
+            }
     
             $item = Section::findOrFail($id);
-    
-            $item->update($section);
+            
+            $item->update([
+                'section_name' => $request->section_name,
+            ]);
     
             return ResponseFormatter::success(
-                $section,
+                $item,
                 'Data Berhasil Diubah'
             );
         } catch (Exception $error) {
@@ -136,19 +111,24 @@ class SectionController extends Controller
         
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(string $id)
     {
-        $section = Section::findOrFail($id);
-        
-        $section->delete();
-        
-        $section = Section::all();
+        try {
+            
 
-        return ResponseFormatter::success(
-            "Data berhasil dihapus"
-        );
+            $section = Section::findOrFail($id);
+
+            //delete post
+            $section->delete();
+
+            return ResponseFormatter::success(
+                'Data Berhasil Dihapus'
+            );
+        } catch (Exception $error) {
+            return ResponseFormatter::error([
+                        'message' => 'Something went wrong',
+                        'error' => $error,
+            ], 'Error', 500);
+        }
     }
 }
