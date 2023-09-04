@@ -10,6 +10,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Laravel\Fortify\Rules\Password;
+use Illuminate\Support\Facades\Validator;
+
 
 class UserController extends Controller
 {
@@ -48,39 +50,26 @@ class UserController extends Controller
     public function login(Request $request)
     {
         try {
-            $email = $request->input('email');
-            $password = $request->input('password');
-
-            if (is_null($email) || is_null($password)) {
-                return ResponseFormatter::error(400, 'Login Gagal', 'Email Dan Password tidak boleh kosong');
-            }
-
-            if (!is_string($email) || !is_string($password)) {
-                return ResponseFormatter::error(400, 'Login Gagal', 'Invalid data type for email or password');
-            }
-
-
-            $user = User::where('email', $email)->first();
-
-            if (!$user) {
-                return ResponseFormatter::error(404, 'Login Gagal', 'User not found');
-            }
-
-            if (!Hash::check($password, $user->password)) {
-                return ResponseFormatter::error(401, 'Login Gagal', 'Wrong Password');
-            }
-
-            $request->validate([
+ 
+           //define validation rules
+           $validator = Validator::make($request->all(), [
                 'email' => 'required|string|email',
                 'password' => 'required|string',
             ]);
 
+             //check if validation fails
+            if ($validator->fails()) {
+                $errors  = $validator->errors()->first();
+                // $errors  = $validator->errors();
+
+                return ResponseFormatter::error('', $errors, 400);
+
+            }
+
             $credentials = request(['email','password']);
 
             if(!Auth::attempt($credentials)) {
-                return ResponseFormatter::error([
-                    'message' => 'Unauthorized'
-                ], 'Login Gagal', 500);
+                return ResponseFormatter::error('', 'Email atau Password Salah', 400);
             }
 
             $user = User::where('email', $request->email)->first();
