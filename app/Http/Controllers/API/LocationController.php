@@ -33,7 +33,10 @@ class LocationController extends Controller
 
              //check if validation fails
             if ($validator->fails()) {
-                return response()->json($validator->errors(), 422);
+                return ResponseFormatter::error([
+                    'message' => 'Validation Error',
+                    'error' => $validator->errors(),
+                ], 'Validation Error', 422);
             }
 
 
@@ -83,7 +86,10 @@ class LocationController extends Controller
 
              //check if validation fails
             if ($validator->fails()) {
-                return response()->json($validator->errors(), 422);
+                return ResponseFormatter::error([
+                    'message' => 'Validation Error',
+                    'error' => $validator->errors(),
+                ], 'Validation Error', 422);
             }
     
             $item = Location::findOrFail($id);
