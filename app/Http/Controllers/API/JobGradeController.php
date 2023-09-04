@@ -7,6 +7,8 @@ use App\Http\Controllers\Controller;
 use App\Models\JobGrade;
 use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
+
 
 class JobGradeController extends Controller
 {
@@ -23,7 +25,6 @@ class JobGradeController extends Controller
             'Data  berhasil diambil'
         );
 
-       
     }
 
     /**
@@ -31,9 +32,19 @@ class JobGradeController extends Controller
      */
     public function store(Request $request) {
         try {
-            $request->validate([
-                'salary' => ['required','integer'],
+
+            //define validation rules
+            $validator = Validator::make($request->all(), [
+                'salary'     => 'required|integer',
             ]);
+
+             //check if validation fails
+            if ($validator->fails()) {
+                return ResponseFormatter::error([
+                    'message' => 'Validation Error',
+                    'error' => $validator->errors(),
+                ], 'Validation Error', 422);
+            }
 
             $data = JobGrade::create([
                 'salary' => $request->salary,
@@ -77,16 +88,28 @@ class JobGradeController extends Controller
 
     public function update(Request $request, string $id) {
         try {
-            $data = $request->validate([
-                'salary' => ['required','integer'],
+            //define validation rules
+            $validator = Validator::make($request->all(), [
+                'salary'     => 'required|integer',
+            ]);
+
+             //check if validation fails
+            if ($validator->fails()) {
+                return ResponseFormatter::error([
+                    'message' => 'Validation Error',
+                    'error' => $validator->errors(),
+                ], 'Validation Error', 422);
+            }
+            
+
+            $item = JobGrade::findOrFail($id);
+
+            $item->update([
+                'salary' => $request->salary,
             ]);
     
-            $item = JobGrade::findOrFail($id);
-    
-            $item->update($data);
-    
             return ResponseFormatter::success(
-                $data,
+                $item,
                 'Data Berhasil Diubah'
             );
         } catch (Exception $error) {

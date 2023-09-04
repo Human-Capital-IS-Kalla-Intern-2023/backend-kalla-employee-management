@@ -7,6 +7,8 @@ use App\Http\Controllers\Controller;
 use App\Models\Directorat;
 use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
+
 
 class DirectoratController extends Controller
 {
@@ -40,9 +42,18 @@ class DirectoratController extends Controller
      */
     public function store(Request $request) {
         try {
-            $request->validate([
-                'directorat_name' => ['required','string','max:255'],
+            //define validation rules
+            $validator = Validator::make($request->all(), [
+                'directorat_name'     => 'required|string|max:255',
             ]);
+
+             //check if validation fails
+            if ($validator->fails()) {
+                return ResponseFormatter::error([
+                    'message' => 'Validation Error',
+                    'error' => $validator->errors(),
+                ], 'Validation Error', 422);
+            }
 
             $data = Directorat::create([
                 'directorat_name' => $request->directorat_name,
@@ -97,16 +108,27 @@ class DirectoratController extends Controller
 
     public function update(Request $request, string $id) {
         try {
-            $data = $request->validate([
-                'directorat_name' => ['required','string','max:255'],
+            //define validation rules
+            $validator = Validator::make($request->all(), [
+                'directorat_name'     => 'required|string|max:255',
             ]);
+
+             //check if validation fails
+            if ($validator->fails()) {
+                return ResponseFormatter::error([
+                    'message' => 'Validation Error',
+                    'error' => $validator->errors(),
+                ], 'Validation Error', 422);
+            }
     
             $item = Directorat::findOrFail($id);
     
-            $item->update($data);
+            $item->update([
+                'directorat_name' => $request->directorat_name,
+            ]);
     
             return ResponseFormatter::success(
-                $data,
+                $item,
                 'Data Berhasil Diubah'
             );
         } catch (Exception $error) {

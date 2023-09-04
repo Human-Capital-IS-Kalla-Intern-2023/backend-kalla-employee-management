@@ -7,6 +7,8 @@ use App\Http\Controllers\Controller;
 use App\Models\Company;
 use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
+
 
 class CompanyController extends Controller
 {
@@ -25,10 +27,19 @@ class CompanyController extends Controller
 
     public function store(Request $request) {
         try {
-            $request->validate([
+             //define validation rules
+            $validator = Validator::make($request->all(), [
                 'company_name' => ['required','string','max:255'],
                 'locations_id' => ['required','exists:locations,id'],
             ]);
+
+             //check if validation fails
+            if ($validator->fails()) {
+                return ResponseFormatter::error([
+                    'message' => 'Validation Error',
+                    'error' => $validator->errors(),
+                ], 'Validation Error', 422);
+            }
 
             $data = Company::create([
                 'company_name' => $request->company_name,
@@ -69,17 +80,29 @@ class CompanyController extends Controller
 
     public function update(Request $request, $id) {
         try {
-            $data = $request->validate([
+             //define validation rules
+             $validator = Validator::make($request->all(), [
                 'company_name' => ['required','string','max:255'],
                 'locations_id' => ['required','exists:locations,id'],
             ]);
-    
+
+             //check if validation fails
+            if ($validator->fails()) {
+                return ResponseFormatter::error([
+                    'message' => 'Validation Error',
+                    'error' => $validator->errors(),
+                ], 'Validation Error', 422);
+            }
+
             $item = Company::findOrFail($id);
     
-            $item->update($data);
+            $item->update([
+                'company_name' => $request->company_name,
+                'locations_id' => $request->locations_id,
+            ]);
     
             return ResponseFormatter::success(
-                $data,
+                $item,
                 'Data Berhasil Diubah'
             );
         } catch (Exception $error) {
