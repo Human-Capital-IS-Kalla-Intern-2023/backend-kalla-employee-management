@@ -49,10 +49,10 @@ class DirectoratController extends Controller
 
              //check if validation fails
             if ($validator->fails()) {
-                return ResponseFormatter::error([
-                    'message' => 'Validation Error',
-                    'error' => $validator->errors(),
-                ], 'Validation Error', 422);
+                $errors  = $validator->errors()->first();
+                // $errors  = $validator->errors();
+
+                return ResponseFormatter::error('', $errors, 400);
             }
 
             $data = Directorat::create([
@@ -113,12 +113,14 @@ class DirectoratController extends Controller
                 'directorat_name'     => 'required|string|max:255',
             ]);
 
+            
              //check if validation fails
             if ($validator->fails()) {
-                return ResponseFormatter::error([
-                    'message' => 'Validation Error',
-                    'error' => $validator->errors(),
-                ], 'Validation Error', 422);
+                $errors  = $validator->errors()->first();
+                // $errors  = $validator->errors();
+
+                return ResponseFormatter::error('', $errors,400);
+
             }
     
             $item = Directorat::findOrFail($id);

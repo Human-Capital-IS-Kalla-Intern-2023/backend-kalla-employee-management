@@ -3,46 +3,21 @@
 namespace App\Http\Controllers;
 
 use App\Helpers\ResponseFormatter;
-use App\Models\Division;
+use App\Http\Controllers\Controller;
 use App\Models\Employee;
-use Illuminate\Http\Request;
-use Spatie\FlareClient\Api;
+use Illuminate\Support\Facades\Validator;
 use Exception;
-use Illuminate\Contracts\View\View;
+use Illuminate\Http\Request;
 
 class EmployeeController extends Controller
 {
     public function index(Request $request) {
-        $id = $request->input('id');
-        $location_name = $request->input('employee_id');
-
-        if($id) {
-            $employee = Employee::find($id);
-
-            if($employee)
-            {
-                return ResponseFormatter::success(
-                    $employee,
-                    'Data Employee berhasil diambil'
-                );   
-            }  else {
-                return ResponseFormatter::error(
-                    null,
-                    'Data Employee tidak ada',
-                    404
-                );
-            };
-        }
-
-        $employee = Employee::all();
-
+        $employee =  Employee::all();
 
         return ResponseFormatter::success(
             $employee,
-            'Data Employee berhasil diambil'
+            'Data Perusahaan berhasil diambil'
         );
-
-       
     }
 
     /**
@@ -113,78 +88,25 @@ class EmployeeController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Request $request, string $id)
+    public function edit(string $id)
     {
-        try {
-
-            $employee = Employee::findOrFail($id);
-    
-            
-
-            $update = $request->validate([
-                'fullname' => $request->fullname,
-                'nickname' => $request->nickname,
-                'hire_date' => $request->hire_date,
-                'company_email' => $request->company_email,
-                'main_position' => $request->main_position,
-                'secondary_position' => $request->secondary_position,
-            ]);
-
-            $employee->update($update);
-
-            return ResponseFormatter::success(
-                $employee,
-                'Data berhasil diupdate'
-            );
-
-        } catch (Exception $error) {
-            return ResponseFormatter::error([
-                        'message' => 'Something went wrong',
-                        'error' => $error,
-            ], 'Error', 500);
-        }
+        // 
     }
 
     /**
      * Update the specified resource in storage.
      */
 
-    public function update(Request $request, string $id) {
-        try {
-            $employee = $request->validate([
-                'fullname' => ['required','string','max:255'],
-            ]);
-    
-            $employee = Employee::findOrFail($id);
-    
-            $employee->update($employee);
-    
-            return ResponseFormatter::success(
-                $employee,
-                'Data Berhasil Diubah'
-            );
-        } catch (Exception $error) {
-            return ResponseFormatter::error([
-                        'message' => 'Something went wrong',
-                        'error' => $error,
-            ], 'Error', 500);
-        }
-        
+
+    public function update(Request $request, string $id) { 
+        // 
+
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
-    {
-        $employee = Employee::findOrFail($id);
-        
-        $employee->delete();
-        
-        $employee = Employee::all();
-
-        return ResponseFormatter::success(
-            "Data berhasil dihapus"
-        );
+    public function destroy(string $id){
+        // 
     }
 }
