@@ -52,7 +52,7 @@ class UserController extends Controller
             $password = $request->input('password');
 
             if (is_null($email) || is_null($password)) {
-                return ResponseFormatter::error(400, 'Login Gagal', 'Email and password must be provided');
+                return ResponseFormatter::error(400, 'Login Gagal', 'Email Dan Password tidak boleh kosong');
             }
 
             if (!is_string($email) || !is_string($password)) {
