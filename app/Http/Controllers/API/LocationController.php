@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API;
 use App\Helpers\ResponseFormatter;
 use App\Http\Controllers\Controller;
 use App\Models\Location;
+use Illuminate\Support\Facades\Validator;
 use Exception;
 use Illuminate\Http\Request;
 
@@ -25,9 +26,19 @@ class LocationController extends Controller
 
     public function store(Request $request) {
         try {
-            $request->validate([
-                'location_name' => ['required','string','max:255'],
+            //define validation rules
+            $validator = Validator::make($request->all(), [
+                'location_name'     => 'required|string',
             ]);
+
+             //check if validation fails
+            if ($validator->fails()) {
+                return ResponseFormatter::error([
+                    'message' => 'Validation Error',
+                    'error' => $validator->errors(),
+                ], 'Validation Error', 422);
+            }
+
 
             $data = Location::create([
                 'location_name' => $request->location_name,
@@ -67,16 +78,28 @@ class LocationController extends Controller
 
     public function update(Request $request, $id) {
         try {
-            $data = $request->validate([
-                'location_name' => ['required','string','max:255'],
+
+            //define validation rules
+            $validator = Validator::make($request->all(), [
+                'location_name'     => 'required|string',
             ]);
+
+             //check if validation fails
+            if ($validator->fails()) {
+                return ResponseFormatter::error([
+                    'message' => 'Validation Error',
+                    'error' => $validator->errors(),
+                ], 'Validation Error', 422);
+            }
     
             $item = Location::findOrFail($id);
-    
-            $item->update($data);
+            
+            $item->update([
+                'location_name' => $request->location_name,
+            ]);
     
             return ResponseFormatter::success(
-                $data,
+                $item,
                 'Data Berhasil Diubah'
             );
         } catch (Exception $error) {
@@ -91,6 +114,8 @@ class LocationController extends Controller
     public function destroy(string $id)
     {
         try {
+            
+
             $location = Location::findOrFail($id);
 
             //delete post
