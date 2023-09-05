@@ -60,7 +60,7 @@ class UserController extends Controller
              //check if validation fails
             if ($validator->fails()) {
                 $errors  = $validator->errors()->first();
-                // $errors  = $validator->errors();
+                // $errors  = $validato statusr->errors();
 
                 return ResponseFormatter::error('', $errors, 400);
 
