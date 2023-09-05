@@ -4,11 +4,11 @@ use App\Http\Controllers\API\CompanyController;
 use App\Http\Controllers\API\DirectoratController;
 use App\Http\Controllers\API\JobGradeController;
 use App\Http\Controllers\API\LocationController;
-use App\Http\Controllers\EmployeeController;
+use App\Http\Controllers\API\EmployeeController;
 use App\Http\Controllers\API\UserController;
-use App\Http\Controllers\DivisionController;
-use App\Http\Controllers\PositionController;
-use App\Http\Controllers\SectionController;
+use App\Http\Controllers\API\DivisionController;
+use App\Http\Controllers\API\PositionController;
+use App\Http\Controllers\API\SectionController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
