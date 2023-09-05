@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Position extends Model
 {
     use HasFactory;
-    protected $fillable = ['position_name','directorate','division','section'];
+    protected $fillable = ['position_name'];
 
     public function Position(){
         return [
