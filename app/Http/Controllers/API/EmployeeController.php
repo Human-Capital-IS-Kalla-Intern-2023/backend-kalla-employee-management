@@ -13,7 +13,7 @@ class EmployeeController extends Controller
 {
     public function index(Request $request) {
         
-        $employee = Employee::with('position_name')->get();
+        $employee = Employee::all();
 
 
         return ResponseFormatter::success(
