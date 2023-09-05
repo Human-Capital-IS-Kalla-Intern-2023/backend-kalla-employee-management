@@ -12,9 +12,8 @@ class Position extends Model
 
     public function Position(){
         return [
-            'employee' => $this->belongsTo(Employee::class),
-            'sections' => $this->hasMany(Section::class),
-            'divisions' => $this->hasMany(Division::class),
+            $this->hasMany(Division::class),
+            $this->hasMany(Section::class),
         ];
     }
 }

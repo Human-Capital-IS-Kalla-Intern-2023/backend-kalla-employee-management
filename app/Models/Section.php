@@ -11,6 +11,6 @@ class Section extends Model
     protected $fillable = ['section_name'];
 
     public function section(){
-        return $this->belongsTo(Position::class);
+        return $this->belongsTo(Position::class, 'id','position_name');
     }
 }
