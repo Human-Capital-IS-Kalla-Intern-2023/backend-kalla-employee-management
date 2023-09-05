@@ -17,11 +17,11 @@ class PositionFactory extends Factory
     public function definition(): array
     {
         return [
-            'companies_id'=>rand(1, 100),
+            'companies_id' => rand(1, 100),
             'position_name'=> $this->faker->company(),
-            'directorate' => $this->faker->company(),
-            'division' => $this->faker->company(),
-            'section' => $this->faker->company()
+            'directorate' => rand(1, 10),
+            'division' => rand(1, 10),
+            'section' => rand(1,10)
         ];
     }
 }
