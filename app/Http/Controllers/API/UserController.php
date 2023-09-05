@@ -10,6 +10,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Laravel\Fortify\Rules\Password;
+use Illuminate\Support\Facades\Validator;
+
 
 class UserController extends Controller
 {
@@ -48,29 +50,10 @@ class UserController extends Controller
     public function login(Request $request)
     {
         try {
-            $email = $request->input('email');
-            $password = $request->input('password');
+            
+            
 
-            if (is_null($email) || is_null($password)) {
-                return ResponseFormatter::error(400, 'Login Gagal', 'Email Dan Password tidak boleh kosong');
-            }
-
-            if (!is_string($email) || !is_string($password)) {
-                return ResponseFormatter::error(400, 'Login Gagal', 'Invalid data type for email or password');
-            }
-
-
-            $user = User::where('email', $email)->first();
-
-            if (!$user) {
-                return ResponseFormatter::error(404, 'Login Gagal', 'User not found');
-            }
-
-            if (!Hash::check($password, $user->password)) {
-                return ResponseFormatter::error(401, 'Login Gagal', 'Wrong Password');
-            }
-
-            $request->validate([
+            $validator = Validator::make($request->all(), [
                 'email' => 'required|string|email',
                 'password' => 'required|string',
             ]);
