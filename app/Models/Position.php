@@ -10,12 +10,11 @@ class Position extends Model
     use HasFactory;
     protected $fillable = ['position_name','directorate','division','section'];
 
-    public function Employee(){
-        return $this->hasMany(Position::class);
-    }
-
     public function Position(){
-        return $this->hasMany(Division::class);
-        return $this->hasMany(Section::class);
+        return [
+            'employee' => $this->belongsTo(Employee::class),
+            'sections' => $this->hasMany(Section::class),
+            'divisions' => $this->hasMany(Division::class),
+        ];
     }
 }
