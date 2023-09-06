@@ -8,14 +8,13 @@ use Illuminate\Database\Eloquent\Model;
 class Position extends Model
 {
     use HasFactory;
-    protected $fillable = ['position_name','directorate','division','section'];
-
-    public function Employee(){
-        return $this->hasMany(Position::class);
-    }
+    protected $fillable = ['position_name'];
 
     public function Position(){
-        return $this->hasMany(Division::class);
-        return $this->hasMany(Section::class);
+        return [
+            'employee' => $this->belongsTo(Employee::class),
+            'sections' => $this->hasMany(Section::class),
+            'divisions' => $this->hasMany(Division::class),
+        ];
     }
 }
