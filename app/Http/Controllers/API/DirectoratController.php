@@ -44,13 +44,12 @@ class DirectoratController extends Controller
         try {
             //define validation rules
             $validator = Validator::make($request->all(), [
-                'directorat_name'     => 'required|string|max:255',
+                'directorat_name'     => 'required|string|unique:directorats,directorat_name|max:255',
             ]);
 
              //check if validation fails
             if ($validator->fails()) {
                 $errors  = $validator->errors()->first();
-                // $errors  = $validator->errors();
 
                 return ResponseFormatter::error('', $errors, 400);
             }
@@ -62,7 +61,7 @@ class DirectoratController extends Controller
 
             return ResponseFormatter::success(
                 $data,
-                'Data Berhasil Dtambahkan'
+                'Data Berhasil Ditambahkan'
             );
 
         } catch (Exception $error) {
@@ -110,7 +109,7 @@ class DirectoratController extends Controller
         try {
             //define validation rules
             $validator = Validator::make($request->all(), [
-                'directorat_name'     => 'required|string|max:255',
+                'directorat_name'     => 'required|string|unique:directorats,directorat_name|max:255',
             ]);
 
             
@@ -155,10 +154,14 @@ class DirectoratController extends Controller
             //delete post
             $directorat->delete();
 
-            return ResponseFormatter::success(
-                'Data Berhasil Dihapus'
-            );
+            return ResponseFormatter::success('', 'Data Berhasil Dihapus', 200);
+
+
         } catch (Exception $error) {
+            if ($error->getCode() == '23000') {
+                return ResponseFormatter::error('','Tidak dapat menghapus, Direktorat masih digunakan tabel lain', 500);
+            }
+
             return ResponseFormatter::error([
                         'message' => 'Something went wrong',
                         'error' => $error,
