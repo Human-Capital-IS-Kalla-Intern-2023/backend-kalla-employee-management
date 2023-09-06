@@ -62,7 +62,7 @@ class DirectoratController extends Controller
 
             return ResponseFormatter::success(
                 $data,
-                'Data Berhasil Dtambahkan'
+                'Data Berhasil Ditambahkan'
             );
 
         } catch (Exception $error) {
