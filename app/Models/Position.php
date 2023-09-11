@@ -10,7 +10,7 @@ class Position extends Model
     use HasFactory;
     protected $fillable = ['position_name'];
 
-    public function Position(){
+    public function Employee(){
         return $this->belongsTo(Employee::class, 'id', 'position');
     }
 
