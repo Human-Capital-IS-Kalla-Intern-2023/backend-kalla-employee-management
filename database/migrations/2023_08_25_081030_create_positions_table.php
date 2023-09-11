@@ -20,7 +20,6 @@ return new class extends Migration
             $table->unsignedBigInteger('division');
             $table->unsignedBigInteger('section');
             $table->boolean('primary');
-            $table->unsignedBigInteger('employee_id');
             $table->timestamps();
 
             $table->foreign('job_grade')->references('id')->on('job_grades')->onDelete('restrict');
