@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('nickname');
             $table->date('hire_date');
             $table->string('company_email');
+            $table->unsignedBigInteger('primary');
             $table->unsignedBigInteger('main_position');
             $table->unsignedBigInteger('secondary_position');
             $table->timestamps();
