@@ -21,7 +21,8 @@ class PositionFactory extends Factory
             'position_name'=> $this->faker->company(),
             'directorate' => rand(1, 10),
             'division' => rand(1, 10),
-            'section' => rand(1,10)
+            'section' => rand(1, 10),
+            'primary' => rand(0, 1),
         ];
     }
 }
