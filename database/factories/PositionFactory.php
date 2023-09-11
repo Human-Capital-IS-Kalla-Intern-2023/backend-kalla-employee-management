@@ -19,6 +19,7 @@ class PositionFactory extends Factory
         return [
             'companies_id' => rand(1, 100),
             'position_name'=> $this->faker->company(),
+            'employee_id' => rand(1, 10),
             'directorate' => rand(1, 10),
             'division' => rand(1, 10),
             'section' => rand(1, 10),
