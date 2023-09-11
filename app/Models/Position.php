@@ -11,7 +11,7 @@ class Position extends Model
     protected $fillable = ['position_name'];
 
     public function Position(){
-        return $this->belongsTo(Employee::class, 'id', 'main_position');
+        return $this->belongsTo(Employee::class, 'id', 'position');
     }
 
     public function Division(){
