@@ -17,6 +17,7 @@ class PositionSeeder extends Seeder
             [
                 'companies_id' => rand(1, 10),
                 'position_name' => 'Human Resources Coordinator',
+                'employee_id' => rand(1, 10),
                 'job_grade' => rand(1, 5),
                 'directorate' => rand(1, 10),
                 'division' => rand(1, 5),
@@ -28,6 +29,7 @@ class PositionSeeder extends Seeder
             [
                 'companies_id' => rand(1, 10),
                 'position_name' => 'IT Support Specialist',
+                'employee_id' => rand(1, 10),
                 'job_grade' => rand(1, 5),
                 'directorate' => rand(1, 10),
                 'division' => rand(1, 10),
@@ -39,6 +41,7 @@ class PositionSeeder extends Seeder
             [
                 'companies_id' => rand(1, 10),
                 'position_name' => 'Research Analyst',
+                'employee_id' => rand(1, 10),
                 'job_grade' => rand(1, 5),
                 'directorate' => rand(1, 10),
                 'division' => rand(1, 10),
