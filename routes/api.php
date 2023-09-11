@@ -59,6 +59,7 @@ Route::middleware('auth:sanctum')->group(function () {
     // Job Grade
     Route::get('job-grade', [JobGradeController::class, 'index']);
     Route::post('job-grade/', [JobGradeController::class, 'store']);
+    Route::get('job-grade/search/', [JobGradeController::class, 'search']);
     Route::get('job-grade/{id}', [JobGradeController::class, 'show']);
     Route::put('job-grade/{id}', [JobGradeController::class, 'update']);
     Route::delete('job-grade/{id}', [JobGradeController::class, 'destroy']);

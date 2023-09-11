@@ -19,11 +19,12 @@ class JobGradeController extends Controller
 
         $jobGrade = JobGrade::all();
 
-
-        return ResponseFormatter::success(
-            $jobGrade,
-            'Data  berhasil diambil'
-        );
+        return response()->json([
+            'status_code' => 200,
+            'status' => 'success',
+            'message' => 'Data Job Grade berhasil diambil',
+            'data' => $jobGrade,
+        ]);
 
     }
 
@@ -31,37 +32,32 @@ class JobGradeController extends Controller
      * Store a newly created resource in storage.
      */
     public function store(Request $request) {
-        try {
 
             //define validation rules
             $validator = Validator::make($request->all(), [
-                'salary'     => 'required|integer',
+                'grade_name'     => 'required|string|unique:job_grades,grade_name|max:255',
             ]);
 
              //check if validation fails
             if ($validator->fails()) {
-                return ResponseFormatter::error([
-                    'message' => 'Validation Error',
-                    'error' => $validator->errors(),
-                ], 'Validation Error', 422);
+                return response()->json([
+                    'status_code' => 400,
+                    'status' => 'error',
+                    'message' => $validator->errors(),
+                ]);
             }
 
             $data = JobGrade::create([
-                'salary' => $request->salary,
+                'grade_name' => $request->grade_name,
             ]);
 
 
-            return ResponseFormatter::success(
-                $data,
-                'Data Berhasil Dtambahkan'
-            );
-
-        } catch (Exception $error) {
-            return ResponseFormatter::error([
-                        'message' => 'Something went wrong',
-                        'error' => $error,
-            ], 'Error', 500);
-        }
+            return response()->json([
+                'status_code' => 200,
+                'status' => 'success',
+                'message' => 'Grade berhasil ditambahkan',
+                'data' => $data,
+            ]);
     }
 
     public function show(string $id)
@@ -69,16 +65,19 @@ class JobGradeController extends Controller
         try {
 
             $jobGrade = JobGrade::findOrFail($id);
-    
-            return ResponseFormatter::success(
-                $jobGrade,
-                'Data berhasil diambil'
-            );
+            
+            return response()->json([
+                'status_code' => 200,
+                'status' => 'success',
+                'message' => 'Grade berhasil diambil',
+                'data' => $jobGrade,
+            ]);
         } catch (Exception $error) {
-            return ResponseFormatter::error([
-                        'message' => 'Something went wrong',
-                        'error' => $error,
-            ], 'Error', 500);
+            return response()->json([
+                'status_code' => 500,
+                'status' => 'error',
+                'message' => 'Data tidak ditemukan',
+            ]);
         }
     }
 
@@ -87,36 +86,41 @@ class JobGradeController extends Controller
      */
 
     public function update(Request $request, string $id) {
+
         try {
+            $item = JobGrade::findOrFail($id);
+
             //define validation rules
             $validator = Validator::make($request->all(), [
-                'salary'     => 'required|integer',
+                'grade_name'     => 'required|string|unique:job_grades,grade_name|max:255',
             ]);
 
              //check if validation fails
             if ($validator->fails()) {
-                return ResponseFormatter::error([
-                    'message' => 'Validation Error',
-                    'error' => $validator->errors(),
-                ], 'Validation Error', 422);
+                return response()->json([
+                    'status_code' => 400,
+                    'status' => 'error',
+                    'message' => $validator->errors(),
+                ]);
             }
-            
-
-            $item = JobGrade::findOrFail($id);
 
             $item->update([
-                'salary' => $request->salary,
+                'grade_name' => $request->grade_name,
             ]);
     
-            return ResponseFormatter::success(
-                $item,
-                'Data Berhasil Diubah'
-            );
+            return response()->json([
+                'status_code' => 200,
+                'status' => 'success',
+                'message' => 'Grade berhasil diubah',
+                'data' => $item,
+            ]);
+
         } catch (Exception $error) {
-            return ResponseFormatter::error([
-                        'message' => 'Something went wrong',
-                        'error' => $error,
-            ], 'Error', 500);
+            return response()->json([
+                'status_code' => 500,
+                'status' => 'error',
+                'message' => 'Data tidak ditemukan',
+            ]);
         }
         
     }
@@ -129,14 +133,51 @@ class JobGradeController extends Controller
             //delete post
             $jobGrade->delete();
 
-            return ResponseFormatter::success(
-                'Data Berhasil Dihapus'
-            );
+
+            return response()->json([
+                'status_code' => 200,
+                'status' => 'success',
+                'message' => 'Grade berhasil dihapus',
+                'data' => $jobGrade,
+            ]);
+
         } catch (Exception $error) {
-            return ResponseFormatter::error([
-                        'message' => 'Something went wrong',
-                        'error' => $error,
-            ], 'Error', 500);
+            if ($error->getCode() == '23000') {
+                return response()->json([
+                    'status_code' => 500,
+                    'status' => 'error',
+                    'message' => 'Tidak dapat menghapus, Grade masih digunakan tabel lain',
+                ]);
+            }
+
+            return response()->json([
+                'status_code' => 404,
+                'status' => 'error',
+                'message' => 'Data tidak ditemukan',
+            ]);
+
         }
+
+    }
+
+    public function search(Request $request) {
+        $search =  $request->input('grade_name');
+
+        $jobGrade = JobGrade::where('grade_name','like','%'.$search.'%')->get();
+
+        if($jobGrade->isEmpty()) {
+            return response()->json([
+                'status_code' => 200,
+                'status' => 'success',
+                'message' => 'Data tidak ditemukan',
+            ]);
+        }
+
+        return response()->json([
+            'status_code' => 200,
+            'status' => 'success',
+            'message' => 'Hasil Pencarian',
+            'data' => $jobGrade,
+        ]);
     }
 }

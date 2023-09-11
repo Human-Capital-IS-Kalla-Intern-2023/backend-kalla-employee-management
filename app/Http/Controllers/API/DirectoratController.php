@@ -85,7 +85,7 @@ class DirectoratController extends Controller
             return response()->json([
                 'status_code' => 200,
                 'status' => 'success',
-                'message' => 'Direktorat berhasil ditambahkan',
+                'message' => 'Direktorat berhasil diambil',
                 'data' => $data,
             ]);
         } catch (Exception $error) {
@@ -112,6 +112,7 @@ class DirectoratController extends Controller
     public function update(Request $request, string $id) {
 
         try {
+            $item = Directorat::findOrFail($id);
 
             //define validation rules
             $validator = Validator::make($request->all(), [
@@ -127,7 +128,6 @@ class DirectoratController extends Controller
                 ]);
             }
 
-            $item = Directorat::findOrFail($id);
 
             $item->update([
                 'directorat_name' => $request->directorat_name,
@@ -197,7 +197,7 @@ class DirectoratController extends Controller
         if($directorat->isEmpty()) {
             return response()->json([
                 'status_code' => 200,
-                'status' => 'success',
+                'status' => 'Not Found',
                 'message' => 'Data tidak ditemukan',
             ]);
         }
@@ -208,8 +208,5 @@ class DirectoratController extends Controller
             'message' => 'Hasil Pencarian',
             'data' => $directorat,
         ]);
-
-
-
     }
 }
