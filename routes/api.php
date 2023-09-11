@@ -50,6 +50,7 @@ Route::middleware('auth:sanctum')->group(function () {
     // Directorat
     Route::get('directorat', [DirectoratController::class, 'index']);
     Route::post('directorat/', [DirectoratController::class, 'store']);
+    Route::get('directorat/search', [DirectoratController::class, 'search']);
     Route::get('directorat/{id}', [DirectoratController::class, 'show']);
     Route::put('directorat/{id}', [DirectoratController::class, 'update']);
     Route::delete('directorat/{id}', [DirectoratController::class, 'destroy']);
