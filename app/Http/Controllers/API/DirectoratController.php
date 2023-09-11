@@ -180,7 +180,7 @@ class DirectoratController extends Controller
             }
 
             return response()->json([
-                'status_code' => 500,
+                'status_code' => 404,
                 'status' => 'error',
                 'message' => 'Data tidak ditemukan',
             ]);

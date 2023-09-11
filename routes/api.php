@@ -43,6 +43,7 @@ Route::middleware('auth:sanctum')->group(function () {
     // Location
     Route::get('location', [LocationController::class, 'index']);
     Route::post('location/', [LocationController::class, 'store']);
+    Route::get('location/search', [LocationController::class, 'search']);
     Route::get('location/{id}', [LocationController::class, 'show']);
     Route::put('location/{id}', [LocationController::class, 'update']);
     Route::delete('location/{id}', [LocationController::class, 'destroy']);
