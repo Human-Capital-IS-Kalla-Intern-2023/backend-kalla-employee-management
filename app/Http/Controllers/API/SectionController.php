@@ -18,7 +18,7 @@ class SectionController extends Controller
         $search = $request->get('search');
 
         $section = Section::query()->when($search, function($query) use($search){
-            $query->where('nip', 'LIKE', "%".$search."%");
+            $query->where('section_name', 'LIKE', "%".$search."%");
         })->get();
 
         return ResponseFormatter::success(
