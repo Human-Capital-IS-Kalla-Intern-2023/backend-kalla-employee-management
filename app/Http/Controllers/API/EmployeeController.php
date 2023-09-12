@@ -12,54 +12,72 @@ use Illuminate\Support\Facades\Validator;
 class EmployeeController extends Controller
 {
     public function index(Request $request) {
-        
-        $employee = Employee::with('position')->get();
+        $search = $request->get('search');
 
+        $employee = Employee::query()->when($search, function($query) use($search){
+            $query->where('fullname', 'LIKE', "%".$search."%");
+        })->get();
 
         return ResponseFormatter::success(
             $employee,
-            'Data Perusahaan berhasil diambil'
+            'Data Employee berhasil diambil'
         );
 
-       
     }
 
     public function store(Request $request) {
-        try {
-            //define validation rules
-            $validator = Validator::make($request->all(), [
-                'nip' => 'required|string',
-                'fullname' => 'required|string',
-                'nickname' => 'required|string',
-                'hire_date' => 'required|date',
-                'company_email' => 'required|email',
-            ]);
+        // try {
+        //     //define validation rules
+        //     $validator = Validator::make($request->all(), [
+        //         'nip' => 'required|string',
+        //         'fullname' => 'required|string',
+        //         'nickname' => 'required|string',
+        //         'hire_date' => 'required|date',
+        //         'company_email' => 'required|email',
+        //     ]);
 
-             //check if validation fails
-            if ($validator->fails()) {
-                return ResponseFormatter::error([
-                    'message' => 'Validation Error',
-                    'error' => $validator->errors(),
-                ], 'Validation Error', 422);
-            }
-
-
-            $data = Employee::create([
-                'nip' => $request->nip,
-            ]);
+        //      //check if validation fails
+        //     if ($validator->fails()) {
+        //         return ResponseFormatter::error([
+        //             'message' => 'Validation Error',
+        //             'error' => $validator->errors(),
+        //         ], 'Validation Error', 422);
+        //     }
 
 
-            return ResponseFormatter::success(
-                $data,
-                'Data Berhasil Ditambahkan'
-            );
+        //     $data = Employee::create([
+        //         'nip' => $request->nip,
+        //     ]);
 
-        } catch (Exception $error) {
-            return ResponseFormatter::error([
-                        'message' => 'Something went wrong',
-                        'error' => $error,
-            ], 'Error', 500);
-        }
+
+        //     return ResponseFormatter::success(
+        //         $data,
+        //         'Data Berhasil Ditambahkan'
+        //     );
+
+        // } catch (Exception $error) {
+        //     return ResponseFormatter::error([
+        //                 'message' => 'Something went wrong',
+        //                 'error' => $error,
+        //     ], 'Error', 500);
+        // }
+
+        $validation = $request->validate([
+            'nip' => ['required','string'],
+            'fullname' => ['required','string'],
+            'nickname' => ['required','string'],
+            'hire_date' => ['required','date'],
+            'company email' => ['required','email'],
+            'position' => ['required','string'],
+        ]);
+        
+
+        Employee::create([
+            'division_name' => $validation['division_name'],
+        ]);
+
+        return response()->json(['message' => 'Data berhasil disimpan']);
+
     }
 
     public function show(string $id)
