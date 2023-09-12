@@ -16,7 +16,7 @@ class PositionController extends Controller
 
         $position = Position::query()->when($search, function($query) use($search){
             $query->where('position_name', 'LIKE', "%".$search."%");
-        })->get();
+        })->with('primary')->get();
 
         return ResponseFormatter::success(
             $position,

@@ -12,15 +12,19 @@ use Illuminate\Support\Facades\Validator;
 class EmployeeController extends Controller
 {
     public function index(Request $request) {
+        // $pEmployee = Employee::findOrFail('nip')->positions()->where('primary', true)->first();
+
         $search = $request->get('search');
 
         $employee = Employee::query()->when($search, function($query) use($search){
             $query->where('fullname', 'LIKE', "%".$search."%");
-        })->get();
+        })->with('position')->get();
 
-        return ResponseFormatter::success(
-            $employee,
-            'Data Employee berhasil diambil'
+        return ResponseFormatter::success([
+            'employee' => $employee,
+            // 'primaryPosition' => $pEmployee,
+        ],
+        'Data Employee berhasil diambil'
         );
 
     }
