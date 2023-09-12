@@ -10,8 +10,8 @@ class Position extends Model
     use HasFactory;
     protected $fillable = ['position_name'];
 
-    public function Position(){
-        return $this->belongsTo(Employee::class, 'id', 'main_position');
+    public function Employee(){
+        return $this->belongsTo(Employee::class, 'id', 'position');
     }
 
     public function Division(){

@@ -18,12 +18,10 @@ return new class extends Migration
             $table->string('nickname');
             $table->date('hire_date');
             $table->string('company_email');
-            $table->unsignedBigInteger('main_position');
-            $table->unsignedBigInteger('secondary_position');
+            $table->unsignedBigInteger('position');
             $table->timestamps();
 
-            $table->foreign('main_position')->references('id')->on('positions')->onDelete('restrict');
-            $table->foreign('secondary_position')->references('id')->on('positions')->onDelete('restrict');
+            $table->foreign('position')->references('id')->on('positions')->onDelete('restrict');
 
         });
     }
