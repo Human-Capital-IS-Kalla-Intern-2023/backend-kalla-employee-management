@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('directorat_name');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 
