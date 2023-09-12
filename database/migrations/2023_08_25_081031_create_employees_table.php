@@ -20,6 +20,7 @@ return new class extends Migration
             $table->string('company_email');
             $table->unsignedBigInteger('position');
             $table->timestamps();
+            $table->softDeletes();
 
             $table->foreign('position')->references('id')->on('positions')->onDelete('restrict');
 
