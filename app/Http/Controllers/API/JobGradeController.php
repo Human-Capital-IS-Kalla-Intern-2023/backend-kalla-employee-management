@@ -17,7 +17,11 @@ class JobGradeController extends Controller
      */
     public function index(Request $request) {
 
-        $jobGrade = JobGrade::all();
+        $search = $request->get('search'); 
+
+        $jobGrade = JobGrade::query()->when($search, function($query) use($search) {
+            $query->where('grade_name','like','%'.$search.'%');
+        })->get();
 
         return response()->json([
             'status_code' => 200,
@@ -31,21 +35,25 @@ class JobGradeController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request) {
+    public function store(Request $request) 
+    {
+        $validation = $this->validate($request, [
+            'grade_name'     => 'required|string|unique:job_grades,grade_name,NULL,id,deleted_at,NULL|max:255',
+        ]);
 
-            //define validation rules
-            $validator = Validator::make($request->all(), [
-                'grade_name'     => 'required|string|unique:job_grades,grade_name|max:255',
-            ]);
+            // //define validation rules
+            // $validator = Validator::make($request->all(), [
+            //     'grade_name'     => 'required|string|unique:job_grades,grade_name,NULL,id,deleted_at,NULL|max:255',
+            // ]);
 
-             //check if validation fails
-            if ($validator->fails()) {
-                return response()->json([
-                    'status_code' => 400,
-                    'status' => 'error',
-                    'message' => $validator->errors(),
-                ]);
-            }
+            //  //check if validation fails
+            // if ($validator->fails()) {
+            //     return response()->json([
+            //         'status_code' => 400,
+            //         'status' => 'error',
+            //         'message' => $validator->errors(),
+            //     ]);
+            // }
 
             $data = JobGrade::create([
                 'grade_name' => $request->grade_name,
@@ -90,9 +98,13 @@ class JobGradeController extends Controller
         try {
             $item = JobGrade::findOrFail($id);
 
+            $validation = $this->validate($request, [
+                'grade_name'     => 'required|string|unique:job_grades,grade_name,NULL,id,deleted_at,NULL|max:255',
+            ]);
+
             //define validation rules
             $validator = Validator::make($request->all(), [
-                'grade_name'     => 'required|string|unique:job_grades,grade_name|max:255',
+                'grade_name'     => 'required|string|unique:job_grades,grade_name,NULL,id,deleted_at,NULL|max:255',
             ]);
 
              //check if validation fails
@@ -160,24 +172,4 @@ class JobGradeController extends Controller
 
     }
 
-    public function search(Request $request) {
-        $search =  $request->input('grade_name');
-
-        $jobGrade = JobGrade::where('grade_name','like','%'.$search.'%')->get();
-
-        if($jobGrade->isEmpty()) {
-            return response()->json([
-                'status_code' => 200,
-                'status' => 'success',
-                'message' => 'Data tidak ditemukan',
-            ]);
-        }
-
-        return response()->json([
-            'status_code' => 200,
-            'status' => 'success',
-            'message' => 'Hasil Pencarian',
-            'data' => $jobGrade,
-        ]);
-    }
 }

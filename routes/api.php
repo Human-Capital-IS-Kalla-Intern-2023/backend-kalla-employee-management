@@ -43,7 +43,6 @@ Route::middleware('auth:sanctum')->group(function () {
     // Location
     Route::get('location', [LocationController::class, 'index']);
     Route::post('location/', [LocationController::class, 'store']);
-    Route::get('location/search', [LocationController::class, 'search']);
     Route::get('location/{id}', [LocationController::class, 'show']);
     Route::put('location/{id}', [LocationController::class, 'update']);
     Route::delete('location/{id}', [LocationController::class, 'destroy']);
@@ -51,7 +50,6 @@ Route::middleware('auth:sanctum')->group(function () {
     // Directorat
     Route::get('directorat', [DirectoratController::class, 'index']);
     Route::post('directorat/', [DirectoratController::class, 'store']);
-    Route::get('directorat/search', [DirectoratController::class, 'search']);
     Route::get('directorat/{id}', [DirectoratController::class, 'show']);
     Route::put('directorat/{id}', [DirectoratController::class, 'update']);
     Route::delete('directorat/{id}', [DirectoratController::class, 'destroy']);
@@ -59,7 +57,6 @@ Route::middleware('auth:sanctum')->group(function () {
     // Job Grade
     Route::get('job-grade', [JobGradeController::class, 'index']);
     Route::post('job-grade/', [JobGradeController::class, 'store']);
-    Route::get('job-grade/search/', [JobGradeController::class, 'search']);
     Route::get('job-grade/{id}', [JobGradeController::class, 'show']);
     Route::put('job-grade/{id}', [JobGradeController::class, 'update']);
     Route::delete('job-grade/{id}', [JobGradeController::class, 'destroy']);

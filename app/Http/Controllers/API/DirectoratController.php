@@ -18,13 +18,17 @@ class DirectoratController extends Controller
     public function index(Request $request) {
         
 
-        $location = Directorat::all();
+        $search = $request->get('search');
+
+        $directorat = Directorat::query()->when($search, function($query) use($search) {
+            $query->where('directorat_name','like','%'.$search.'%');
+        })->get();
 
         return response()->json([
             'status_code' => 200,
             'status' => 'success',
             'message' => 'Data Directorat berhasil diambil',
-            'data' => $location,
+            'data' => $directorat,
         ]);
 
     }
@@ -41,24 +45,9 @@ class DirectoratController extends Controller
      * Store a newly created resource in storage.
      */
     public function store(Request $request) {
-        // $validation = $this->validate($request, [
-        //     'directorat_name'     => 'required|string|unique:directorats,directorat_name|max:255',
-        // ]);
-        
-
-        //define validation rules
-        $validator = Validator::make($request->all(), [
-            'directorat_name'     => 'required|string|unique:directorats,directorat_name|max:255',
+        $validation = $this->validate($request, [
+            'directorat_name'     => 'required|string|unique:directorats,directorat_name,NULL,id,deleted_at,NULL|max:255',
         ]);
-
-        //check if validation fails
-        if ($validator->fails()) {
-            return response()->json([
-                'status_code' => 400,
-                'status' => 'error',
-                'message' => $validator->errors(),
-            ]);
-        }
 
         $data = Directorat::create([
             'directorat_name' => $request->directorat_name,
@@ -114,19 +103,23 @@ class DirectoratController extends Controller
         try {
             $item = Directorat::findOrFail($id);
 
-            //define validation rules
-            $validator = Validator::make($request->all(), [
-                'directorat_name'     => 'required|string|unique:directorats,directorat_name|max:255',
+            $validation = $this->validate($request, [
+                'directorat_name'     => 'required|string|unique:directorats,directorat_name,NULL,id,deleted_at,NULL|max:255',
             ]);
+            
+            //define validation rules
+            // $validator = Validator::make($request->all(), [
+            //     'directorat_name'     => 'required|string|unique:directorats,directorat_name,NULL,id,deleted_at,NULL|max:255',
+            // ]);
 
-            //check if validation fails
-            if ($validator->fails()) {
-                return response()->json([
-                    'status_code' => 400,
-                    'status' => 'error',
-                    'message' => $validator->errors(),
-                ]);
-            }
+            // //check if validation fails
+            // if ($validator->fails()) {
+            //     return response()->json([
+            //         'status_code' => 400,
+            //         'status' => 'error',
+            //         'message' => $validator->errors(),
+            //     ]);
+            // }
 
 
             $item->update([
@@ -188,25 +181,4 @@ class DirectoratController extends Controller
         }
     }
 
-
-    public function search(Request $request) {
-        $search =  $request->input('directorat_name');
-
-        $directorat = Directorat::where('directorat_name','like','%'.$search.'%')->get();
-
-        if($directorat->isEmpty()) {
-            return response()->json([
-                'status_code' => 200,
-                'status' => 'Not Found',
-                'message' => 'Data tidak ditemukan',
-            ]);
-        }
-
-        return response()->json([
-            'status_code' => 200,
-            'status' => 'success',
-            'message' => 'Hasil Pencarian',
-            'data' => $directorat,
-        ]);
-    }
 }

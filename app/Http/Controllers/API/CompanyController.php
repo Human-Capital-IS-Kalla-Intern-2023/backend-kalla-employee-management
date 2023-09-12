@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API;
 use App\Helpers\ResponseFormatter;
 use App\Http\Controllers\Controller;
 use App\Models\Company;
+use App\Models\Location;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -14,50 +15,56 @@ class CompanyController extends Controller
 {
     public function index(Request $request) {
 
-        $company = Company::with('location')->get();
+        $search = $request->get('search'); 
 
+        $company = Company::query()->when($search, function($query) use($search) {
+            $query->where('company_name','like','%'.$search.'%');
+        })->with('location')->get();
 
-        return ResponseFormatter::success(
-            $company,
-            'Data Perusahaan berhasil diambil'
-        );
-
-       
+        return response()->json([
+            'status_code' => 200,
+            'status' => 'success',
+            'message' => 'Data Perusahaan berhasil diambil',
+            'data' => $company,
+        ]);
     }
 
     public function store(Request $request) {
-        try {
-             //define validation rules
-            $validator = Validator::make($request->all(), [
-                'company_name' => ['required','string','max:255'],
-                'locations_id' => ['required','exists:locations,id'],
-            ]);
 
-             //check if validation fails
-            if ($validator->fails()) {
-                return ResponseFormatter::error([
-                    'message' => 'Validation Error',
-                    'error' => $validator->errors(),
-                ], 'Validation Error', 422);
-            }
+        
 
-            $data = Company::create([
-                'company_name' => $request->company_name,
-                'locations_id' => $request->locations_id,
-            ]);
+        // define validation rules
+        // $validator = Validator::make($request->all(), [
+        //     'company_name' => ['required','string','unique:companies,company_name,NULL,id,deleted_at,NULL','max:255'],
+        //     'locations_id' => ['required','exists:locations,id,deleted_at,NULL'],
+        // ]);
 
 
-            return ResponseFormatter::success(
-                $data,
-                'Data Berhasil Ditambah'
-            );
+        //     //check if validation fails
+        // if ($validator->fails()) {
+        //     return response()->json([
+        //         'status_code' => 400,
+        //         'status' => 'error',
+        //         'message' => $validator->errors(),
+        //     ]);
+        // }
 
-        } catch (Exception $error) {
-            return ResponseFormatter::error([
-                        'message' => 'Something went wrong',
-                        'error' => $error,
-            ], 'Error', 500);
-        }
+        $validation = $this->validate($request, [
+            'company_name' => ['required','string','unique:companies,company_name,NULL,id,deleted_at,NULL','max:255'],
+            'locations_id' => ['required','exists:locations,id,deleted_at,NULL'],
+        ]);
+        
+        $data = Company::create([
+            'company_name' => $request->company_name,
+            'locations_id' => $request->locations_id,
+        ]);
+
+        return response()->json([
+            'status_code' => 200,
+            'status' => 'success',
+            'message' => 'Perusahaan baru berhasil ditambahkan',
+            'data' => $data,
+        ]);
     }
 
     public function show(string $id)
@@ -66,52 +73,65 @@ class CompanyController extends Controller
 
             $company = Company::with('location')->findOrFail($id);
     
-            return ResponseFormatter::success(
-                $company,
-                'Data berhasil diambil'
-            );
+            return response()->json([
+                'status_code' => 200,
+                'status' => 'success',
+                'message' => 'Data Perusahaan berhasil diambil',
+                'data' => $company,
+            ]);
         } catch (Exception $error) {
-            return ResponseFormatter::error([
-                        'message' => 'Something went wrong',
-                        'error' => $error,
-            ], 'Error', 500);
+            return response()->json([
+                'status_code' => 500,
+                'status' => 'error',
+                'message' => 'Data tidak ditemukan',
+            ]);
         }
     }
 
     public function update(Request $request, $id) {
         try {
-             //define validation rules
-             $validator = Validator::make($request->all(), [
-                'company_name' => ['required','string','max:255'],
-                'locations_id' => ['required','exists:locations,id'],
+            $item = Company::findOrFail($id);
+
+            $validation = $this->validate($request, [
+                'company_name' => ['required','string','unique:companies,company_name,NULL,id,deleted_at,NULL','max:255'],
+                'locations_id' => ['required','exists:locations,id,deleted_at,NULL'],
             ]);
 
-             //check if validation fails
-            if ($validator->fails()) {
-                return ResponseFormatter::error([
-                    'message' => 'Validation Error',
-                    'error' => $validator->errors(),
-                ], 'Validation Error', 422);
-            }
 
-            $item = Company::findOrFail($id);
+            //  //define validation rules
+            // $validator = Validator::make($request->all(), [
+            //     'company_name' => ['required','string','unique:companies,company_name,NULL,id,deleted_at,NULL','max:255'],
+            //     'locations_id' => ['required','exists:locations,id,deleted_at,NULL'],
+            // ]);
+
+            //  //check if validation fails
+            // if ($validator->fails()) {
+            //     return response()->json([
+            //         'status_code' => 400,
+            //         'status' => 'error',
+            //         'message' => $validator->errors(),
+            //     ]);
+            // }
     
             $item->update([
                 'company_name' => $request->company_name,
                 'locations_id' => $request->locations_id,
             ]);
     
-            return ResponseFormatter::success(
-                $item,
-                'Data Berhasil Diubah'
-            );
+            return response()->json([
+                'status_code' => 200,
+                'status' => 'success',
+                'message' => 'Perusahaan berhasil diubah',
+                'data' => $item,
+            ]);
+
         } catch (Exception $error) {
-            return ResponseFormatter::error([
-                        'message' => 'Something went wrong',
-                        'error' => $error,
-            ], 'Error', 500);
+            return response()->json([
+                'status_code' => 500,
+                'status' => 'error',
+                'message' => 'Data tidak ditemukan',
+            ]);
         }
-        
     }
 
 
@@ -123,14 +143,28 @@ class CompanyController extends Controller
             //delete post
             $company->delete();
 
-            return ResponseFormatter::success(
-                'Data Berhasil Dihapus'
-            );
+            return response()->json([
+                'status_code' => 200,
+                'status' => 'success',
+                'message' => 'Perusahaan berhasil dihapus',
+                'data' => $company,
+            ]);
+
         } catch (Exception $error) {
-            return ResponseFormatter::error([
-                        'message' => 'Something went wrong',
-                        'error' => $error,
-            ], 'Error', 500);
+            if ($error->getCode() == '23000') {
+                return response()->json([
+                    'status_code' => 500,
+                    'status' => 'error',
+                    'message' => 'Tidak dapat menghapus, Perusahaan masih digunakan tabel lain',
+                ]);
+            }
+
+            return response()->json([
+                'status_code' => 404,
+                'status' => 'error',
+                'message' => 'Data tidak ditemukan',
+            ]);
+
         }
     }
 

@@ -12,8 +12,13 @@ use Illuminate\Http\Request;
 class LocationController extends Controller
 {
     public function index(Request $request) {
+
+        $search = $request->get('search');
+
+        $location = Location::query()->when($search, function($query) use($search) {
+            $query->where('location_name','like','%'.$search.'%');
+        })->get();
         
-        $location = Location::all();
 
         return response()->json([
             'status_code' => 200,
@@ -25,19 +30,24 @@ class LocationController extends Controller
     }
 
     public function store(Request $request) {
-        //define validation rules
-        $validator = Validator::make($request->all(), [
-            'location_name'     => 'required|string|unique:locations,location_name|max:255',
+
+        $validation = $this->validate($request, [
+            'location_name'     => 'required|string|unique:locations,location_name,NULL,id,deleted_at,NULL|max:255',
         ]);
 
-        //check if validation fails
-        if ($validator->fails()) {
-            return response()->json([
-                'status_code' => 400,
-                'status' => 'error',
-                'message' => $validator->errors(),
-            ]);
-        }
+        // //define validation rules
+        // $validator = Validator::make($request->all(), [
+        //     'location_name'     => 'required|string|unique:locations,location_name,NULL,id,deleted_at,NULL|max:255',
+        // ]);
+
+        // //check if validation fails
+        // if ($validator->fails()) {
+        //     return response()->json([
+        //         'status_code' => 400,
+        //         'status' => 'error',
+        //         'message' => $validator->errors(),
+        //     ]);
+        // }
 
         $data = Location::create([
             'location_name' => $request->location_name,
@@ -77,20 +87,24 @@ class LocationController extends Controller
         try {
 
             $item = Location::findOrFail($id);
+
+            $validation = $this->validate($request, [
+                'location_name'     => 'required|string|unique:locations,location_name,NULL,id,deleted_at,NULL|max:255',
+            ]);
             
             //define validation rules
-            $validator = Validator::make($request->all(), [
-                'location_name'     => 'required|string|unique:locations,location_name|max:255',
-            ]);
+            // $validator = Validator::make($request->all(), [
+            //     'location_name'     => 'required|string|unique:locations,location_name,NULL,id,deleted_at,NULL|max:255',
+            // ]);
 
-             //check if validation fails
-            if ($validator->fails()) {
-                return response()->json([
-                    'status_code' => 400,
-                    'status' => 'error',
-                    'message' => $validator->errors(),
-                ]);
-            }
+            //  //check if validation fails
+            // if ($validator->fails()) {
+            //     return response()->json([
+            //         'status_code' => 400,
+            //         'status' => 'error',
+            //         'message' => $validator->errors(),
+            //     ]);
+            // }
     
             
             $item->update([
@@ -147,27 +161,6 @@ class LocationController extends Controller
         }
     }
 
-    public function search(Request $request) {
-        $search =  $request->input('location_name');
-
-        $location = Location::where('location_name','like','%'.$search.'%')->get();
-
-        if($location->isEmpty()) {
-            return response()->json([
-                'status_code' => 200,
-                'status' => 'not found',
-                'message' => 'Data tidak ditemukan',
-            ]);
-        }
-
-        return response()->json([
-            'status_code' => 200,
-            'status' => 'success',
-            'message' => 'Hasil Pencarian',
-            'data' => $location,
-        ]);
-
-    }
 
 
 }
