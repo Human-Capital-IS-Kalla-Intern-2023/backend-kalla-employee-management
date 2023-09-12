@@ -23,7 +23,7 @@ class PositionFactory extends Factory
             'directorate' => rand(1, 10),
             'division' => rand(1, 10),
             'section' => rand(1, 10),
-            'primary' => rand(0, 1),
+            'primary' => $this->faker->boolean(),
         ];
     }
 }
