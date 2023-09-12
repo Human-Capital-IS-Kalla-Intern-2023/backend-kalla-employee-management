@@ -25,7 +25,7 @@ class LocationController extends Controller
             'status' => 'success',
             'message' => 'Data lokasi berhasil diambil',
             'data' => $location,
-        ]);
+        ], 200);
 
     }
 
@@ -58,7 +58,7 @@ class LocationController extends Controller
             'status' => 'success',
             'message' => 'Lokasi berhasil ditambahkan',
             'data' => $data,
-        ]);
+        ], 200);
         
     }
 
@@ -73,25 +73,26 @@ class LocationController extends Controller
                 'status' => 'success',
                 'message' => 'Lokasi berhasil diambil',
                 'data' => $location,
-            ]);
+            ], 200);
         } catch (Exception $error) {
             return response()->json([
                 'status_code' => 500,
                 'status' => 'error',
                 'message' => 'Data tidak ditemukan',
-            ]);
+            ], 500);
         }
     }
 
-    public function update(Request $request, $id) {
+    public function update(Request $request, string $id) {
+
+        $validation = $this->validate($request, [
+            'location_name'     => 'required|string|unique:locations,location_name,NULL,id,deleted_at,NULL|max:255',
+        ]);
+
         try {
 
             $item = Location::findOrFail($id);
-
-            $validation = $this->validate($request, [
-                'location_name'     => 'required|string|unique:locations,location_name,NULL,id,deleted_at,NULL|max:255',
-            ]);
-            
+        
             //define validation rules
             // $validator = Validator::make($request->all(), [
             //     'location_name'     => 'required|string|unique:locations,location_name,NULL,id,deleted_at,NULL|max:255',
@@ -116,13 +117,13 @@ class LocationController extends Controller
                 'status' => 'success',
                 'message' => 'Lokasi berhasil diubah',
                 'data' => $item,
-            ]);
+            ], 200);
         } catch (Exception $error) {
             return response()->json([
                 'status_code' => 500,
                 'status' => 'error',
                 'message' => 'Data tidak ditemukan',
-            ]);
+            ], 500);
         }
     }
 
@@ -139,7 +140,7 @@ class LocationController extends Controller
                 'status' => 'success',
                 'message' => 'Lokasi berhasil dihapus',
                 'data' => $location,
-            ]);
+            ], 200);
 
 
         } catch (Exception $error) {
@@ -149,14 +150,14 @@ class LocationController extends Controller
                     'status_code' => 500, 
                     'status' => 'error',
                     'message' => 'Tidak dapat menghapus, Lokasi masih digunakan tabel lain',
-                ]);
+                ], 500);
             }
 
             return response()->json([
                 'status_code' => 404,
                 'status' => 'error',
                 'message' => 'ID Tidak ditemukan',
-            ]);
+            ], 404);
         
         }
     }

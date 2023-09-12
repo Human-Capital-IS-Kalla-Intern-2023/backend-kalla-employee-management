@@ -29,7 +29,7 @@ class DirectoratController extends Controller
             'status' => 'success',
             'message' => 'Data Directorat berhasil diambil',
             'data' => $directorat,
-        ]);
+        ], 200);
 
     }
 
@@ -58,7 +58,7 @@ class DirectoratController extends Controller
             'status' => 'success',
             'message' => 'Direktorat berhasil ditambahkan',
             'data' => $data,
-        ]);
+        ], 200);
 
     }
 
@@ -76,13 +76,13 @@ class DirectoratController extends Controller
                 'status' => 'success',
                 'message' => 'Direktorat berhasil diambil',
                 'data' => $data,
-            ]);
+            ],200 );
         } catch (Exception $error) {
             return response()->json([
-                'status_code' => 500,
+                'status_code' => 404,
                 'status' => 'error',
                 'message' => 'Data tidak ditemukan',
-            ]);
+            ], 404);
         }
     }
 
@@ -100,13 +100,14 @@ class DirectoratController extends Controller
 
     public function update(Request $request, string $id) {
 
+        $validation = $this->validate($request, [
+            'directorat_name'     => 'required|string|unique:directorats,directorat_name,NULL,id,deleted_at,NULL|max:255',
+        ]);
+
         try {
             $item = Directorat::findOrFail($id);
 
-            $validation = $this->validate($request, [
-                'directorat_name'     => 'required|string|unique:directorats,directorat_name,NULL,id,deleted_at,NULL|max:255',
-            ]);
-            
+
             //define validation rules
             // $validator = Validator::make($request->all(), [
             //     'directorat_name'     => 'required|string|unique:directorats,directorat_name,NULL,id,deleted_at,NULL|max:255',
@@ -131,14 +132,14 @@ class DirectoratController extends Controller
                 'status' => 'success',
                 'message' => 'Direktorat berhasil diubah',
                 'data' => $item,
-            ]);
+            ], 200);
 
         } catch (Exception $error) {
             return response()->json([
-                'status_code' => 500,
+                'status_code' => 404,
                 'status' => 'error',
                 'message' => 'Data tidak ditemukan',
-            ]);
+            ], 404);
         }
         
     }
@@ -161,7 +162,7 @@ class DirectoratController extends Controller
                 'status' => 'success',
                 'message' => 'Direktorat berhasil dihapus',
                 'data' => $directorat,
-            ]);
+            ], 200);
 
         } catch (Exception $error) {
             if ($error->getCode() == '23000') {
@@ -169,14 +170,14 @@ class DirectoratController extends Controller
                     'status_code' => 500,
                     'status' => 'error',
                     'message' => 'Tidak dapat menghapus, Direktorat masih digunakan tabel lain',
-                ]);
+                ], 500);
             }
 
             return response()->json([
                 'status_code' => 404,
                 'status' => 'error',
                 'message' => 'Data tidak ditemukan',
-            ]);
+            ], 404);
 
         }
     }

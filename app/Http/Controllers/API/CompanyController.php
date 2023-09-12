@@ -53,7 +53,7 @@ class CompanyController extends Controller
             'company_name' => ['required','string','unique:companies,company_name,NULL,id,deleted_at,NULL','max:255'],
             'locations_id' => ['required','exists:locations,id,deleted_at,NULL'],
         ]);
-        
+
         $data = Company::create([
             'company_name' => $request->company_name,
             'locations_id' => $request->locations_id,
@@ -64,7 +64,7 @@ class CompanyController extends Controller
             'status' => 'success',
             'message' => 'Perusahaan baru berhasil ditambahkan',
             'data' => $data,
-        ]);
+        ], 200);
     }
 
     public function show(string $id)
@@ -81,22 +81,24 @@ class CompanyController extends Controller
             ]);
         } catch (Exception $error) {
             return response()->json([
-                'status_code' => 500,
+                'status_code' => 404,
                 'status' => 'error',
                 'message' => 'Data tidak ditemukan',
-            ]);
+            ], 404);
         }
     }
 
     public function update(Request $request, $id) {
+        $validation = $this->validate($request, [
+            'company_name' => ['required','string','unique:companies,company_name,NULL,id,deleted_at,NULL','max:255'],
+            'locations_id' => ['required','exists:locations,id,deleted_at,NULL'],
+        ]);
+
+        
         try {
             $item = Company::findOrFail($id);
 
-            $validation = $this->validate($request, [
-                'company_name' => ['required','string','unique:companies,company_name,NULL,id,deleted_at,NULL','max:255'],
-                'locations_id' => ['required','exists:locations,id,deleted_at,NULL'],
-            ]);
-
+            
 
             //  //define validation rules
             // $validator = Validator::make($request->all(), [
@@ -123,14 +125,14 @@ class CompanyController extends Controller
                 'status' => 'success',
                 'message' => 'Perusahaan berhasil diubah',
                 'data' => $item,
-            ]);
+            ], 200);
 
         } catch (Exception $error) {
             return response()->json([
-                'status_code' => 500,
+                'status_code' => 404,
                 'status' => 'error',
                 'message' => 'Data tidak ditemukan',
-            ]);
+            ], 404);
         }
     }
 

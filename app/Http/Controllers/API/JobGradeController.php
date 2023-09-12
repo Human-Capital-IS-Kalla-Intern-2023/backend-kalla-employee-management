@@ -28,7 +28,7 @@ class JobGradeController extends Controller
             'status' => 'success',
             'message' => 'Data Job Grade berhasil diambil',
             'data' => $jobGrade,
-        ]);
+        ], 200);
 
     }
 
@@ -65,7 +65,7 @@ class JobGradeController extends Controller
                 'status' => 'success',
                 'message' => 'Grade berhasil ditambahkan',
                 'data' => $data,
-            ]);
+            ], 200);
     }
 
     public function show(string $id)
@@ -79,13 +79,13 @@ class JobGradeController extends Controller
                 'status' => 'success',
                 'message' => 'Grade berhasil diambil',
                 'data' => $jobGrade,
-            ]);
+            ], 200);
         } catch (Exception $error) {
             return response()->json([
                 'status_code' => 500,
                 'status' => 'error',
                 'message' => 'Data tidak ditemukan',
-            ]);
+            ], 500);
         }
     }
 
@@ -95,26 +95,27 @@ class JobGradeController extends Controller
 
     public function update(Request $request, string $id) {
 
+        $validation = $this->validate($request, [
+            'grade_name'     => 'required|string|unique:job_grades,grade_name,NULL,id,deleted_at,NULL|max:255',
+        ]);
+
         try {
             $item = JobGrade::findOrFail($id);
 
-            $validation = $this->validate($request, [
-                'grade_name'     => 'required|string|unique:job_grades,grade_name,NULL,id,deleted_at,NULL|max:255',
-            ]);
 
-            //define validation rules
-            $validator = Validator::make($request->all(), [
-                'grade_name'     => 'required|string|unique:job_grades,grade_name,NULL,id,deleted_at,NULL|max:255',
-            ]);
+            // //define validation rules
+            // $validator = Validator::make($request->all(), [
+            //     'grade_name'     => 'required|string|unique:job_grades,grade_name,NULL,id,deleted_at,NULL|max:255',
+            // ]);
 
-             //check if validation fails
-            if ($validator->fails()) {
-                return response()->json([
-                    'status_code' => 400,
-                    'status' => 'error',
-                    'message' => $validator->errors(),
-                ]);
-            }
+            //  //check if validation fails
+            // if ($validator->fails()) {
+            //     return response()->json([
+            //         'status_code' => 400,
+            //         'status' => 'error',
+            //         'message' => $validator->errors(),
+            //     ]);
+            // }
 
             $item->update([
                 'grade_name' => $request->grade_name,
@@ -125,14 +126,14 @@ class JobGradeController extends Controller
                 'status' => 'success',
                 'message' => 'Grade berhasil diubah',
                 'data' => $item,
-            ]);
+            ], 200);
 
         } catch (Exception $error) {
             return response()->json([
-                'status_code' => 500,
+                'status_code' => 404,
                 'status' => 'error',
                 'message' => 'Data tidak ditemukan',
-            ]);
+            ], 404);
         }
         
     }
@@ -151,7 +152,7 @@ class JobGradeController extends Controller
                 'status' => 'success',
                 'message' => 'Grade berhasil dihapus',
                 'data' => $jobGrade,
-            ]);
+            ], 200);
 
         } catch (Exception $error) {
             if ($error->getCode() == '23000') {
@@ -159,14 +160,14 @@ class JobGradeController extends Controller
                     'status_code' => 500,
                     'status' => 'error',
                     'message' => 'Tidak dapat menghapus, Grade masih digunakan tabel lain',
-                ]);
+                ], 500);
             }
 
             return response()->json([
                 'status_code' => 404,
                 'status' => 'error',
                 'message' => 'Data tidak ditemukan',
-            ]);
+            ], 404);
 
         }
 
