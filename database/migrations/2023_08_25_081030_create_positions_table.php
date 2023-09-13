@@ -15,11 +15,14 @@ return new class extends Migration
             $table->id();
             $table->string('companies_id');
             $table->string('position_name');
+            $table->unsignedBigInteger('employee_id');
             $table->unsignedBigInteger('job_grade');
             $table->unsignedBigInteger('directorate');
             $table->unsignedBigInteger('division');
             $table->unsignedBigInteger('section');
+            $table->boolean('primary');
             $table->timestamps();
+            $table->softDeletes();
 
             $table->foreign('job_grade')->references('id')->on('job_grades')->onDelete('restrict');
             $table->foreign('directorate')->references('id')->on('directorats')->onDelete('restrict');

@@ -18,15 +18,19 @@ class DirectoratController extends Controller
     public function index(Request $request) {
         
 
-        $location = Directorat::all();
+        $search = $request->get('search');
 
+        $directorat = Directorat::query()->when($search, function($query) use($search) {
+            $query->where('directorat_name','like','%'.$search.'%');
+        })->get();
 
-        return ResponseFormatter::success(
-            $location,
-            'Data Directorat berhasil diambil'
-        );
+        return response()->json([
+            'status_code' => 200,
+            'status' => 'success',
+            'message' => 'Data Directorat berhasil diambil',
+            'data' => $directorat,
+        ], 200);
 
-       
     }
 
     /**
@@ -41,36 +45,21 @@ class DirectoratController extends Controller
      * Store a newly created resource in storage.
      */
     public function store(Request $request) {
-        try {
-            //define validation rules
-            $validator = Validator::make($request->all(), [
-                'directorat_name'     => 'required|string|max:255',
-            ]);
+        $validation = $this->validate($request, [
+            'directorat_name'     => 'required|string|unique:directorats,directorat_name,NULL,id,deleted_at,NULL|max:255',
+        ]);
 
-             //check if validation fails
-            if ($validator->fails()) {
-                $errors  = $validator->errors()->first();
-                // $errors  = $validator->errors();
+        $data = Directorat::create([
+            'directorat_name' => $request->directorat_name,
+        ]);
 
-                return ResponseFormatter::error('', $errors, 400);
-            }
+        return response()->json([
+            'status_code' => 200,
+            'status' => 'success',
+            'message' => 'Direktorat berhasil ditambahkan',
+            'data' => $data,
+        ], 200);
 
-            $data = Directorat::create([
-                'directorat_name' => $request->directorat_name,
-            ]);
-
-
-            return ResponseFormatter::success(
-                $data,
-                'Data Berhasil Dtambahkan'
-            );
-
-        } catch (Exception $error) {
-            return ResponseFormatter::error([
-                        'message' => 'Something went wrong',
-                        'error' => $error,
-            ], 'Error', 500);
-        }
     }
 
     /**
@@ -82,15 +71,18 @@ class DirectoratController extends Controller
 
             $data = Directorat::findOrFail($id);
     
-            return ResponseFormatter::success(
-                $data,
-                'Data berhasil diambil'
-            );
+            return response()->json([
+                'status_code' => 200,
+                'status' => 'success',
+                'message' => 'Direktorat berhasil diambil',
+                'data' => $data,
+            ],200 );
         } catch (Exception $error) {
-            return ResponseFormatter::error([
-                        'message' => 'Something went wrong',
-                        'error' => $error,
-            ], 'Error', 500);
+            return response()->json([
+                'status_code' => 404,
+                'status' => 'error',
+                'message' => 'Data tidak ditemukan',
+            ], 404);
         }
     }
 
@@ -107,37 +99,47 @@ class DirectoratController extends Controller
      */
 
     public function update(Request $request, string $id) {
+
+        $validation = $this->validate($request, [
+            'directorat_name'     => 'required|string|unique:directorats,directorat_name,NULL,id,deleted_at,NULL|max:255',
+        ]);
+
         try {
-            //define validation rules
-            $validator = Validator::make($request->all(), [
-                'directorat_name'     => 'required|string|max:255',
-            ]);
-
-            
-             //check if validation fails
-            if ($validator->fails()) {
-                $errors  = $validator->errors()->first();
-                // $errors  = $validator->errors();
-
-                return ResponseFormatter::error('', $errors,400);
-
-            }
-    
             $item = Directorat::findOrFail($id);
-    
+
+
+            //define validation rules
+            // $validator = Validator::make($request->all(), [
+            //     'directorat_name'     => 'required|string|unique:directorats,directorat_name,NULL,id,deleted_at,NULL|max:255',
+            // ]);
+
+            // //check if validation fails
+            // if ($validator->fails()) {
+            //     return response()->json([
+            //         'status_code' => 400,
+            //         'status' => 'error',
+            //         'message' => $validator->errors(),
+            //     ]);
+            // }
+
+
             $item->update([
                 'directorat_name' => $request->directorat_name,
             ]);
-    
-            return ResponseFormatter::success(
-                $item,
-                'Data Berhasil Diubah'
-            );
+
+            return response()->json([
+                'status_code' => 200,
+                'status' => 'success',
+                'message' => 'Direktorat berhasil diubah',
+                'data' => $item,
+            ], 200);
+
         } catch (Exception $error) {
-            return ResponseFormatter::error([
-                        'message' => 'Something went wrong',
-                        'error' => $error,
-            ], 'Error', 500);
+            return response()->json([
+                'status_code' => 404,
+                'status' => 'error',
+                'message' => 'Data tidak ditemukan',
+            ], 404);
         }
         
     }
@@ -148,21 +150,36 @@ class DirectoratController extends Controller
     public function destroy(string $id)
     {
         
-
         try {
             $directorat = Directorat::findOrFail($id);
 
             //delete post
             $directorat->delete();
 
-            return ResponseFormatter::success(
-                'Data Berhasil Dihapus'
-            );
+            // return ResponseFormatter::success('', 'Data Berhasil Dihapus', 200);
+            return response()->json([
+                'status_code' => 200,
+                'status' => 'success',
+                'message' => 'Direktorat berhasil dihapus',
+                'data' => $directorat,
+            ], 200);
+
         } catch (Exception $error) {
-            return ResponseFormatter::error([
-                        'message' => 'Something went wrong',
-                        'error' => $error,
-            ], 'Error', 500);
+            if ($error->getCode() == '23000') {
+                return response()->json([
+                    'status_code' => 500,
+                    'status' => 'error',
+                    'message' => 'Tidak dapat menghapus, Direktorat masih digunakan tabel lain',
+                ], 500);
+            }
+
+            return response()->json([
+                'status_code' => 404,
+                'status' => 'error',
+                'message' => 'Data tidak ditemukan',
+            ], 404);
+
         }
     }
+
 }

@@ -1,76 +1,93 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\API;
 
 use App\Helpers\ResponseFormatter;
 use App\Http\Controllers\Controller;
 use App\Models\Employee;
-use Illuminate\Support\Facades\Validator;
-use Exception;
 use Illuminate\Http\Request;
+use Exception;
+use Illuminate\Support\Facades\Validator;
 
 class EmployeeController extends Controller
 {
     public function index(Request $request) {
-        $employee =  Employee::all();
+        // $pEmployee = Employee::findOrFail('nip')->positions()->where('primary', true)->first();
 
-        return ResponseFormatter::success(
-            $employee,
-            'Data Perusahaan berhasil diambil'
+        $search = $request->get('search');
+
+        $employee = Employee::query()->when($search, function($query) use($search){
+            $query->where('fullname', 'LIKE', "%".$search."%");
+        })->with('position')->get();
+
+        return ResponseFormatter::success([
+            'employee' => $employee,
+            // 'primaryPosition' => $pEmployee,
+        ],
+        'Data Employee berhasil diambil'
         );
+
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request) {
-        try {
-            $request->validate([
-                'fullname' => ['required','string','max:255'],
-                'nickname' => ['required','string','max:255'],
-                'hire_date' => ['required','date_format:d-m-Y'],
-                'company_email' => ['required', 'email', 'max:255'],
-                'main_position' => ['required', 'string', 'max:255'],
-                'secondary_position' => ['required', 'string', 'max:255'],
-            ]);
+        // try {
+        //     //define validation rules
+        //     $validator = Validator::make($request->all(), [
+        //         'nip' => 'required|string',
+        //         'fullname' => 'required|string',
+        //         'nickname' => 'required|string',
+        //         'hire_date' => 'required|date',
+        //         'company_email' => 'required|email',
+        //     ]);
 
-            $employee = Employee::create([
-                'fullname' => $request->fullname,
-                'nickname' => $request->nickname,
-                'hire_date' => $request->hire_date,
-                'company_email' => $request->company_email,
-                'main_position' => $request->main_position,
-                'secondary_position' => $request->secondary_position,
-            ]);
+        //      //check if validation fails
+        //     if ($validator->fails()) {
+        //         return ResponseFormatter::error([
+        //             'message' => 'Validation Error',
+        //             'error' => $validator->errors(),
+        //         ], 'Validation Error', 422);
+        //     }
 
 
-            return ResponseFormatter::success(
-                $employee,
-                'Data Berhasil Dtambahkan'
-            );
+        //     $data = Employee::create([
+        //         'nip' => $request->nip,
+        //     ]);
 
-        } catch (Exception $error) {
-            return ResponseFormatter::error([
-                        'message' => 'Something went wrong',
-                        'error' => $error,
-            ], 'Error', 500);
-        }
+
+        //     return ResponseFormatter::success(
+        //         $data,
+        //         'Data Berhasil Ditambahkan'
+        //     );
+
+        // } catch (Exception $error) {
+        //     return ResponseFormatter::error([
+        //                 'message' => 'Something went wrong',
+        //                 'error' => $error,
+        //     ], 'Error', 500);
+        // }
+
+        $validation = $request->validate([
+            'nip' => ['required','string'],
+            'fullname' => ['required','string'],
+            'nickname' => ['required','string'],
+            'hire_date' => ['required','date'],
+            'company email' => ['required','email'],
+            'position' => ['required','string'],
+        ]);
+        
+
+        Employee::create([
+            'division_name' => $validation['division_name'],
+        ]);
+
+        return response()->json(['message' => 'Data berhasil disimpan']);
+
     }
 
-    /**
-     * Display the specified resource.
-     */
     public function show(string $id)
     {
         try {
+
             $employee = Employee::findOrFail($id);
     
             return ResponseFormatter::success(
@@ -85,28 +102,59 @@ class EmployeeController extends Controller
         }
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
+    public function update(Request $request, $id) {
+        try {
+
+            //define validation rules
+            $validator = Validator::make($request->all(), [
+                'location_name'     => 'required|string',
+            ]);
+
+             //check if validation fails
+            if ($validator->fails()) {
+                return ResponseFormatter::error([
+                    'message' => 'Validation Error',
+                    'error' => $validator->errors(),
+                ], 'Validation Error', 422);
+            }
+    
+            $item = Employee::findOrFail($id);
+            
+            $item->update([
+                'nip' => $request->nip,
+            ]);
+    
+            return ResponseFormatter::success(
+                $item,
+                'Data Berhasil Diubah'
+            );
+        } catch (Exception $error) {
+            return ResponseFormatter::error([
+                        'message' => 'Something went wrong',
+                        'error' => $error,
+            ], 'Error', 500);
+        }
+        
+    }
+
+    public function destroy(string $id)
     {
-        // 
-    }
+        try {
+            
 
-    /**
-     * Update the specified resource in storage.
-     */
+            $employee = Employee::findOrFail($id);
 
+            //delete post
+            $employee->delete();
 
-    public function update(Request $request, string $id) { 
-        // 
-
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id){
-        // 
+            return ResponseFormatter::success(
+                'Data Berhasil Dihapus'
+            );
+        } catch (Exception $error) {
+            return ResponseFormatter::error([
+                        'message' => 'Something went wrong',
+                        'error' => $error,
+            ], 'Error', 500);
+        }
     }
 }

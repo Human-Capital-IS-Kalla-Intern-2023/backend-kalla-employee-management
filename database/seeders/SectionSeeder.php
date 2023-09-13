@@ -13,39 +13,41 @@ class SectionSeeder extends Seeder
      */
     public function run(): void
     {
-        $section = [
-            [
-                'section_name' => 'UI/UX',
-            ],
-            [
-                'section_name' => 'IT Support',
-            ],
-            [
-                'section_name' => 'Database',
-            ],
-            [
-                'section_name' => 'Marketing',
-            ],
-            [
-                'section_name' => 'IT Support',
-            ],
-            [
-                'section_name' => 'IT Support',
-            ],
-            [
-                'section_name' => 'IT Support',
-            ],
-            [
-                'section_name' => 'IT Support',
-            ],
-            [
-                'section_name' => 'IT Support',
-            ],
-            [
-                'section_name' => 'IT Support',
-            ],
-        ];
 
-        Section::insert($section);
+        Section::factory(10)->create();
+        // $section = [
+        //     [
+        //         'section_name' => 'UI/UX',
+        //     ],
+        //     [
+        //         'section_name' => 'IT Support',
+        //     ],
+        //     [
+        //         'section_name' => 'Database',
+        //     ],
+        //     [
+        //         'section_name' => 'Marketing',
+        //     ],
+        //     [
+        //         'section_name' => 'IT Support',
+        //     ],
+        //     [
+        //         'section_name' => 'IT Support',
+        //     ],
+        //     [
+        //         'section_name' => 'IT Support',
+        //     ],
+        //     [
+        //         'section_name' => 'IT Support',
+        //     ],
+        //     [
+        //         'section_name' => 'IT Support',
+        //     ],
+        //     [
+        //         'section_name' => 'IT Support',
+        //     ],
+        // ];
+
+        // Section::insert($section);
     }
 }

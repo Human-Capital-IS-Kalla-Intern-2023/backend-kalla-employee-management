@@ -12,50 +12,54 @@ use Illuminate\Http\Request;
 class LocationController extends Controller
 {
     public function index(Request $request) {
+
+        $search = $request->get('search');
+
+        $location = Location::query()->when($search, function($query) use($search) {
+            $query->where('location_name','like','%'.$search.'%');
+        })->get();
         
-        $location = Location::all();
 
+        return response()->json([
+            'status_code' => 200,
+            'status' => 'success',
+            'message' => 'Data lokasi berhasil diambil',
+            'data' => $location,
+        ], 200);
 
-        return ResponseFormatter::success(
-            $location,
-            'Data Perusahaan berhasil diambil'
-        );
-
-       
     }
 
     public function store(Request $request) {
-        try {
-            //define validation rules
-            $validator = Validator::make($request->all(), [
-                'location_name'     => 'required|string',
-            ]);
 
-             //check if validation fails
-            if ($validator->fails()) {
-                return ResponseFormatter::error([
-                    'message' => 'Validation Error',
-                    'error' => $validator->errors(),
-                ], 'Validation Error', 422);
-            }
+        $validation = $this->validate($request, [
+            'location_name'     => 'required|string|unique:locations,location_name,NULL,id,deleted_at,NULL|max:255',
+        ]);
 
+        // //define validation rules
+        // $validator = Validator::make($request->all(), [
+        //     'location_name'     => 'required|string|unique:locations,location_name,NULL,id,deleted_at,NULL|max:255',
+        // ]);
 
-            $data = Location::create([
-                'location_name' => $request->location_name,
-            ]);
+        // //check if validation fails
+        // if ($validator->fails()) {
+        //     return response()->json([
+        //         'status_code' => 400,
+        //         'status' => 'error',
+        //         'message' => $validator->errors(),
+        //     ]);
+        // }
 
+        $data = Location::create([
+            'location_name' => $request->location_name,
+        ]);
 
-            return ResponseFormatter::success(
-                $data,
-                'Data Berhasil Ditambahkan'
-            );
-
-        } catch (Exception $error) {
-            return ResponseFormatter::error([
-                        'message' => 'Something went wrong',
-                        'error' => $error,
-            ], 'Error', 500);
-        }
+        return response()->json([
+            'status_code' => 200,
+            'status' => 'success',
+            'message' => 'Lokasi berhasil ditambahkan',
+            'data' => $data,
+        ], 200);
+        
     }
 
     public function show(string $id)
@@ -64,73 +68,100 @@ class LocationController extends Controller
 
             $location = Location::findOrFail($id);
     
-            return ResponseFormatter::success(
-                $location,
-                'Data berhasil diambil'
-            );
+            return response()->json([
+                'status_code' => 200,
+                'status' => 'success',
+                'message' => 'Lokasi berhasil diambil',
+                'data' => $location,
+            ], 200);
         } catch (Exception $error) {
-            return ResponseFormatter::error([
-                        'message' => 'Something went wrong',
-                        'error' => $error,
-            ], 'Error', 500);
+            return response()->json([
+                'status_code' => 500,
+                'status' => 'error',
+                'message' => 'Data tidak ditemukan',
+            ], 500);
         }
     }
 
-    public function update(Request $request, $id) {
+    public function update(Request $request, string $id) {
+
+        $validation = $this->validate($request, [
+            'location_name'     => 'required|string|unique:locations,location_name,NULL,id,deleted_at,NULL|max:255',
+        ]);
+
         try {
 
-            //define validation rules
-            $validator = Validator::make($request->all(), [
-                'location_name'     => 'required|string',
-            ]);
-
-             //check if validation fails
-            if ($validator->fails()) {
-                return ResponseFormatter::error([
-                    'message' => 'Validation Error',
-                    'error' => $validator->errors(),
-                ], 'Validation Error', 422);
-            }
-    
             $item = Location::findOrFail($id);
+        
+            //define validation rules
+            // $validator = Validator::make($request->all(), [
+            //     'location_name'     => 'required|string|unique:locations,location_name,NULL,id,deleted_at,NULL|max:255',
+            // ]);
+
+            //  //check if validation fails
+            // if ($validator->fails()) {
+            //     return response()->json([
+            //         'status_code' => 400,
+            //         'status' => 'error',
+            //         'message' => $validator->errors(),
+            //     ]);
+            // }
+    
             
             $item->update([
                 'location_name' => $request->location_name,
             ]);
     
-            return ResponseFormatter::success(
-                $item,
-                'Data Berhasil Diubah'
-            );
+            return response()->json([
+                'status_code' => 200,
+                'status' => 'success',
+                'message' => 'Lokasi berhasil diubah',
+                'data' => $item,
+            ], 200);
         } catch (Exception $error) {
-            return ResponseFormatter::error([
-                        'message' => 'Something went wrong',
-                        'error' => $error,
-            ], 'Error', 500);
+            return response()->json([
+                'status_code' => 500,
+                'status' => 'error',
+                'message' => 'Data tidak ditemukan',
+            ], 500);
         }
-        
     }
 
     public function destroy(string $id)
     {
-        try {
-            
-
+        try {            
             $location = Location::findOrFail($id);
 
             //delete post
             $location->delete();
 
-            return ResponseFormatter::success(
-                'Data Berhasil Dihapus'
-            );
+            return response()->json([
+                'status_code' => 200, 
+                'status' => 'success',
+                'message' => 'Lokasi berhasil dihapus',
+                'data' => $location,
+            ], 200);
+
+
         } catch (Exception $error) {
-            return ResponseFormatter::error([
-                        'message' => 'Something went wrong',
-                        'error' => $error,
-            ], 'Error', 500);
+
+            if ($error->getCode() == '23000') {
+                return response()->json([
+                    'status_code' => 500, 
+                    'status' => 'error',
+                    'message' => 'Tidak dapat menghapus, Lokasi masih digunakan tabel lain',
+                ], 500);
+            }
+
+            return response()->json([
+                'status_code' => 404,
+                'status' => 'error',
+                'message' => 'ID Tidak ditemukan',
+            ], 404);
+        
         }
     }
+
 
 
 }
