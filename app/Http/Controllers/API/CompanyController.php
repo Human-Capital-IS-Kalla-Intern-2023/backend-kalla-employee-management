@@ -91,7 +91,7 @@ class CompanyController extends Controller
 
             $company = Company::with(['location' => function ($query) {
                 $query->withTrashed(); // Mengambil data yang terhapus secara lembut (soft deleted)
-            }])->where('id',$id)->get();
+            }])->where('id',$id)->get()->first();
 
             return response()->json([
                 'status_code' => 200,
