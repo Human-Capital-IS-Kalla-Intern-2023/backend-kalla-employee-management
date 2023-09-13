@@ -19,7 +19,9 @@ class CompanyController extends Controller
 
         $company = Company::query()->when($search, function($query) use($search) {
             $query->where('company_name','like','%'.$search.'%');
-        })->with('location')->get();
+        })->with(['location' => function ($query) {
+            $query->withTrashed(); // Mengambil data yang terhapus secara lembut (soft deleted)
+        }])->get();
 
         return response()->json([
             'status_code' => 200,
@@ -90,7 +92,7 @@ class CompanyController extends Controller
 
     public function update(Request $request, $id) {
         $validation = $this->validate($request, [
-            'company_name' => ['required','string','unique:companies,company_name,NULL,id,deleted_at,NULL','max:255'],
+            'company_name' => ['required','string','unique:companies,company_name,'.$id.',id,deleted_at,NULL','max:255'],
             'locations_id' => ['required','exists:locations,id,deleted_at,NULL'],
         ]);
 
