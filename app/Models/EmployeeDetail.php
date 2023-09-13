@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Employee_Detail extends Model
+class EmployeeDetail extends Model
 {
     use HasFactory, SoftDeletes;
     protected $fillable = [
@@ -16,10 +16,10 @@ class Employee_Detail extends Model
     ];
     
     public function employee(){
-        return $this->belongsTo('employee_id', 'id');
+        return $this->belongsToMany('employee_id', 'id');
     }
 
     public function position(){
-        return $this->belongsTo('position_id', 'id');
+        return $this->belongsToMany('position_id', 'id');
     }
 }
