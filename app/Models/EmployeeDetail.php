@@ -4,15 +4,15 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class EmployeeDetail extends Model
 {
     use HasFactory, SoftDeletes;
+
+
 
     protected $fillable = [
         'employee_id',
@@ -20,7 +20,6 @@ class EmployeeDetail extends Model
         'status',
     ];
     
-
     // public function employee(){
     //     return $this->belongsTo('employee_id', 'id');
     // }
@@ -45,7 +44,5 @@ class EmployeeDetail extends Model
     {
         return $this->hasMany(Position::class, 'id', 'position_id');
     }
-
-    
 
 }
