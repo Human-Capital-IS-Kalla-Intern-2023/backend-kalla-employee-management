@@ -12,7 +12,8 @@ use Illuminate\Support\Facades\Validator;
 class EmployeeController extends Controller
 {
     public function index(Request $request) {
-        // $pEmployee = Employee::findOrFail('nip')->positions()->where('primary', true)->first();
+
+        $primaryEmployee = Employee::find($request)->positions()->where('primary', true)->first();
 
         $search = $request->get('search');
 
@@ -22,7 +23,7 @@ class EmployeeController extends Controller
 
         return ResponseFormatter::success([
             'employee' => $employee,
-            // 'primaryPosition' => $pEmployee,
+            'primaryPosition' => $primaryEmployee,
         ],
         'Data Employee berhasil diambil'
         );
@@ -67,7 +68,7 @@ class EmployeeController extends Controller
         // }
 
         $validation = $request->validate([
-            'nip' => ['required','string'],
+            'nip' => ['required','unique:employees,nip,NULL,id,deleted_at,NULL','string'],
             'fullname' => ['required','string'],
             'nickname' => ['required','string'],
             'hire_date' => ['required','date'],
