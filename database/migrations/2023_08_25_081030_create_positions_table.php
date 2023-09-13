@@ -22,6 +22,7 @@ return new class extends Migration
             $table->unsignedBigInteger('section');
             $table->boolean('primary');
             $table->timestamps();
+            $table->softDeletes();
 
             $table->foreign('job_grade')->references('id')->on('job_grades')->onDelete('restrict');
             $table->foreign('directorate')->references('id')->on('directorats')->onDelete('restrict');
