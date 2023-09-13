@@ -73,8 +73,26 @@ class CompanyController extends Controller
     {
         try {
 
-            $company = Company::with('location')->findOrFail($id);
+            // $company = Company::with('location')->withTrashed()->where('id',$id)->get();
+            // $company = Company::with('location')->withTrashed()->find($id);
+            // $company = Company::with('location')->withTrashed()->get();
+           
+            // $employees = Employee::withTrashed()->get();
+
     
+            // $search = $request->get('search'); 
+
+            // $company = Company::query()->when($search, function($query) use($search) {
+            //     $query->where('company_name','like','%'.$search.'%');
+            // })->with(['location' => function ($query) {
+            //     $query->withTrashed(); // Mengambil data yang terhapus secara lembut (soft deleted)
+            // }])->get();
+
+
+            $company = Company::with(['location' => function ($query) {
+                $query->withTrashed(); // Mengambil data yang terhapus secara lembut (soft deleted)
+            }])->where('id',$id)->get()->first();
+
             return response()->json([
                 'status_code' => 200,
                 'status' => 'success',
