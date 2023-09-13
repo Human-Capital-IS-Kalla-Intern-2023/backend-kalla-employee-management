@@ -19,9 +19,7 @@ return new class extends Migration
             $table->date('hire_date');
             $table->string('company_email');
             $table->timestamps();
-            $table->softDeletes();
-
-            $table->foreign('id')->references('employee_id')->on('employee_details')->onDelete('restrict');
+            $table->softDeletes();     
         });
     }
 
