@@ -59,7 +59,7 @@ class PositionController extends Controller
         // }
 
         $validation = $request->validate([
-            'position_name' => ['required','string']
+            'position_name' => ['required','unique:positions,position_name,NULL,id,deleted_at,NULL','string']
         ]);
         
 

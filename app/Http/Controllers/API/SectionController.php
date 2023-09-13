@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API;
 use App\Helpers\ResponseFormatter;
 use App\Http\Controllers\Controller;
 use App\Models\Section;
+use DragonCode\Contracts\Cashier\Config\Queues\Unique;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -72,7 +73,7 @@ class SectionController extends Controller
 
         
         $validation = $request->validate([
-            'section_name' => ['required','string']
+            'section_name' => ['required','unique:sections,section_name,NULL,id,deleted_at,NULL','string']
         ]);
         
 
