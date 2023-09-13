@@ -18,12 +18,10 @@ return new class extends Migration
             $table->string('nickname');
             $table->date('hire_date');
             $table->string('company_email');
-            $table->unsignedBigInteger('position');
             $table->timestamps();
             $table->softDeletes();
 
-            $table->foreign('position')->references('id')->on('positions')->onDelete('restrict');
-
+            $table->foreign('id')->references('employee_id')->on('employee_details')->onDelete('restrict');
         });
     }
 
@@ -32,6 +30,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('employees');
+        Schema::dropIfExists('employee');
     }
 };
