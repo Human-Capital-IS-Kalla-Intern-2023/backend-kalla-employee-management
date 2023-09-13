@@ -50,9 +50,10 @@ class UserController extends Controller
     public function login(Request $request)
     {
         try {
- 
-           //define validation rules
-           $validator = Validator::make($request->all(), [
+            
+            
+
+            $validator = Validator::make($request->all(), [
                 'email' => 'required|string|email',
                 'password' => 'required|string',
             ]);
@@ -69,7 +70,9 @@ class UserController extends Controller
             $credentials = request(['email','password']);
 
             if(!Auth::attempt($credentials)) {
-                return ResponseFormatter::error('', 'Email atau Password Salah', 400);
+                return ResponseFormatter::error([
+                    'message' => 'Unauthorized'
+                ], 'Login Gagal', 500);
             }
 
             $user = User::where('email', $request->email)->first();

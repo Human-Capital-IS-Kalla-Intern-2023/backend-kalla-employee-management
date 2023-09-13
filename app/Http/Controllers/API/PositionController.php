@@ -1,86 +1,75 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\API;
 
 use App\Helpers\ResponseFormatter;
+use App\Http\Controllers\Controller;
 use App\Models\Position;
 use Illuminate\Http\Request;
 use Exception;
-use Illuminate\Contracts\View\View;
+use Illuminate\Support\Facades\Validator;
 
 class PositionController extends Controller
 {
-    public function index(Request $request) {
-        $id = $request->input('id');
-        $location_name = $request->input('id');
+    public function index(Request $request) {  
+        $search = $request->get('search');
 
-        if($id) {
-            $position = Position::find($id);
-
-            if($position)
-            {
-                return ResponseFormatter::success(
-                    $position,
-                    'Data Position berhasil diambil'
-                );   
-            }  else {
-                return ResponseFormatter::error(
-                    null,
-                    'Data Position tidak ada',
-                    404
-                );
-            };
-        }
-
-        $position = Position::all();
-
+        $position = Position::query()->when($search, function($query) use($search){
+            $query->where('position_name', 'LIKE', "%".$search."%");
+        })->get();
 
         return ResponseFormatter::success(
             $position,
             'Data Position berhasil diambil'
         );
 
-       
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request) {
-        try {
-            $request->validate([
-                'fullname' => ['required','string','max:255'],
-            ]);
+        // try {
+        //     //define validation rules
+        //     $validator = Validator::make($request->all(), [
+        //         'position_name'     => 'required|string',
+        //     ]);
 
-            $position = Position::create([
-                'fullname' => $request->fullname,
-            ]);
+        //      //check if validation fails
+        //     if ($validator->fails()) {
+        //         return ResponseFormatter::error([
+        //             'message' => 'Validation Error',
+        //             'error' => $validator->errors(),
+        //         ], 'Validation Error', 422);
+        //     }
 
 
-            return ResponseFormatter::success(
-                $position,
-                'Data Berhasil Dtambahkan'
-            );
+        //     $data = Position::create([
+        //         'position_name' => $request->position_name,
+        //     ]);
 
-        } catch (Exception $error) {
-            return ResponseFormatter::error([
-                        'message' => 'Something went wrong',
-                        'error' => $error,
-            ], 'Error', 500);
-        }
+
+        //     return ResponseFormatter::success(
+        //         $data,
+        //         'Data Berhasil Ditambahkan'
+        //     );
+
+        // } catch (Exception $error) {
+        //     return ResponseFormatter::error([
+        //                 'message' => 'Something went wrong',
+        //                 'error' => $error,
+        //     ], 'Error', 500);
+        // }
+
+        $validation = $request->validate([
+            'position_name' => ['required','string']
+        ]);
+        
+
+        Position::create([
+            'position_name' => $validation['position_name'],
+        ]);
+
+        return response()->json(['message' => 'Data berhasil disimpan']);
     }
 
-    /**
-     * Display the specified resource.
-     */
     public function show(string $id)
     {
         try {
@@ -99,30 +88,30 @@ class PositionController extends Controller
         }
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-
-    public function update(Request $request, string $id) {
+    public function update(Request $request, $id) {
         try {
-            $position = $request->validate([
-                'fullname' => ['required','string','max:255'],
+
+            //define validation rules
+            $validator = Validator::make($request->all(), [
+                'position_name'     => 'required|string',
             ]);
+
+             //check if validation fails
+            if ($validator->fails()) {
+                return ResponseFormatter::error([
+                    'message' => 'Validation Error',
+                    'error' => $validator->errors(),
+                ], 'Validation Error', 422);
+            }
     
             $item = Position::findOrFail($id);
-    
-            $item->update($position);
+            
+            $item->update([
+                'position_name' => $request->position_name,
+            ]);
     
             return ResponseFormatter::success(
-                $position,
+                $item,
                 'Data Berhasil Diubah'
             );
         } catch (Exception $error) {
@@ -134,19 +123,24 @@ class PositionController extends Controller
         
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(string $id)
     {
-        $position = Position::findOrFail($id);
-        
-        $position->delete();
-        
-        $position = Position::all();
+        try {
+            
 
-        return ResponseFormatter::success(
-            "Data berhasil dihapus"
-        );
+            $position = Position::findOrFail($id);
+
+            //delete post
+            $position->delete();
+
+            return ResponseFormatter::success(
+                'Data Berhasil Dihapus'
+            );
+        } catch (Exception $error) {
+            return ResponseFormatter::error([
+                        'message' => 'Something went wrong',
+                        'error' => $error,
+            ], 'Error', 500);
+        }
     }
 }

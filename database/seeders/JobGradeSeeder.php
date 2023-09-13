@@ -15,38 +15,38 @@ class JobGradeSeeder extends Seeder
     {
         $job_grades = [
             [
-                'salary' => 2000000,
+                'grade_name' => 'Grade A',
                 'created_at' => date('Y-m-d H:i:s', time()),
                 'updated_at' => date('Y-m-d H:i:s', time()),
             ],
             [
-                'salary' => 3000000,
+                'grade_name' => 'Grade B',
                 'created_at' => date('Y-m-d H:i:s', time()),
                 'updated_at' => date('Y-m-d H:i:s', time()),
             ],
             [
-                'salary' => 3500000,
+                'grade_name' => 'Grade C',
                 'created_at' => date('Y-m-d H:i:s', time()),
                 'updated_at' => date('Y-m-d H:i:s', time()),
             ],
             [
-                'salary' => 4000000,
+                'grade_name' => 'Grade D',
                 'created_at' => date('Y-m-d H:i:s', time()),
                 'updated_at' => date('Y-m-d H:i:s', time()),
             ]
             ,
             [
-                'salary' => 5000000,
+                'grade_name' => 'Grade E',
                 'created_at' => date('Y-m-d H:i:s', time()),
                 'updated_at' => date('Y-m-d H:i:s', time()),
             ],
             [
-                'salary' => 6600000,
+                'grade_name' => 'Grade F',
                 'created_at' => date('Y-m-d H:i:s', time()),
                 'updated_at' => date('Y-m-d H:i:s', time()),
             ],
             [
-                'salary' => 7500000,
+                'grade_name' => 'Grade G',
                 'created_at' => date('Y-m-d H:i:s', time()),
                 'updated_at' => date('Y-m-d H:i:s', time()),
             ]

@@ -1,47 +1,31 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\API;
 
 use App\Helpers\ResponseFormatter;
-use App\Models\Location;
+use App\Http\Controllers\Controller;
 use App\Models\Section;
-use Illuminate\Http\Request;
 use Exception;
-
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class SectionController extends Controller
 {
+    /**
+     * Display a listing of the resource.
+     */
     public function index(Request $request) {
-        $id = $request->input('id');
-        $location_name = $request->input('id');
+        $search = $request->get('search');
 
-        if($id) {
-            $section = Section::find($id);
-
-            if($section)
-            {
-                return ResponseFormatter::success(
-                    $section,
-                    'Data Section berhasil diambil'
-                );   
-            }  else {
-                return ResponseFormatter::error(
-                    null,
-                    'Data Section tidak ada',
-                    404
-                );
-            };
-        }
-
-        $section = Section::all();
-
+        $section = Section::query()->when($search, function($query) use($search){
+            $query->where('section_name', 'LIKE', "%".$search."%");
+        })->get();
 
         return ResponseFormatter::success(
             $section,
             'Data Section berhasil diambil'
         );
-
-       
+ 
     }
 
     /**
@@ -56,27 +40,48 @@ class SectionController extends Controller
      * Store a newly created resource in storage.
      */
     public function store(Request $request) {
-        try {
-            $request->validate([
-                'section_name' => ['required','string','max:255'],
-            ]);
+        // try {
+        //     //define validation rules
+        //     $validator = Validator::make($request->all(), [
+        //         'section_name'     => 'required|string|unique:sections,section_name|max:255',
+        //     ]);
 
-            $section = Section::create([
-                'section_name' => $request->section_name,
-            ]);
+        //      //check if validation fails
+        //     if ($validator->fails()) {
+        //         $errors  = $validator->errors()->first();
+
+        //         return ResponseFormatter::error('', $errors, 400);
+        //     }
+
+        //     $data = Section::create([
+        //         'section_name' => $request->section_name,
+        //     ]);
 
 
-            return ResponseFormatter::success(
-                $section,
-                'Data Berhasil Dtambahkan'
-            );
+        //     return ResponseFormatter::success(
+        //         $data,
+        //         'Data Berhasil Ditambahkan'
+        //     );
 
-        } catch (Exception $error) {
-            return ResponseFormatter::error([
-                        'message' => 'Something went wrong',
-                        'error' => $error,
-            ], 'Error', 500);
-        }
+        // } catch (Exception $error) {
+        //     return ResponseFormatter::error([
+        //                 'message' => 'Something went wrong',
+        //                 'error' => $error,
+        //     ], 'Error', 500);
+        // }
+
+        
+        $validation = $request->validate([
+            'section_name' => ['required','string']
+        ]);
+        
+
+        Section::create([
+            'section_name' => $validation['section_name'],
+        ]);
+
+        return response()->json(['message' => 'Data berhasil disimpan']);
+        
     }
 
     /**
@@ -86,10 +91,10 @@ class SectionController extends Controller
     {
         try {
 
-            $section = Section::findOrFail($id);
+            $data = Section::findOrFail($id);
     
             return ResponseFormatter::success(
-                $section,
+                $data,
                 'Data berhasil diambil'
             );
         } catch (Exception $error) {
@@ -105,7 +110,7 @@ class SectionController extends Controller
      */
     public function edit(string $id)
     {
-        
+        //
     }
 
     /**
@@ -114,16 +119,29 @@ class SectionController extends Controller
 
     public function update(Request $request, string $id) {
         try {
-            $section = $request->validate([
-                'section_name' => ['required','string','max:255'],
+            //define validation rules
+            $validator = Validator::make($request->all(), [
+                'section_name'     => 'required|string|unique:sections,section_name|max:255',
+            ]);
+
+            
+             //check if validation fails
+            if ($validator->fails()) {
+                $errors  = $validator->errors()->first();
+                // $errors  = $validator->errors();
+
+                return ResponseFormatter::error('', $errors,400);
+
+            }
+    
+            $item = Section::findOrFail($id);
+    
+            $item->update([
+                'section_name' => $request->section_name,
             ]);
     
-            $section = Section::findOrFail($id);
-    
-            $section->update($section);
-    
             return ResponseFormatter::success(
-                $section,
+                $item,
                 'Data Berhasil Diubah'
             );
         } catch (Exception $error) {
@@ -140,14 +158,26 @@ class SectionController extends Controller
      */
     public function destroy(string $id)
     {
-        $section = Section::findOrFail($id);
         
-        $section->delete();
-        
-        $section = Section::all();
 
-        return ResponseFormatter::success(
-            "Data berhasil dihapus"
-        );
+        try {
+            $section = Section::findOrFail($id);
+
+            //delete post
+            $section->delete();
+
+            return ResponseFormatter::success('', 'Data Berhasil Dihapus', 200);
+
+
+        } catch (Exception $error) {
+            if ($error->getCode() == '23000') {
+                return ResponseFormatter::error('','Tidak dapat menghapus, Section masih digunakan tabel lain', 500);
+            }
+
+            return ResponseFormatter::error([
+                        'message' => 'Something went wrong',
+                        'error' => $error,
+            ], 'Error', 500);
+        }
     }
 }
