@@ -11,15 +11,16 @@ class Position extends Model
     use HasFactory, SoftDeletes;
     protected $fillable = ['position_name'];
 
-    public function Employee(){
-        return $this->belongsTo(Employee::class, 'id', 'position');
+    public function employee(){
+        return $this->belongsToMany(Employee::class, 'id', 'position')
+        ->withPivot('status');
     }
 
-    public function Division(){
+    public function division(){
         return $this->hasMany(Division::class, 'id', 'division_name');
     }
 
-    public function Section(){
+    public function section(){
         return $this->hasMany(Section::class, 'id', 'section_name');
     }
 }

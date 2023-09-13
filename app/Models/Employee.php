@@ -13,6 +13,7 @@ class Employee extends Model
     protected $fillable = ['nip','fullname','nickname','hire_date','company_email'];
 
     public function Position(){
-        return $this->hasMany(Position::class, 'id', 'position');
+        return $this->belongsToMany(Position::class, 'id', 'position')
+        ->withPivot('status');
     }
 }
