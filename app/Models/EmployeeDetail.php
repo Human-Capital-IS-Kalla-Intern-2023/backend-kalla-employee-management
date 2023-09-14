@@ -45,4 +45,16 @@ class EmployeeDetail extends Model
         return $this->hasMany(Position::class, 'id', 'position_id');
     }
 
+    /**
+     * Get all of the comments for the Company
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function employee(): HasMany
+    {
+        return $this->hasMany(Employee::class, 'id', 'employee_id');
+    }
+
+    
+
 }

@@ -29,4 +29,14 @@ class Employee extends Model
     // {
     //     return $this->belongsTo(Employee::class, 'foreign_key', 'other_key');
     // }
+
+    /**
+     * Get the user that owns the Employee
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function employeeDetail(): BelongsTo
+    {
+        return $this->belongsTo(EmployeeDetail::class, 'id', 'employee_id');
+    }
 }

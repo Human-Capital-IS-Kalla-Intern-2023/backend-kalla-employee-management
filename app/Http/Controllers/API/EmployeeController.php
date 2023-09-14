@@ -37,15 +37,27 @@ class EmployeeController extends Controller
 
     public function store(Request $request) {
 
-        $validation = $request->validate([
-            'nip' => ['required','unique:employees,nip,NULL,id,deleted_at,NULL','string'],
-            'fullname' => ['required','string'],
-            'nickname' => ['required','string','unique:employees,nickname,NULL,id,deleted_at,NULL'],
-            'hire_date' => ['required','date'],
-            'company_email' => ['required','email','unique:employees,company_email,NULL,id,deleted_at,NULL'],
-            'main_position' => ['required','exists:positions,id,deleted_at,NULL'],
-            'second_position' => ['exists:positions,id,deleted_at,NULL'],
-        ]);
+        if($request->filled('second_position')) {
+            $validation = $request->validate([
+                'nip' => ['required','unique:employees,nip,NULL,id,deleted_at,NULL','string'],
+                'fullname' => ['required','string'],
+                'nickname' => ['required','string','unique:employees,nickname,NULL,id,deleted_at,NULL'],
+                'hire_date' => ['required','date'],
+                'company_email' => ['required','email','unique:employees,company_email,NULL,id,deleted_at,NULL'],
+                'main_position' => ['required','exists:positions,id,deleted_at,NULL'],
+                'second_position' => ['exists:positions,id,deleted_at,NULL'],
+            ]);
+        } else {
+            $validation = $request->validate([
+                'nip' => ['required','unique:employees,nip,NULL,id,deleted_at,NULL','string'],
+                'fullname' => ['required','string'],
+                'nickname' => ['required','string','unique:employees,nickname,NULL,id,deleted_at,NULL'],
+                'hire_date' => ['required','date'],
+                'company_email' => ['required','email','unique:employees,company_email,NULL,id,deleted_at,NULL'],
+                'main_position' => ['required','exists:positions,id,deleted_at,NULL'],
+            ]);
+        }
+        
         
         DB::beginTransaction();
 
@@ -65,7 +77,7 @@ class EmployeeController extends Controller
                 'status' => 1,
             ]);
 
-            if($request->has('second_position')) {
+            if($request->filled('second_position')) {
                 EmployeeDetail::create([
                     'employee_id' => $employee->id ,
                     'position_id' => $request->second_position,
@@ -75,6 +87,148 @@ class EmployeeController extends Controller
 
             DB::commit();
 
+            // return response()->json(['message' => 'Data berhasil disimpan']);
+            return response()->json([
+                'status_code' => 200,
+                'status' => 'success',
+                'message' => 'Karyawan baru berhasil ditambahkan',
+                'data' => $employee,
+            ], 200);
+        } catch(\Exception $e){
+
+            DB::rollback();
+
+            return response()->json([
+                'status_code' => 500,
+                'status' => 'error',
+                'message' => 'Gagal Menyimpan',
+            ], 500);
+
+        }
+
+    }
+
+    // Done
+    public function show(string $id) 
+    {
+        try {
+            $employees = EmployeeDetail::with('employee','position')->withTrashed()->where('employee_id',$id)->get();
+            
+            if($employees->count() > 1  ) {
+                $employee = [
+                    "id" => $employees[0]->employee[0]->id,
+                    "nip" => $employees[0]->employee[0]->nip,
+                    "fullname" => $employees[0]->employee[0]->fullname,
+                    "nickname" => $employees[0]->employee[0]->nickname,
+                    "hire_date" => $employees[0]->employee[0]->hire_date,
+                    "company_email" => $employees[0]->employee[0]->company_email,
+                    "main_position" => $employees[0]->position[0]->position_name,
+                    "second_position" => $employees[1]->position[0]->position_name,
+                ];
+            } else {
+                $employee = [
+                    "nip" => $employees[0]->employee[0]->nip,
+                    "fullname" => $employees[0]->employee[0]->fullname,
+                    "nickname" => $employees[0]->employee[0]->nickname,
+                    "hire_date" => $employees[0]->employee[0]->hire_date,
+                    "company_email" => $employees[0]->employee[0]->company_email,
+                    "main_position" => $employees[0]->position[0]->position_name,
+                    "second_position" => '',
+                ];
+            }
+            
+            return response()->json([
+                'status_code' => 200,
+                'status' => 'success',
+                'message' => 'Karyawan baru berhasil diambil',
+                'data' => $employee,
+            ], 200);
+
+        } catch (Exception $error) {
+            return response()->json([
+                'status_code' => 404,
+                'status' => 'error',
+                'message' => 'Data tidak ditemukan',
+            ], 404);
+        }
+    }
+
+    public function update(Request $request, $id) {
+
+        if($request->filled('second_position')) {
+            $validation = $request->validate([
+                'nip' => ['required','string','unique:employees,nip,'.$id.',id,deleted_at,NULL'],
+                'fullname' => ['required','string'],
+                'nickname' => ['required','string','unique:employees,nickname,'.$id.',id,deleted_at,NULL'],
+                'hire_date' => ['required','date'],
+                'company_email' => ['required','email','unique:employees,company_email,'.$id.',id,deleted_at,NULL'],
+                'main_position' => ['required','exists:positions,id,deleted_at,NULL'],
+                'second_position' => ['exists:positions,id,deleted_at,NULL'],
+            ]);
+        } else {
+            $validation = $request->validate([
+                'nip' => ['required','string','unique:employees,nip,'.$id.',id,deleted_at,NULL'],
+                'fullname' => ['required','string'],
+                'nickname' => ['required','string','unique:employees,nickname,'.$id.',id,deleted_at,NULL'],
+                'hire_date' => ['required','date'],
+                'company_email' => ['required','email','unique:employees,company_email,'.$id.',id,deleted_at,NULL'],
+                'main_position' => ['required','exists:positions,id,deleted_at,NULL'],
+            ]);
+        }
+        
+        
+        DB::beginTransaction();
+
+        try{
+            $employee = Employee::findOrFail($id);
+
+            $employee->update([
+                'nip' => $request->nip,
+                'fullname' => $request->fullname,
+                'nickname' => $request->nickname,
+                'hire_date' => $request->hire_date,
+                'company_email' => $request->company_email,
+            ]);
+
+            EmployeeDetail::where('employee_id',$id)->where('status',  1)->update([
+                'position_id' => $request->main_position,
+                'status' => 1,
+            ]);
+
+
+            if($request->filled('second_position')) {
+                EmployeeDetail::where('employee_id',$id)->where('status', 0)->update([
+                    'position_id' => $request->second_position,
+                    'status' => 0,
+                ]);
+            }
+
+            DB::commit();
+
+            $employees = EmployeeDetail::with('employee','position')->withTrashed()->where('employee_id',$id)->get();
+            
+            if($employees->count() > 1  ) {
+                $employee = [
+                    "id" => $employees[0]->employee[0]->id,
+                    "nip" => $employees[0]->employee[0]->nip,
+                    "fullname" => $employees[0]->employee[0]->fullname,
+                    "nickname" => $employees[0]->employee[0]->nickname,
+                    "hire_date" => $employees[0]->employee[0]->hire_date,
+                    "company_email" => $employees[0]->employee[0]->company_email,
+                    "main_position" => $employees[0]->position[0]->position_name,
+                    "second_position" => $employees[1]->position[0]->position_name,
+                ];
+            } else {
+                $employee = [
+                    "nip" => $employees[0]->employee[0]->nip,
+                    "fullname" => $employees[0]->employee[0]->fullname,
+                    "nickname" => $employees[0]->employee[0]->nickname,
+                    "hire_date" => $employees[0]->employee[0]->hire_date,
+                    "company_email" => $employees[0]->employee[0]->company_email,
+                    "main_position" => $employees[0]->position[0]->position_name,
+                    "second_position" => '',
+                ];
+            }
             // return response()->json(['message' => 'Data berhasil disimpan']);
             return response()->json([
                 'status_code' => 200,
@@ -93,81 +247,41 @@ class EmployeeController extends Controller
             ], 500);
 
         }
-
+        
     }
 
-    public function show(string $id)
+    // Done
+    public function destroy(string $id)
     {
-        try {
-        
-            $employee = EmployeeDetail::with(['position' => function ($query) {
-                $query->withTrashed(); // Mengambil data yang terhapus secara lembut (soft deleted)
-            }])->where('employee_id',$id)->get();
+        DB::beginTransaction();
 
-            // return response()->json(['message' => 'Data berhasil disimpan']);
+        try {
+            $employee = Employee::findOrFail($id);
+            $employee->delete();
+            EmployeeDetail::where('employee_id',$id)->delete();
+
+            DB::commit();
+
             return response()->json([
                 'status_code' => 200,
                 'status' => 'success',
-                'message' => 'Karyawan baru berhasil diambil',
+                'message' => 'Karyawan berhasil dihapus',
                 'data' => $employee,
-            ], 200);
-        } catch (Exception $error) {
-            return ResponseFormatter::error([
-                        'message' => 'Something went wrong',
-                        'error' => $error,
-            ], 'Error', 500);
-        }
-    }
-
-    public function update(Request $request, $id) {
-        try {
-
-            //define validation rules
-            $validator = Validator::make($request->all(), [
-                'location_name'     => 'required|string',
             ]);
-
-             //check if validation fails
-            if ($validator->fails()) {
-                return ResponseFormatter::error([
-                    'message' => 'Validation Error',
-                    'error' => $validator->errors(),
-                ], 'Validation Error', 422);
-            }
-    
-            $item = Employee::findOrFail($id);
             
-            $item->update([
-                'nip' => $request->nip,
-            ]);
-    
-            return ResponseFormatter::success(
-                $item,
-                'Data Berhasil Diubah'
-            );
-        } catch (Exception $error) {
-            return ResponseFormatter::error([
-                        'message' => 'Something went wrong',
-                        'error' => $error,
-            ], 'Error', 500);
+
+        } catch(\Exception $e){
+
+            DB::rollback();
+
+            return response()->json([
+                'status_code' => 500,
+                'status' => 'error',
+                'message' => 'Gagal Menghapus',
+            ], 500);
+
         }
         
-    }
-
-    public function destroy(string $id)
-    {
-
-    $employee = Employee::findOrFail($id);
-    // $employeeDetail = EmployeeDetail::fin
-    //delete post
-    $employee->delete();
-
-    return response()->json([
-        'status_code' => 200,
-        'status' => 'success',
-        'message' => 'Karyawan berhasil dihapus',
-        'data' => $employee,
-    ]);
 
     }
 }
