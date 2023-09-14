@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API;
 use App\Helpers\ResponseFormatter;
 use App\Http\Controllers\Controller;
 use App\Models\Employee;
+use App\Models\Position;
 use App\Models\EmployeeDetail;
 use Illuminate\Http\Request;
 use Exception;
@@ -15,22 +16,38 @@ class EmployeeController extends Controller
 {
     public function index(Request $request) {
 
-        // $primaryEmployee = Employee::find($request)->positions()->where('primary', true)->first();
+        $search = $request->get('search'); 
 
-        $search = $request->get('search');
+        $employees = Employee::query()->when($search, function($query) use($search) {
+            $query->where('fullname','like','%'.$search.'%');
+        })->with(['positions' => function ($query) {
+            $query->select('positions.*', 'employee_details.status');
+            $query->withTrashed(); // Mengambil data yang terhapus secara lembut (soft deleted)
+        }])->get();
 
-        $employee = EmployeeDetail::query()->when($search, function($query) use($search){
-            $query->where('fullname', 'LIKE', "%".$search."%");
-        })->with('position')->get();
+        $dataEmployee = [];
 
-        // $employee = Employee::all();
+        for($i = 0; $i < $employees->count(); $i++) {
+            $employee = [
+                "id" => $employees[$i]->id,
+                "nip" => $employees[$i]->nip,
+                "fullname" => $employees[$i]->fullname,
+                "nickname" => $employees[$i]->nickname,
+                "hire_date" => $employees[$i]->hire_date,
+                "company_email" => $employees[$i]->company_email,
+                "main_position" => $employees[$i]->positions[0]->position_name,
+                "second_position" => $employees[$i]->positions[1]->position_name ?? '',
+            ];
 
-        // return response()->json(['message' => 'Data berhasil disimpan']);
+            $dataEmployee[] = $employee;
+        }
+
+        
         return response()->json([
             'status_code' => 200,
             'status' => 'success',
             'message' => 'Karyawan baru berhasil diambil',
-            'data' => $employee,
+            'data' => $dataEmployee,
         ], 200);
 
     }
@@ -112,30 +129,18 @@ class EmployeeController extends Controller
     public function show(string $id) 
     {
         try {
-            $employees = EmployeeDetail::with('employee','position')->withTrashed()->where('employee_id',$id)->get();
+            $employees = Employee::with('positions')->withTrashed()->where('id',$id)->get();
             
-            if($employees->count() > 1  ) {
                 $employee = [
-                    "id" => $employees[0]->employee[0]->id,
-                    "nip" => $employees[0]->employee[0]->nip,
-                    "fullname" => $employees[0]->employee[0]->fullname,
-                    "nickname" => $employees[0]->employee[0]->nickname,
-                    "hire_date" => $employees[0]->employee[0]->hire_date,
-                    "company_email" => $employees[0]->employee[0]->company_email,
-                    "main_position" => $employees[0]->position[0]->position_name,
-                    "second_position" => $employees[1]->position[0]->position_name,
+                    "id" => $employees[0]->id,
+                    "nip" => $employees[0]->nip,
+                    "fullname" => $employees[0]->fullname,
+                    "nickname" => $employees[0]->nickname,
+                    "hire_date" => $employees[0]->hire_date,
+                    "company_email" => $employees[0]->company_email,
+                    "main_position" => $employees[0]->positions[0]->position_name,
+                    "second_position" => $employees[0]->positions[1]->position_name ?? '',
                 ];
-            } else {
-                $employee = [
-                    "nip" => $employees[0]->employee[0]->nip,
-                    "fullname" => $employees[0]->employee[0]->fullname,
-                    "nickname" => $employees[0]->employee[0]->nickname,
-                    "hire_date" => $employees[0]->employee[0]->hire_date,
-                    "company_email" => $employees[0]->employee[0]->company_email,
-                    "main_position" => $employees[0]->position[0]->position_name,
-                    "second_position" => '',
-                ];
-            }
             
             return response()->json([
                 'status_code' => 200,
@@ -205,35 +210,24 @@ class EmployeeController extends Controller
 
             DB::commit();
 
-            $employees = EmployeeDetail::with('employee','position')->withTrashed()->where('employee_id',$id)->get();
+            $employees = Employee::with('positions')->withTrashed()->where('id',$id)->get();
+
             
-            if($employees->count() > 1  ) {
-                $employee = [
-                    "id" => $employees[0]->employee[0]->id,
-                    "nip" => $employees[0]->employee[0]->nip,
-                    "fullname" => $employees[0]->employee[0]->fullname,
-                    "nickname" => $employees[0]->employee[0]->nickname,
-                    "hire_date" => $employees[0]->employee[0]->hire_date,
-                    "company_email" => $employees[0]->employee[0]->company_email,
-                    "main_position" => $employees[0]->position[0]->position_name,
-                    "second_position" => $employees[1]->position[0]->position_name,
-                ];
-            } else {
-                $employee = [
-                    "nip" => $employees[0]->employee[0]->nip,
-                    "fullname" => $employees[0]->employee[0]->fullname,
-                    "nickname" => $employees[0]->employee[0]->nickname,
-                    "hire_date" => $employees[0]->employee[0]->hire_date,
-                    "company_email" => $employees[0]->employee[0]->company_email,
-                    "main_position" => $employees[0]->position[0]->position_name,
-                    "second_position" => '',
-                ];
-            }
-            // return response()->json(['message' => 'Data berhasil disimpan']);
+            $employee = [
+                "id" => $employees[0]->id,
+                "nip" => $employees[0]->nip,
+                "fullname" => $employees[0]->fullname,
+                "nickname" => $employees[0]->nickname,
+                "hire_date" => $employees[0]->hire_date,
+                "company_email" => $employees[0]->company_email,
+                "main_position" => $employees[0]->positions[0]->position_name,
+                "second_position" => $employees[0]->positions[1]->position_name,
+            ];
+
             return response()->json([
                 'status_code' => 200,
                 'status' => 'success',
-                'message' => 'Karyawan baru berhasil ditambahkan',
+                'message' => 'Karyawan baru berhasil diubah',
                 'data' => $employee,
             ], 200);
         }catch(\Exception $e){

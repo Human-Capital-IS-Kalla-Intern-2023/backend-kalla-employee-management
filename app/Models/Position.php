@@ -35,4 +35,10 @@ class Position extends Model
     public function section(){
         return $this->hasMany(Section::class, 'id','section');
     }
+
+    // isal
+    public function employees()
+    {
+        return $this->belongsToMany(Employee::class, 'employee_detail');
+    }
 }

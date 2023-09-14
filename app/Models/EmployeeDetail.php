@@ -40,21 +40,31 @@ class EmployeeDetail extends Model
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function position(): HasMany
-    {
-        return $this->hasMany(Position::class, 'id', 'position_id');
-    }
+    // public function position(): HasMany
+    // {
+    //     return $this->hasMany(Position::class, 'id', 'position_id');
+    // }
 
     /**
      * Get all of the comments for the Company
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function employee(): HasMany
+    // public function employee(): HasMany
+    // {
+    //     return $this->hasMany(Employee::class, 'id', 'employee_id');
+    //     // return $this->hasMany(Employee::class, 'id', 'employee_id');
+    // }
+
+    public function employee()
     {
-        return $this->hasMany(Employee::class, 'id', 'employee_id');
+        return $this->belongsTo(Employee::class);
     }
 
+    public function position()
+    {
+        return $this->belongsTo(Posisi::class);
+    }
     
 
 }
