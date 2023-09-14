@@ -16,11 +16,23 @@ class Position extends Model
         ->withPivot('status');
     }
 
+    public function company(){
+        return $this->hasMany(Company::class, 'id', 'company_id');
+    }
+
+    public function job_grade(){
+        return $this->hasMany(JobGrade::class, 'id', 'job_grade');
+    }
+
+    public function directorate(){
+        return $this->hasMany(Directorat::class, 'id', 'directorate');
+    }
+
     public function division(){
-        return $this->hasMany(Division::class, 'id', 'division_name');
+        return $this->hasMany(Division::class, 'id', 'division');
     }
 
     public function section(){
-        return $this->hasMany(Section::class, 'id', 'section_name');
+        return $this->hasMany(Section::class, 'id','section');
     }
 }
