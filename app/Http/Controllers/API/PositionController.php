@@ -53,7 +53,7 @@ class PositionController extends Controller
 
             $position = Position::with(['position' => function ($query){
                 $query->withTrash();
-            }])->where('position_id', $id)->get();
+            }])->where('position_name', $id)->get();
 
             return response()->json([
                 'status_code' => 200,
