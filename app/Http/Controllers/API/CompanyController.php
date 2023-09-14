@@ -185,7 +185,7 @@ class CompanyController extends Controller
                 'status_code' => 404,
                 'status' => 'error',
                 'message' => 'Data tidak ditemukan',
-            ]);
+            ], 404);
 
         }
     }
