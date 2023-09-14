@@ -36,22 +36,30 @@ class PositionController extends Controller
     public function store(Request $request) {
 
         $validation = $request->validate([
-            'position_name' => ['required','unique:positions,position_name,NULL,id,deleted_at,NULL','string']
+            'position_name' => ['required','unique:positions,position_name,NULL,id,deleted_at,NULL','string'],
         ]);
         
 
-        Position::create([
-            'position_name' => $validation['position_name'],
+        $data = Position::create([
+            'position_name' => $request->position_name,
+            'company_id' => $request->company_id,   
+            'job_grade' => $request->job_grade,   
+            'directorate' => $request->directorate,   
+            'division' => $request->division,   
+            'section' => $request->section,   
         ]);
 
-        return response()->json(['message' => 'Data berhasil disimpan']);
+        return response()->json([
+            'message' => 'Data berhasil disimpan',
+            'data' => $data,
+        ]);
     }
 
     public function show(string $id)
     {
         try {
 
-            $position = Position::with(['position' => function ($query){
+            $position = Position::with(['postition' => function ($query){
                 $query->withTrash();
             }])->where('position_name', $id)->get();
 
