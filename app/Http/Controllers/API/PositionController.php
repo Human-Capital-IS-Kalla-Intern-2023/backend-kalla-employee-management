@@ -50,9 +50,11 @@ class PositionController extends Controller
         ]);
 
         return response()->json([
+            'status_code' => 200,
+            'status' => 'success',
             'message' => 'Data berhasil disimpan',
             'data' => $data,
-        ]);
+        ], 200);
     }
 
     public function show(string $id)
@@ -71,28 +73,33 @@ class PositionController extends Controller
             ], 200);
 
         } catch (Exception $error) {
-            return ResponseFormatter::error([
-                        'message' => 'Something went wrong',
-                        'error' => $error,
-            ], 'Error', 500);
+            return response()->json([
+                'status_code' => 500,
+                'status' => 'error',
+                'message' => 'Data tidak ditemukan',
+            ], 500);
         }
     }
 
     public function update(Request $request, $id) {
+        $validation = $this->validate($request, [
+            'position_name' => 'required|string|unique:positions,position_name,NULL,id,deleted_at,NULL|max:255'
+        ]);
+        
         try {
 
-            //define validation rules
-            $validator = Validator::make($request->all(), [
-                'position_name'     => 'required|string',
-            ]);
+            // //define validation rules
+            // $validator = Validator::make($request->all(), [
+            //     'position_name'     => 'required|string',
+            // ]);
 
-             //check if validation fails
-            if ($validator->fails()) {
-                return ResponseFormatter::error([
-                    'message' => 'Validation Error',
-                    'error' => $validator->errors(),
-                ], 'Validation Error', 422);
-            }
+            //  //check if validation fails
+            // if ($validator->fails()) {
+            //     return ResponseFormatter::error([
+            //         'message' => 'Validation Error',
+            //         'error' => $validator->errors(),
+            //     ], 'Validation Error', 422);
+            // }
     
             $item = Position::findOrFail($id);
             
@@ -100,15 +107,18 @@ class PositionController extends Controller
                 'position_name' => $request->position_name,
             ]);
     
-            return ResponseFormatter::success(
-                $item,
-                'Data Berhasil Diubah'
-            );
+            return response()->json([
+                'status_code' => 200,
+                'status' => 'success',
+                'message' => 'Posisi berhasil diubah',
+                'data' => $item,
+            ], 200);
         } catch (Exception $error) {
-            return ResponseFormatter::error([
-                        'message' => 'Something went wrong',
-                        'error' => $error,
-            ], 'Error', 500);
+            return response()->json([
+                'status_code' => 500,
+                'status' => 'error',
+                'message' => 'Data tidak ditemukan',
+            ], 500);
         }
         
     }
@@ -123,14 +133,27 @@ class PositionController extends Controller
             //delete post
             $position->delete();
 
-            return ResponseFormatter::success(
-                'Data Berhasil Dihapus'
-            );
+            return response()->json([
+                'status_code' => 200, 
+                'status' => 'success',
+                'message' => 'Posisi berhasil dihapus',
+                'data' => $position,
+            ], 200);
+
         } catch (Exception $error) {
-            return ResponseFormatter::error([
-                        'message' => 'Something went wrong',
-                        'error' => $error,
-            ], 'Error', 500);
+            if ($error->getCode() == '23000') {
+                return response()->json([
+                    'status_code' => 500, 
+                    'status' => 'error',
+                    'message' => 'Tidak dapat menghapus, Posisi masih digunakan tabel lain',
+                ], 500);
+            }
+
+            return response()->json([
+                'status_code' => 404,
+                'status' => 'error',
+                'message' => 'ID Tidak ditemukan',
+            ], 404);
         }
     }
 }
