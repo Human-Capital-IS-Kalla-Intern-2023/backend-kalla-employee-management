@@ -12,6 +12,8 @@ class EmployeeDetail extends Model
 {
     use HasFactory, SoftDeletes;
 
+
+
     protected $fillable = [
         'employee_id',
         'position_id',
@@ -54,4 +56,5 @@ class EmployeeDetail extends Model
     }
 
     
+
 }
