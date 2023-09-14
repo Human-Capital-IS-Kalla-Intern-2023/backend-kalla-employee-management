@@ -14,20 +14,13 @@ return new class extends Migration
         Schema::create('positions', function (Blueprint $table) {
             $table->id();
             $table->string('position_name');
-            $table->string('company_id');
-            $table->unsignedBigInteger('job_grade');
-            $table->unsignedBigInteger('directorate');
-            $table->unsignedBigInteger('division');
-            $table->unsignedBigInteger('section');
+            $table->foreignId('company_id')->constrained();
+            $table->foreignId('directorat_id')->constrained();
+            $table->foreignId('division_id')->constrained();
+            $table->foreignId('section_id')->constrained();
+            $table->foreignId('job_grade_id')->constrained();
             $table->timestamps();
             $table->softDeletes();
-
-            // $table->foreign('employee_id')->references('id')->on('transactions')->onDelete('restrict');
-            $table->foreign('job_grade')->references('id')->on('job_grades')->onDelete('restrict');
-            $table->foreign('directorate')->references('id')->on('directorats')->onDelete('restrict');
-            $table->foreign('division')->references('id')->on('divisions')->onDelete('restrict');
-            $table->foreign('section')->references('id')->on('sections')->onDelete('restrict');
-
         });
     }
 

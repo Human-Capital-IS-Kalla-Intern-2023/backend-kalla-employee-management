@@ -20,20 +20,20 @@ class Position extends Model
         return $this->hasMany(Company::class, 'id', 'company_id');
     }
 
-    public function job_grade(){
-        return $this->hasMany(JobGrade::class, 'id', 'job_grade');
-    }
-
     public function directorate(){
-        return $this->hasMany(Directorat::class, 'id', 'directorate');
+        return $this->hasMany(Directorat::class, 'id', 'directorat_id');
     }
 
     public function division(){
-        return $this->hasMany(Division::class, 'id', 'division');
+        return $this->hasMany(Division::class, 'id', 'division_id');
     }
 
     public function section(){
-        return $this->hasMany(Section::class, 'id','section');
+        return $this->hasMany(Section::class, 'id','section_id');
+    }
+
+    public function job_grade(){
+        return $this->hasMany(JobGrade::class, 'id', 'job_grade_id');
     }
 
     // isal

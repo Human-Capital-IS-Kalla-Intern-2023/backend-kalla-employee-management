@@ -129,8 +129,8 @@ class EmployeeController extends Controller
     public function show(string $id) 
     {
         try {
-            $employees = Employee::with('positions')->withTrashed()->where('id',$id)->get();
-            
+            $employees = Employee::with('positions','positions.directorate','positions.company','positions.division','positions.section','positions.job_grade')->withTrashed()->where('id',$id)->get();
+
                 $employee = [
                     "id" => $employees[0]->id,
                     "nip" => $employees[0]->nip,
@@ -139,9 +139,19 @@ class EmployeeController extends Controller
                     "hire_date" => $employees[0]->hire_date,
                     "company_email" => $employees[0]->company_email,
                     "main_position" => $employees[0]->positions[0]->position_name,
+                    "company_main" => $employees[0]->positions[0]->company[0]->company_name,
+                    "directorate_main" => $employees[0]->positions[0]->directorate[0]->directorat_name,
+                    "division_main" => $employees[0]->positions[0]->division[0]->division_name,
+                    "section_main" => $employees[0]->positions[0]->section[0]->section_name,
+                    "job_grade_main" => $employees[0]->positions[0]->job_grade[0]->grade_name,
                     "second_position" => $employees[0]->positions[1]->position_name ?? '',
+                    "company_second" => $employees[0]->positions[1]->company[0]->company_name ?? '',
+                    "directorate_second" => $employees[0]->positions[1]->directorate[0]->directorat_name ?? '',
+                    "division_second" => $employees[0]->positions[1]->division[0]->division_name ?? '',
+                    "section_second" => $employees[0]->positions[1]->section[0]->section_name ?? '',
+                    "job_grade_second" => $employees[0]->positions[1]->job_grade[0]->grade_name ?? '',
                 ];
-            
+
             return response()->json([
                 'status_code' => 200,
                 'status' => 'success',
