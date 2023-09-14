@@ -17,7 +17,7 @@ class Position extends Model
     }
 
     public function company(){
-        return $this->hasMany(Company::class, 'id', 'company_name');
+        return $this->hasMany(Company::class, 'id', 'company_id');
     }
 
     public function directorate(){
