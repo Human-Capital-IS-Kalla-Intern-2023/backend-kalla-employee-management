@@ -116,6 +116,7 @@ class EmployeeController extends Controller
             
             if($employees->count() > 1  ) {
                 $employee = [
+                    "id" => $employees[0]->employee[0]->id,
                     "nip" => $employees[0]->employee[0]->nip,
                     "fullname" => $employees[0]->employee[0]->fullname,
                     "nickname" => $employees[0]->employee[0]->nickname,
@@ -153,37 +154,35 @@ class EmployeeController extends Controller
     }
 
     public function update(Request $request, $id) {
-        return $request->second_position;
 
-        // if($request->has('second_position') OR $request->second_position == "") {
-        //     $validation = $request->validate([
-        //         'nip' => ['required','unique:employees,nip,'.$id.',id,deleted_at,NULL','string'],
-        //         'fullname' => ['required','string'],
-        //         'nickname' => ['required','string','unique:employees,nickname,'.$id.',id,deleted_at,NULL'],
-        //         'hire_date' => ['required','date'],
-        //         'company_email' => ['required','email','unique:employees,company_email,'.$id.',id,deleted_at,NULL'],
-        //         'main_position' => ['required','exists:positions,id,deleted_at,NULL'],
-        //         'second_position' => ['exists:positions,id,deleted_at,NULL'],
-        //     ]);
-        // } else {
-        //     $validation = $request->validate([
-        //         'nip' => ['required','unique:employees,nip,'.$id.',id,deleted_at,NULL','string'],
-        //         'fullname' => ['required','string'],
-        //         'nickname' => ['required','string','unique:employees,nickname,'.$id.',id,deleted_at,NULL'],
-        //         'hire_date' => ['required','date'],
-        //         'company_email' => ['required','email','unique:employees,company_email,'.$id.',id,deleted_at,NULL'],
-        //         'main_position' => ['required','exists:positions,id,deleted_at,NULL'],
-        //     ]);
-        // }
+        if($request->filled('second_position')) {
+            $validation = $request->validate([
+                'nip' => ['required','string','unique:employees,nip,'.$id.',id,deleted_at,NULL'],
+                'fullname' => ['required','string'],
+                'nickname' => ['required','string','unique:employees,nickname,'.$id.',id,deleted_at,NULL'],
+                'hire_date' => ['required','date'],
+                'company_email' => ['required','email','unique:employees,company_email,'.$id.',id,deleted_at,NULL'],
+                'main_position' => ['required','exists:positions,id,deleted_at,NULL'],
+                'second_position' => ['exists:positions,id,deleted_at,NULL'],
+            ]);
+        } else {
+            $validation = $request->validate([
+                'nip' => ['required','string','unique:employees,nip,'.$id.',id,deleted_at,NULL'],
+                'fullname' => ['required','string'],
+                'nickname' => ['required','string','unique:employees,nickname,'.$id.',id,deleted_at,NULL'],
+                'hire_date' => ['required','date'],
+                'company_email' => ['required','email','unique:employees,company_email,'.$id.',id,deleted_at,NULL'],
+                'main_position' => ['required','exists:positions,id,deleted_at,NULL'],
+            ]);
+        }
         
         
         DB::beginTransaction();
 
         try{
-            $item = Employee::findOrFail($id);
-            
+            $employee = Employee::findOrFail($id);
 
-            $employee = Employee::create([
+            $employee->update([
                 'nip' => $request->nip,
                 'fullname' => $request->fullname,
                 'nickname' => $request->nickname,
@@ -191,15 +190,14 @@ class EmployeeController extends Controller
                 'company_email' => $request->company_email,
             ]);
 
-            EmployeeDetail::create([
-                'employee_id' => $employee->id ,
+            EmployeeDetail::where('employee_id',$id)->where('status',  1)->update([
                 'position_id' => $request->main_position,
                 'status' => 1,
             ]);
 
-            if($request->has('second_position')) {
-                EmployeeDetail::create([
-                    'employee_id' => $employee->id ,
+
+            if($request->filled('second_position')) {
+                EmployeeDetail::where('employee_id',$id)->where('status', 0)->update([
                     'position_id' => $request->second_position,
                     'status' => 0,
                 ]);
@@ -207,6 +205,30 @@ class EmployeeController extends Controller
 
             DB::commit();
 
+            $employees = EmployeeDetail::with('employee','position')->withTrashed()->where('employee_id',$id)->get();
+            
+            if($employees->count() > 1  ) {
+                $employee = [
+                    "id" => $employees[0]->employee[0]->id,
+                    "nip" => $employees[0]->employee[0]->nip,
+                    "fullname" => $employees[0]->employee[0]->fullname,
+                    "nickname" => $employees[0]->employee[0]->nickname,
+                    "hire_date" => $employees[0]->employee[0]->hire_date,
+                    "company_email" => $employees[0]->employee[0]->company_email,
+                    "main_position" => $employees[0]->position[0]->position_name,
+                    "second_position" => $employees[1]->position[0]->position_name,
+                ];
+            } else {
+                $employee = [
+                    "nip" => $employees[0]->employee[0]->nip,
+                    "fullname" => $employees[0]->employee[0]->fullname,
+                    "nickname" => $employees[0]->employee[0]->nickname,
+                    "hire_date" => $employees[0]->employee[0]->hire_date,
+                    "company_email" => $employees[0]->employee[0]->company_email,
+                    "main_position" => $employees[0]->position[0]->position_name,
+                    "second_position" => '',
+                ];
+            }
             // return response()->json(['message' => 'Data berhasil disimpan']);
             return response()->json([
                 'status_code' => 200,

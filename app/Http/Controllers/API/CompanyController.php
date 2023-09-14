@@ -117,23 +117,6 @@ class CompanyController extends Controller
         
         try {
             $item = Company::findOrFail($id);
-
-            
-
-            //  //define validation rules
-            // $validator = Validator::make($request->all(), [
-            //     'company_name' => ['required','string','unique:companies,company_name,NULL,id,deleted_at,NULL','max:255'],
-            //     'locations_id' => ['required','exists:locations,id,deleted_at,NULL'],
-            // ]);
-
-            //  //check if validation fails
-            // if ($validator->fails()) {
-            //     return response()->json([
-            //         'status_code' => 400,
-            //         'status' => 'error',
-            //         'message' => $validator->errors(),
-            //     ]);
-            // }
     
             $item->update([
                 'company_name' => $request->company_name,
