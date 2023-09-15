@@ -25,7 +25,7 @@ class DivisionController extends Controller
         return response()->json([
             'status_code' => 200,
             'status' => 'success',
-            'message' => 'Posisi baru berhasil ditampilkan',
+            'message' => 'Divisi berhasil ditampilkan',
             'data' => $division,
         ], 200);
 
@@ -43,38 +43,9 @@ class DivisionController extends Controller
      * Store a newly created resource in storage.
      */
     public function store(Request $request) {
-        // try {
-        //     //define validation rules
-        //     $validator = Validator::make($request->all(), [
-        //         'division_name'     => 'required|string|unique:divisions,division_name|max:255',
-        //     ]);
-
-        //      //check if validation fails
-        //     if ($validator->fails()) {
-        //         $errors  = $validator->errors()->first();
-
-        //         return ResponseFormatter::error('', $errors, 400);
-        //     }
-
-        //     $data = Division::create([
-        //         'division_name' => $request->division_name,
-        //     ]);
-
-
-        //     return ResponseFormatter::success(
-        //         $data,
-        //         'Data Berhasil Ditambahkan'
-        //     );
-
-        // } catch (Exception $error) {
-        //     return ResponseFormatter::error([
-        //                 'message' => 'Something went wrong',
-        //                 'error' => $error,
-        //     ], 'Error', 500);
-        // }
 
         $validation = $request->validate([
-            'division_name' => ['required','string']
+            'division_name' => ['required','unique:divisions,division_name,NULL,id,deleted_at,NULL','string']
         ]);
         
 
@@ -128,7 +99,7 @@ class DivisionController extends Controller
 
     public function update(Request $request, string $id) {
         $validation = $this->validate($request, [
-            'division_name'     => 'required|string|unique:locations,location_name,NULL,id,deleted_at,NULL|max:255',
+            'division_name'     => 'required|string|unique:divisions,division_name,NULL,id,deleted_at,NULL|max:255',
         ]);
 
         try {
