@@ -192,9 +192,9 @@ class EmployeeController extends Controller
         }
         
         
-        DB::beginTransaction();
+        // DB::beginTransaction();
 
-        try{
+        // try{
             $employee = Employee::findOrFail($id);
 
             $employee->update([
@@ -211,18 +211,17 @@ class EmployeeController extends Controller
             ]);
 
 
-            if($request->filled('second_position')) {
-                EmployeeDetail::updateOrCreate(
-                    [
-                        'employee_id' => $id,
-                        'status' => 0,
-                    ],
-                    [
+            EmployeeDetail::updateOrCreate(
+                [
                     'employee_id' => $id,
-                    'position_id' => $request->second_position,
                     'status' => 0,
-                ]);
-            }
+                ],
+                [
+                'employee_id' => $id,
+                'position_id' => $request->second_position,
+                'status' => 0,
+            ]);
+
 
             DB::commit();
 
@@ -237,7 +236,7 @@ class EmployeeController extends Controller
                 "hire_date" => $employees[0]->hire_date,
                 "company_email" => $employees[0]->company_email,
                 "main_position" => $employees[0]->positions[0]->position_name,
-                "second_position" => $employees[0]->positions[1]->position_name,
+                "second_position" => $employees[0]->positions[1]->position_name ?? '',
             ];
 
             return response()->json([
@@ -246,17 +245,17 @@ class EmployeeController extends Controller
                 'message' => 'Karyawan baru berhasil diubah',
                 'data' => $employee,
             ], 200);
-        }catch(\Exception $e){
+        // }catch(\Exception $e){
 
-            DB::rollback();
+        //     DB::rollback();
 
-            return response()->json([
-                'status_code' => 500,
-                'status' => 'error',
-                'message' => 'Gagal Menyimpan',
-            ], 500);
+        //     return response()->json([
+        //         'status_code' => 500,
+        //         'status' => 'error',
+        //         'message' => 'Gagal Menyimpan',
+        //     ], 500);
 
-        }
+        // }
         
     }
 
