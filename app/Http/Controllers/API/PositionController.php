@@ -14,7 +14,7 @@ class PositionController extends Controller
     public function index(Request $request) {  
         $search = $request->get('search');
 
-        $position = Position::query()->when($search, function($query) use($search){
+        $positions = Position::query()->when($search, function($query) use($search){
             $query->where('position_name', 'LIKE', "%".$search."%");
         })->with([
             'company',
@@ -22,13 +22,29 @@ class PositionController extends Controller
             'directorate',
             'division',
             'section',
-        ])->get();
+        ])->withTrashed()->get();
+
+        $dataPosision = [];
+
+        for($i = 0; $i < $positions->count(); $i++) {
+            $position = [
+                "id" => $positions[$i]->id,
+                "position_name" => $positions[$i]->position_name,
+                "company_name" => $positions[$i]->company[0]->company_name,
+                "directorat_name" => $positions[$i]->directorate[0]->directorat_name,
+                "division_name" => $positions[$i]->division[0]->division_name,
+                "section_name" => $positions[$i]->section[0]->section_name,
+                "grade_name" => $positions[$i]->job_grade[0]->grade_name,
+            ];
+
+            $dataPosition[] = $position;
+        }
 
         return response()->json([
             'status_code' => 200,
             'status' => 'success',
             'message' => 'Data Posisi berhasil diambil',
-            'data' => $position,
+            'data' => $dataPosition,
         ], 200);
 
     }
