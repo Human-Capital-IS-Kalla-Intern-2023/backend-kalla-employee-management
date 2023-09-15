@@ -37,6 +37,9 @@ class EmployeeController extends Controller
                 "company_email" => $employees[$i]->company_email,
                 "main_position" => $employees[$i]->positions[0]->position_name,
                 "second_position" => $employees[$i]->positions[1]->position_name ?? '',
+                "created_at" =>  $employees[$i]->created_at,
+                "updated_at" =>  $employees[$i]->updated_at,
+
             ];
 
             $dataEmployee[] = $employee;
@@ -150,6 +153,8 @@ class EmployeeController extends Controller
                     "division_second" => $employees[0]->positions[1]->division[0]->division_name ?? '',
                     "section_second" => $employees[0]->positions[1]->section[0]->section_name ?? '',
                     "job_grade_second" => $employees[0]->positions[1]->job_grade[0]->grade_name ?? '',
+                    "created_at" =>  $employees[0]->created_at,
+                    "updated_at" =>  $employees[0]->updated_at,
                 ];
 
             return response()->json([
