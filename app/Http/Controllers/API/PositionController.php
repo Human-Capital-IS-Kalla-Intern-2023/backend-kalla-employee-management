@@ -58,11 +58,11 @@ class PositionController extends Controller
 
         $data = Position::create([
             'position_name' => $request->position_name,
-            'company_id' => $request->company_id,   
-            'job_grade' => $request->job_grade,   
-            'directorate' => $request->directorate,   
-            'division' => $request->division,   
-            'section' => $request->section,   
+            'company_id' => $request->company_id,      
+            'directorat_id' => $request->directorat_id,   
+            'division_id' => $request->division_id,   
+            'section_id' => $request->section_id,
+            'job_grade_id' => $request->job_grade_id,   
         ]);
 
         return response()->json([
