@@ -22,7 +22,7 @@ class PositionController extends Controller
             'directorate',
             'division',
             'section',
-        ])->withTrashed()->get();
+        ])->get();
 
         $dataPosision = [];
 
