@@ -27,7 +27,7 @@ class PositionController extends Controller
         return response()->json([
             'status_code' => 200,
             'status' => 'success',
-            'message' => 'Posisi berhasil ditampilkan',
+            'message' => 'Data Posisi berhasil diambil',
             'data' => $position,
         ], 200);
 
@@ -52,7 +52,7 @@ class PositionController extends Controller
         return response()->json([
             'status_code' => 200,
             'status' => 'success',
-            'message' => 'Data berhasil disimpan',
+            'message' => 'Posisi berhasil ditambahkan',
             'data' => $data,
         ], 200);
     }
@@ -66,7 +66,7 @@ class PositionController extends Controller
             return response()->json([
                 'status_code' => 200,
                 'status' => 'success',
-                'message' => 'Posisi baru berhasil diambil',
+                'message' => 'Posisi berhasil diambil',
                 'data' => $position,
             ], 200);
 
@@ -150,7 +150,7 @@ class PositionController extends Controller
             return response()->json([
                 'status_code' => 404,
                 'status' => 'error',
-                'message' => 'ID Tidak ditemukan',
+                'message' => 'Data Tidak ditemukan',
             ], 404);
         }
     }

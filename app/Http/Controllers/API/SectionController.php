@@ -25,7 +25,7 @@ class SectionController extends Controller
         return response()->json([
             'status_code' => 200,
             'status' => 'success',
-            'message' => 'Seksi berhasil ditampilkan',
+            'message' => 'Data Seksi berhasil diambil',
             'data' => $section,
         ], 200);
  
@@ -56,7 +56,7 @@ class SectionController extends Controller
         return response()->json([
             'status_code' => 200,
             'status' => 'success',
-            'message' => 'Data berhasil disimpan',
+            'message' => 'Section berhasil ditambahkan',
             'data'  => $data,
         ]);
         
@@ -174,7 +174,7 @@ class SectionController extends Controller
             return response()->json([
                 'status_code' => 404,
                 'status' => 'error',
-                'message' => 'ID Tidak ditemukan',
+                'message' => 'Data Tidak ditemukan',
             ], 404);
         }
     }

@@ -25,7 +25,7 @@ class DivisionController extends Controller
         return response()->json([
             'status_code' => 200,
             'status' => 'success',
-            'message' => 'Divisi berhasil ditampilkan',
+            'message' => 'Data Divisi berhasil diambil',
             'data' => $division,
         ], 200);
 
@@ -56,7 +56,7 @@ class DivisionController extends Controller
         return response()->json([
             'status_code' => 200,
             'status' => 'success',
-            'message' => 'Divisi baru berhasil ditambahkan',
+            'message' => 'Divisi berhasil ditambahkan',
             'data' => $data,
         ], 200);
     }
@@ -173,7 +173,7 @@ class DivisionController extends Controller
             return response()->json([
                 'status_code' => 404,
                 'status' => 'error',
-                'message' => 'ID Tidak ditemukan',
+                'message' => 'Data Tidak ditemukan',
             ], 404);
         }
     }
