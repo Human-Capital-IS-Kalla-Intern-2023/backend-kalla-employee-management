@@ -212,7 +212,13 @@ class EmployeeController extends Controller
 
 
             if($request->filled('second_position')) {
-                EmployeeDetail::where('employee_id',$id)->where('status', 0)->update([
+                EmployeeDetail::updateOrCreate(
+                    [
+                        'employee_id' => $id,
+                        'status' => 0,
+                    ],
+                    [
+                    'employee_id' => $id,
                     'position_id' => $request->second_position,
                     'status' => 0,
                 ]);
