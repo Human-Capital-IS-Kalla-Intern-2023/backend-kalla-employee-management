@@ -77,7 +77,23 @@ class PositionController extends Controller
     {
         try {
 
-            $position = Position::findOrFail($id);
+            $positions = Position::with([
+                'company',
+                'job_grade',
+                'directorate',
+                'division',
+                'section',
+            ])->withTrashed()->where('id',$id)->get();
+
+            $position = [
+                "id" => $positions[0]->id,
+                "position_name" => $positions[0]->position_name,
+                "company_name" => $positions[0]->company[0]->company_name,
+                "directorat_name" => $positions[0]->directorate[0]->directorat_name,
+                "division_name" => $positions[0]->division[0]->division_name,
+                "section_name" => $positions[0]->section[0]->section_name,
+                "grade_name" => $positions[0]->job_grade[0]->grade_name,
+            ];
 
             return response()->json([
                 'status_code' => 200,
