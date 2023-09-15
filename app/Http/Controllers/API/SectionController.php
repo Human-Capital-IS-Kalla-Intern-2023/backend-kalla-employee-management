@@ -25,7 +25,7 @@ class SectionController extends Controller
         return response()->json([
             'status_code' => 200,
             'status' => 'success',
-            'message' => 'Posisi baru berhasil ditampilkan',
+            'message' => 'Seksi berhasil ditampilkan',
             'data' => $section,
         ], 200);
  
@@ -100,7 +100,7 @@ class SectionController extends Controller
 
     public function update(Request $request, string $id) {
         $validation = $this->validate($request, [
-            'section_name'     => 'required|string|unique:locations,location_name,NULL,id,deleted_at,NULL|max:255',
+            'section_name'     => 'required|string|unique:sections,section_name,NULL,id,deleted_at,NULL|max:255',
         ]);
 
         try {

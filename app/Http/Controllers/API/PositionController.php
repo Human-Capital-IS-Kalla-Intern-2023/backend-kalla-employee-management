@@ -27,7 +27,7 @@ class PositionController extends Controller
         return response()->json([
             'status_code' => 200,
             'status' => 'success',
-            'message' => 'Posisi baru berhasil ditampilkan',
+            'message' => 'Posisi berhasil ditampilkan',
             'data' => $position,
         ], 200);
 
@@ -61,9 +61,7 @@ class PositionController extends Controller
     {
         try {
 
-            $position = Position::with(['postition' => function ($query){
-                $query->withTrash();
-            }])->where('position_name', $id)->get();
+            $position = Position::findOrFail($id);
 
             return response()->json([
                 'status_code' => 200,
