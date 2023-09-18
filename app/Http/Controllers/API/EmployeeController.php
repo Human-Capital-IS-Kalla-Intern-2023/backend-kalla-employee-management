@@ -64,7 +64,7 @@ class EmployeeController extends Controller
                 'hire_date' => ['required','date'],
                 'company_email' => ['required','email','unique:employees,company_email,NULL,id,deleted_at,NULL'],
                 'main_position' => ['required','exists:positions,id,deleted_at,NULL'],
-                'second_position' => ['exists:positions,id,deleted_at,NULL'],
+                'second_position' => ['exists:positions,id,deleted_at,NULL', 'different:main_position'],
             ]);
         } else {
             $validation = $request->validate([
