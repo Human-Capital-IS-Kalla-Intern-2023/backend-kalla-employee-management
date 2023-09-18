@@ -56,7 +56,7 @@ class EmployeeController extends Controller
 
     public function store(Request $request) {
 
-        if($request->filled('second_position')) {
+        if($request->filled('id_second_position')) {
             $validation = $request->validate([
                 'nip' => ['required','unique:employees,nip,NULL,id,deleted_at,NULL','string'],
                 'fullname' => ['required','string'],
@@ -96,7 +96,7 @@ class EmployeeController extends Controller
                 'status' => 1,
             ]);
 
-            if($request->filled('second_position')) {
+            if($request->filled('id_second_position')) {
                 EmployeeDetail::create([
                     'employee_id' => $employee->id ,
                     'position_id' => $request->id_second_position,
@@ -172,7 +172,7 @@ class EmployeeController extends Controller
 
     public function update(Request $request, $id) {
 
-        if($request->filled('second_position')) {
+        if($request->filled('id_second_position')) {
             $validation = $request->validate([
                 'nip' => ['required','string','unique:employees,nip,'.$id.',id,deleted_at,NULL'],
                 'fullname' => ['required','string'],
