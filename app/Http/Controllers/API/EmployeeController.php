@@ -63,8 +63,8 @@ class EmployeeController extends Controller
                 'nickname' => ['required','string','unique:employees,nickname,NULL,id,deleted_at,NULL'],
                 'hire_date' => ['required','date'],
                 'company_email' => ['required','email','unique:employees,company_email,NULL,id,deleted_at,NULL'],
-                'main_position' => ['required','exists:positions,id,deleted_at,NULL'],
-                'second_position' => ['exists:positions,id,deleted_at,NULL', 'different:main_position'],
+                'id_main_position' => ['required','exists:positions,id,deleted_at,NULL'],
+                'id_second_position' => ['exists:positions,id,deleted_at,NULL', 'different:id_main_position'],
             ]);
         } else {
             $validation = $request->validate([
@@ -73,7 +73,7 @@ class EmployeeController extends Controller
                 'nickname' => ['required','string','unique:employees,nickname,NULL,id,deleted_at,NULL'],
                 'hire_date' => ['required','date'],
                 'company_email' => ['required','email','unique:employees,company_email,NULL,id,deleted_at,NULL'],
-                'main_position' => ['required','exists:positions,id,deleted_at,NULL'],
+                'id_main_position' => ['required','exists:positions,id,deleted_at,NULL'],
             ]);
         }
         
@@ -92,14 +92,14 @@ class EmployeeController extends Controller
 
             EmployeeDetail::create([
                 'employee_id' => $employee->id ,
-                'position_id' => $request->main_position,
+                'position_id' => $request->id_main_position,
                 'status' => 1,
             ]);
 
             if($request->filled('second_position')) {
                 EmployeeDetail::create([
                     'employee_id' => $employee->id ,
-                    'position_id' => $request->second_position,
+                    'position_id' => $request->id_second_position,
                     'status' => 0,
                 ]);
             }
@@ -179,8 +179,8 @@ class EmployeeController extends Controller
                 'nickname' => ['required','string','unique:employees,nickname,'.$id.',id,deleted_at,NULL'],
                 'hire_date' => ['required','date'],
                 'company_email' => ['required','email','unique:employees,company_email,'.$id.',id,deleted_at,NULL'],
-                'main_position' => ['required','exists:positions,id,deleted_at,NULL'],
-                'second_position' => ['exists:positions,id,deleted_at,NULL', 'different:main_position'],
+                'id_main_position' => ['required','exists:positions,id,deleted_at,NULL'],
+                'id_second_position' => ['exists:positions,id,deleted_at,NULL', 'different:id_main_position'],
             ]);
         } else {
             $validation = $request->validate([
@@ -189,7 +189,7 @@ class EmployeeController extends Controller
                 'nickname' => ['required','string','unique:employees,nickname,'.$id.',id,deleted_at,NULL'],
                 'hire_date' => ['required','date'],
                 'company_email' => ['required','email','unique:employees,company_email,'.$id.',id,deleted_at,NULL'],
-                'main_position' => ['required','exists:positions,id,deleted_at,NULL'],
+                'id_main_position' => ['required','exists:positions,id,deleted_at,NULL'],
             ]);
         }
         
@@ -208,7 +208,7 @@ class EmployeeController extends Controller
             ]);
 
             EmployeeDetail::where('employee_id',$id)->where('status',  1)->update([
-                'position_id' => $request->main_position,
+                'position_id' => $request->id_main_position,
                 'status' => 1,
             ]);
 
@@ -220,7 +220,7 @@ class EmployeeController extends Controller
                 ],
                 [
                 'employee_id' => $id,
-                'position_id' => $request->second_position,
+                'position_id' => $request->id_second_position,
                 'status' => 0,
             ]);
 
@@ -237,6 +237,8 @@ class EmployeeController extends Controller
                 "nickname" => $employees[0]->nickname,
                 "hire_date" => $employees[0]->hire_date,
                 "company_email" => $employees[0]->company_email,
+                "id_main_position" => $employees[0]->positions[0]->id,
+                "id_second_position" => $employees[0]->positions[1]->id ?? '',
                 "main_position" => $employees[0]->positions[0]->position_name,
                 "second_position" => $employees[0]->positions[1]->position_name ?? '',
             ];
