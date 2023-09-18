@@ -30,10 +30,20 @@ class PositionController extends Controller
             $position = [
                 "id" => $positions[$i]->id,
                 "position_name" => $positions[$i]->position_name,
+
+                "company_id" => $positions[$i]->company[0]->id,
                 "company_name" => $positions[$i]->company[0]->company_name,
+
+                "directorat_id" => $positions[$i]->directorate[0]->id,
                 "directorat_name" => $positions[$i]->directorate[0]->directorat_name,
+
+                "division_id" => $positions[$i]->division[0]->id,
                 "division_name" => $positions[$i]->division[0]->division_name,
+
+                "section_id" => $positions[$i]->section[0]->id,
                 "section_name" => $positions[$i]->section[0]->section_name,
+
+                "grade_id" => $positions[$i]->job_grade[0]->id,
                 "grade_name" => $positions[$i]->job_grade[0]->grade_name,
             ];
 
@@ -88,10 +98,20 @@ class PositionController extends Controller
             $position = [
                 "id" => $positions[0]->id,
                 "position_name" => $positions[0]->position_name,
+
+                "company_id" => $positions[0]->company[0]->id,
                 "company_name" => $positions[0]->company[0]->company_name,
+
+                "directorat_id" => $positions[0]->directorate[0]->id,
                 "directorat_name" => $positions[0]->directorate[0]->directorat_name,
+
+                "division_id" => $positions[0]->division[0]->id,
                 "division_name" => $positions[0]->division[0]->division_name,
+
+                "section_id" => $positions[0]->section[0]->id,
                 "section_name" => $positions[0]->section[0]->section_name,
+
+                "grade_id" => $positions[0]->job_grade[0]->id,
                 "grade_name" => $positions[0]->job_grade[0]->grade_name,
             ];
 
