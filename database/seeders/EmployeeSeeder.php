@@ -14,6 +14,12 @@ class EmployeeSeeder extends Seeder
      */
     public function run(): void
     {
-        Employee::factory(10)->create();
+        $employees = [
+            [
+
+            ],
+        ];
+
+        Employee::insert($employees);
     }
 }
