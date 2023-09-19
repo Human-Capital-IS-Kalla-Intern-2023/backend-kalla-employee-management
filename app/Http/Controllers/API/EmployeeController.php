@@ -52,14 +52,14 @@ class EmployeeController extends Controller
             'status_code' => 200,
             'status' => 'success',
             'message' => 'Karyawan baru berhasil diambil',
-            'data' => $dataEmployee,
+            'data' => $employees,
         ], 200);
 
     }
 
     public function store(Request $request) {
 
-        if($request->filled('id_second_position')) {
+        if($request->filled('id_additional_position')) {
             $validation = $request->validate([
                 'nip' => ['required','unique:employees,nip,NULL,id,deleted_at,NULL','string'],
                 'fullname' => ['required','string'],
@@ -67,7 +67,7 @@ class EmployeeController extends Controller
                 'hire_date' => ['required','date'],
                 'company_email' => ['required','email','unique:employees,company_email,NULL,id,deleted_at,NULL'],
                 'id_main_position' => ['required','exists:positions,id,deleted_at,NULL'],
-                'id_second_position' => ['exists:positions,id,deleted_at,NULL', 'different:id_main_position'],
+                'id_additional_position' => ['array','unique_array:id_main_position', 'exists:positions,id,deleted_at,NULL'],
             ]);
         } else {
             $validation = $request->validate([
@@ -99,12 +99,16 @@ class EmployeeController extends Controller
                 'status' => 1,
             ]);
 
-            if($request->filled('id_second_position')) {
-                EmployeeDetail::create([
-                    'employee_id' => $employee->id ,
-                    'position_id' => $request->id_second_position,
-                    'status' => 0,
-                ]);
+
+            $additional_positions = $request->id_additional_position;
+            if($request->filled('id_additional_position')) {
+                foreach($additional_positions as $position) {
+                    EmployeeDetail::create([
+                        'employee_id' => $employee->id ,
+                        'position_id' => $position,
+                        'status' => 0,
+                    ]);
+                }
             }
 
             DB::commit();
