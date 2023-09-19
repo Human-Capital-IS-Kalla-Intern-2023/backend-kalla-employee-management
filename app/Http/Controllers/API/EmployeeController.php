@@ -36,12 +36,9 @@ class EmployeeController extends Controller
                 "hire_date" => $employees[$i]->hire_date,
                 "company_email" => $employees[$i]->company_email,
                 "id_main_position" => $employees[$i]->positions[0]->id,
-                "id_second_position" => $employees[$i]->positions[1]->id ?? '',
                 "main_position" => $employees[$i]->positions[0]->position_name,
-                "second_position" => $employees[$i]->positions[1]->position_name ?? '',
                 "created_at" =>  $employees[$i]->created_at,
                 "updated_at" =>  $employees[$i]->updated_at,
-
             ];
 
             $dataEmployee[] = $employee;
