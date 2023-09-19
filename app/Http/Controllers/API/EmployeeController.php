@@ -96,7 +96,6 @@ class EmployeeController extends Controller
                 'status' => 1,
             ]);
 
-
             $additional_positions = $request->id_additional_position;
             if($request->filled('id_additional_position')) {
                 foreach($additional_positions as $position) {
@@ -134,23 +133,57 @@ class EmployeeController extends Controller
     // Done
     public function show(string $id) 
     {
-        try {
+        // try {
             $employees = Employee::with('positions','positions.directorate','positions.company','positions.division','positions.section','positions.job_grade')->withTrashed()->where('id',$id)->get();
 
+            // $employees = Employee::with([
+            //     'positions',
+            //     'positions.directorate',
+            //     'positions.company',
+            //     'positions.division',
+            //     'positions.section',
+            //     'positions.job_grade'
+            // ])->where('id', $id)->first();
+
+            // $deletedEmployees = $employees->positions->trashed();
+
+            // // Jika Anda hanya ingin mengambil data yang dihapus dari tabel terkait,
+            // // Anda dapat memfilternya seperti ini:
+            // $deletedEmployees = $employees->positions->filter(function ($position) {
+            //     return $position->trashed();
+            // });
+
+            $dataPosition = [];
+
+            for($i = 1; $i < $employees[0]->positions->count(); $i++) {
                 $employee = [
-                    "id" => $employees[0]->id,
-                    "nip" => $employees[0]->nip,
-                    "fullname" => $employees[0]->fullname,
-                    "nickname" => $employees[0]->nickname,
-                    "hire_date" => $employees[0]->hire_date,
-                    "company_email" => $employees[0]->company_email,
-                    "main_position" => $employees[0]->positions[0]->position_name,
-                    "company_main" => $employees[0]->positions[0]->company[0]->company_name,
-                    "directorate_main" => $employees[0]->positions[0]->directorate[0]->directorat_name,
-                    "division_main" => $employees[0]->positions[0]->division[0]->division_name,
-                    "section_main" => $employees[0]->positions[0]->section[0]->section_name,
-                    "job_grade_main" => $employees[0]->positions[0]->job_grade[0]->grade_name,
+                    "position_name" => $employees[0]->positions[$i]->position_name,
+                    "company_name" => $employees[0]->positions[$i]->company[0]->company_name,
+                    "directorate_name" => $employees[0]->positions[$i]->directorate[0]->directorat_name,
+                    "division_name" => $employees[0]->positions[$i]->division[0]->division_name,
+                    "section_name" => $employees[0]->positions[$i]->section[0]->section_name,
+                    "grade_main" => $employees[0]->positions[$i]->job_grade[0]->grade_name,
                 ];
+    
+                $dataPosition[] = $employee;
+            }
+
+
+            $employee = [
+                "id" => $employees[0]->id,
+                "nip" => $employees[0]->nip,
+                "fullname" => $employees[0]->fullname,
+                "nickname" => $employees[0]->nickname,
+                "hire_date" => $employees[0]->hire_date,
+                "company_email" => $employees[0]->company_email,
+                "main_position" => $employees[0]->positions[0]->position_name,
+                "company_main" => $employees[0]->positions[0]->company[0]->company_name,
+                "directorate_main" => $employees[0]->positions[0]->directorate[0]->directorat_name,
+                "division_main" => $employees[0]->positions[0]->division[0]->division_name,
+                "section_main" => $employees[0]->positions[0]->section[0]->section_name,
+                "job_grade_main" => $employees[0]->positions[0]->job_grade[0]->grade_name,
+                "additional_position" => $dataPosition,
+            ];
 
             return response()->json([
                 'status_code' => 200,
@@ -159,13 +192,13 @@ class EmployeeController extends Controller
                 'data' => $employee,
             ], 200);
 
-        } catch (Exception $error) {
-            return response()->json([
-                'status_code' => 404,
-                'status' => 'error',
-                'message' => 'Data tidak ditemukan',
-            ], 404);
-        }
+        // } catch (Exception $error) {
+        //     return response()->json([
+        //         'status_code' => 404,
+        //         'status' => 'error',
+        //         'message' => 'Data tidak ditemukan',
+        //     ], 404);
+        // }
     }
 
     public function update(Request $request, $id) {
