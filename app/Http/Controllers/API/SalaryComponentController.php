@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 use App\Models\SalaryComponent;
 use Exception;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 
 class SalaryComponentController extends Controller
@@ -34,7 +35,7 @@ class SalaryComponentController extends Controller
      */
     public function create()
     {
-        //
+        // 
     }
 
     /**
@@ -42,13 +43,26 @@ class SalaryComponentController extends Controller
      */
     public function store(Request $request, SalaryComponent $component)
     {
+        if ($request->filled('component_name')) {
+            $validation = $request->validate([
+                'slug' => ['required','unique:salary_components,slug,NULL,id,deleted_at,NULL','string'],
+                'component_name' => ['required','unique:salary_components,component_name,NULL,id,deleted_at,NULL','string'],
+                'type' => ['required','unique:salary_components,type,NULL,id,deleted_at,NULL','string'],
+            ]);
+        }
+
+        $component = SalaryComponent::create([
+            'slug' => $validation['slug'],
+            'component_name' => $validation['component_name'],
+            'type' => $validation['type'],
+        ]);
         // try {
             // $location = SalaryComponent::findOrFail($component);
     
             return response()->json([
                 'status_code' => 200,
                 'status' => 'success',
-                'message' => 'Komponen Gaji berhasil diambil',
+                'message' => 'Komponen Gaji berhasil ditambahkan',
                 'data' => $component,
             ], 200);
         // } catch (Exception $error) {
