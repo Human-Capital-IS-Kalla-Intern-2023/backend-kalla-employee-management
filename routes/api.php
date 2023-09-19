@@ -92,9 +92,9 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::delete('section/{id}', [SectionController::class, 'destroy']);
 
     // Section
-    Route::get('salary-component', [SalaryComponentController::class, 'index']);
+    // Route::get('salary-component', [SalaryComponentController::class, 'index']);
     Route::post('salary-component/', [SalaryComponentController::class, 'store']);
-    Route::get('salary-component/{id}', [SalaryComponentController::class, 'show']);
-    Route::put('salary-component/{id}', [SalaryComponentController::class, 'update']);
-    Route::delete('salary-component/{id}', [SalaryComponentController::class, 'destroy']);
+    Route::get('salary-component/{salarycomponent:slug}', [SalaryComponentController::class, 'show']);
+    Route::put('salary-component/{salarycomponent:slug}', [SalaryComponentController::class, 'update']);
+    Route::delete('salary-component/{salarycomponent:slug}', [SalaryComponentController::class, 'destroy']);
 });

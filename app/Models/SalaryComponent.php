@@ -10,5 +10,8 @@ class SalaryComponent extends Model
 {
     use HasFactory, SoftDeletes;
 
+    protected $primaryKey = 'slug';
+    public $incrementing = false;
+
     protected $fillable = ['slug','component_name','is_hide','is_edit','is_active'];
 }
