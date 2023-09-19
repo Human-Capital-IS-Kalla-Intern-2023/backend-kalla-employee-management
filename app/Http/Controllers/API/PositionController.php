@@ -133,7 +133,7 @@ class PositionController extends Controller
 
     public function update(Request $request, $id) {
         $validation = $this->validate($request, [
-            'position_name' => 'required|string|unique:positions,position_name,NULL,id,deleted_at,NULL|max:255'
+            'position_name' => 'required|string|unique:positions,position_name,'.$id.',id,deleted_at,NULL|max:255'
         ]);
         
         try {
