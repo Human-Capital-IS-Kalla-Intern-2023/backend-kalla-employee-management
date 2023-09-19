@@ -36,12 +36,9 @@ class EmployeeController extends Controller
                 "hire_date" => $employees[$i]->hire_date,
                 "company_email" => $employees[$i]->company_email,
                 "id_main_position" => $employees[$i]->positions[0]->id,
-                "id_second_position" => $employees[$i]->positions[1]->id ?? '',
                 "main_position" => $employees[$i]->positions[0]->position_name,
-                "second_position" => $employees[$i]->positions[1]->position_name ?? '',
                 "created_at" =>  $employees[$i]->created_at,
                 "updated_at" =>  $employees[$i]->updated_at,
-
             ];
 
             $dataEmployee[] = $employee;
@@ -59,7 +56,7 @@ class EmployeeController extends Controller
 
     public function store(Request $request) {
 
-        if($request->filled('id_second_position')) {
+        if($request->filled('id_additional_position')) {
             $validation = $request->validate([
                 'nip' => ['required','unique:employees,nip,NULL,id,deleted_at,NULL','string'],
                 'fullname' => ['required','string'],
@@ -67,7 +64,7 @@ class EmployeeController extends Controller
                 'hire_date' => ['required','date'],
                 'company_email' => ['required','email','unique:employees,company_email,NULL,id,deleted_at,NULL'],
                 'id_main_position' => ['required','exists:positions,id,deleted_at,NULL'],
-                'id_second_position' => ['exists:positions,id,deleted_at,NULL', 'different:id_main_position'],
+                'id_additional_position' => ['array','unique_array:id_main_position', 'exists:positions,id,deleted_at,NULL'],
             ]);
         } else {
             $validation = $request->validate([
@@ -99,12 +96,16 @@ class EmployeeController extends Controller
                 'status' => 1,
             ]);
 
-            if($request->filled('id_second_position')) {
-                EmployeeDetail::create([
-                    'employee_id' => $employee->id ,
-                    'position_id' => $request->id_second_position,
-                    'status' => 0,
-                ]);
+
+            $additional_positions = $request->id_additional_position;
+            if($request->filled('id_additional_position')) {
+                foreach($additional_positions as $position) {
+                    EmployeeDetail::create([
+                        'employee_id' => $employee->id ,
+                        'position_id' => $position,
+                        'status' => 0,
+                    ]);
+                }
             }
 
             DB::commit();
@@ -149,14 +150,6 @@ class EmployeeController extends Controller
                     "division_main" => $employees[0]->positions[0]->division[0]->division_name,
                     "section_main" => $employees[0]->positions[0]->section[0]->section_name,
                     "job_grade_main" => $employees[0]->positions[0]->job_grade[0]->grade_name,
-                    "second_position" => $employees[0]->positions[1]->position_name ?? '',
-                    "company_second" => $employees[0]->positions[1]->company[0]->company_name ?? '',
-                    "directorate_second" => $employees[0]->positions[1]->directorate[0]->directorat_name ?? '',
-                    "division_second" => $employees[0]->positions[1]->division[0]->division_name ?? '',
-                    "section_second" => $employees[0]->positions[1]->section[0]->section_name ?? '',
-                    "job_grade_second" => $employees[0]->positions[1]->job_grade[0]->grade_name ?? '',
-                    "created_at" =>  $employees[0]->created_at,
-                    "updated_at" =>  $employees[0]->updated_at,
                 ];
 
             return response()->json([
@@ -177,7 +170,7 @@ class EmployeeController extends Controller
 
     public function update(Request $request, $id) {
 
-        if($request->filled('id_second_position')) {
+        if($request->filled('id_additional_position')) {
             $validation = $request->validate([
                 'nip' => ['required','string','unique:employees,nip,'.$id.',id,deleted_at,NULL'],
                 'fullname' => ['required','string'],
@@ -185,7 +178,7 @@ class EmployeeController extends Controller
                 'hire_date' => ['required','date'],
                 'company_email' => ['required','email','unique:employees,company_email,'.$id.',id,deleted_at,NULL'],
                 'id_main_position' => ['required','exists:positions,id,deleted_at,NULL'],
-                'id_second_position' => ['exists:positions,id,deleted_at,NULL', 'different:id_main_position'],
+                'id_additional_position' => ['array','unique_array:id_main_position', 'exists:positions,id,deleted_at,NULL'],
             ]);
         } else {
             $validation = $request->validate([
@@ -197,74 +190,56 @@ class EmployeeController extends Controller
                 'id_main_position' => ['required','exists:positions,id,deleted_at,NULL'],
             ]);
         }
-        
-        
-        // DB::beginTransaction();
 
-        // try{
-            $employee = Employee::findOrFail($id);
+        $employee = Employee::findOrFail($id);
 
-            $employee->update([
-                'nip' => $request->nip,
-                'fullname' => $request->fullname,
-                'nickname' => $request->nickname,
-                'hire_date' => $request->hire_date,
-                'company_email' => $request->company_email,
-            ]);
+        $employee->update([
+            'nip' => $request->nip,
+            'fullname' => $request->fullname,
+            'nickname' => $request->nickname,
+            'hire_date' => $request->hire_date,
+            'company_email' => $request->company_email,
+        ]);
 
-            EmployeeDetail::where('employee_id',$id)->where('status',  1)->update([
-                'position_id' => $request->id_main_position,
-                'status' => 1,
-            ]);
+        EmployeeDetail::where('employee_id',$id)->where('status',  1)->update([
+            'position_id' => $request->id_main_position,
+            'status' => 1,
+        ]);
 
+        EmployeeDetail::where('employee_id',$id)->where('status',  0)->delete();            
 
-            EmployeeDetail::updateOrCreate(
-                [
+        $additional_positions = $request->id_additional_position;
+        // if($request->filled('id_additional_position')) {
+            foreach($additional_positions as $position) {
+                EmployeeDetail::create([
                     'employee_id' => $id,
+                    'position_id' => $position,
                     'status' => 0,
-                ],
-                [
-                'employee_id' => $id,
-                'position_id' => $request->id_second_position,
-                'status' => 0,
-            ]);
-
-
-            DB::commit();
-
-            $employees = Employee::with('positions')->withTrashed()->where('id',$id)->get();
-
-            
-            $employee = [
-                "id" => $employees[0]->id,
-                "nip" => $employees[0]->nip,
-                "fullname" => $employees[0]->fullname,
-                "nickname" => $employees[0]->nickname,
-                "hire_date" => $employees[0]->hire_date,
-                "company_email" => $employees[0]->company_email,
-                "id_main_position" => $employees[0]->positions[0]->id,
-                "id_second_position" => $employees[0]->positions[1]->id ?? '',
-                "main_position" => $employees[0]->positions[0]->position_name,
-                "second_position" => $employees[0]->positions[1]->position_name ?? '',
-            ];
-
-            return response()->json([
-                'status_code' => 200,
-                'status' => 'success',
-                'message' => 'Karyawan baru berhasil diubah',
-                'data' => $employee,
-            ], 200);
-        // }catch(\Exception $e){
-
-        //     DB::rollback();
-
-        //     return response()->json([
-        //         'status_code' => 500,
-        //         'status' => 'error',
-        //         'message' => 'Gagal Menyimpan',
-        //     ], 500);
-
+                ]);
+            }
         // }
+
+        DB::commit();
+
+        $employees = Employee::with('positions')->withTrashed()->where('id',$id)->get();
+        
+        $employee = [
+            "id" => $employees[0]->id,
+            "nip" => $employees[0]->nip,
+            "fullname" => $employees[0]->fullname,
+            "nickname" => $employees[0]->nickname,
+            "hire_date" => $employees[0]->hire_date,
+            "company_email" => $employees[0]->company_email,
+            "id_main_position" => $employees[0]->positions[0]->id,
+            "main_position" => $employees[0]->positions[0]->position_name,
+        ];
+
+        return response()->json([
+            'status_code' => 200,
+            'status' => 'success',
+            'message' => 'Karyawan baru berhasil diubah',
+            'data' => $employee,
+        ], 200);
         
     }
 
