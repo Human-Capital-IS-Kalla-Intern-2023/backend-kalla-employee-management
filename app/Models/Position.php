@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Position extends Model
 {
     use HasFactory, SoftDeletes;
-    protected $fillable = ['company_id','position_name','job_grade','directorate','division','section'];
+    protected $fillable = ['company_id','position_name','directorat_id','division_id','section_id', 'job_grade_id'];
 
     public function employee(){
         return $this->belongsToMany(Employee::class, 'id', 'position')
