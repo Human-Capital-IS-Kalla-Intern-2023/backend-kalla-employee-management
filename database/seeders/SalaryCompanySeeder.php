@@ -20,7 +20,6 @@ class SalaryCompanySeeder extends Seeder
 
         foreach ($components as $component) {
             SalaryCompany::create([
-            'slug' => $component->slug,
             'component' => $component->component_name,
             'type' => $component->type,
             'is_hide' => $component->is_hide,
