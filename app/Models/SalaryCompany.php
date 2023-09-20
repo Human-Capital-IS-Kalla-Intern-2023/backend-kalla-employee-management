@@ -13,7 +13,7 @@ class SalaryCompany extends Model
     protected $primaryKey = 'slug';
     public $incrementing = false;
 
-    protected $fillable = ['slug','component_name','is_hide','is_edit','is_active'];
+    protected $fillable = ['slug','company_id', 'order','component_name','type','is_hide','is_edit','is_active'];
 
     public function salaryComponent() {
         return $this->belongsTo(SalaryComponent::class, 'id');
