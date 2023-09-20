@@ -60,7 +60,7 @@ class SalaryComponentController extends Controller
                 'component_name' => $request->component_name,
                 'type' => $request->type,
                 'is_hide' => $request->is_hide,
-                'is_edit' => $request->_is_edit,
+                'is_edit' => $request->is_edit,
                 'is_active' => $request->is_active,
             ]);
             
@@ -70,12 +70,12 @@ class SalaryComponentController extends Controller
                 'message' => 'Komponen Gaji berhasil ditambahkan',
                 'data' => $salarycomponent,
             ], 200);
-         } catch (Exception $error) {
-             return response()->json([
-                 'status_code' => 500,
-                 'status' => 'error',
-                 'message' => 'Komponen gaji tidak ditemukan',
-             ], 500);
+        } catch (Exception $error) {
+            return response()->json([
+                'status_code' => 500,
+                'status' => 'error',
+                'message' => 'Komponen gaji gagal ditambahkan',
+            ], 500);
         }
     }
 
@@ -90,7 +90,7 @@ class SalaryComponentController extends Controller
             return response()->json([
                 'status_code' => 200,
                 'status' => 'success',
-                'message' => 'Komponen Gaji berhasil ditambahkan',
+                'message' => 'Komponen Gaji berhasil diambil',
                 'data' => $component,
             ], 200);
         } catch (Exception $error) {
@@ -140,7 +140,7 @@ class SalaryComponentController extends Controller
             return response()->json([
                 'status_code' => 200,
                 'status' => 'success',
-                'message' => 'Komponen Gaji berhasil ditambahkan',
+                'message' => 'Komponen Gaji berhasil diubah',
                 'data' => $component,
             ], 200);
         } catch (Exception $error) {
