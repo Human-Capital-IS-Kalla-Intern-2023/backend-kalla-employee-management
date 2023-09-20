@@ -41,37 +41,38 @@ class SalaryComponentController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request, SalaryComponent $component)
+    public function store(Request $request, String $id)
     {
-        if ($request->filled('component_name')) {
-            $validation = $request->validate([
-                'slug' => ['required','unique:salary_components,slug,NULL,id,deleted_at,NULL','string'],
-                'component_name' => ['required','unique:salary_components,component_name,NULL,id,deleted_at,NULL','string'],
-                'type' => ['required','unique:salary_components,type,NULL,id,deleted_at,NULL','string'],
-            ]);
-        }
 
-        $component = SalaryComponent::create([
-            'slug' => $validation['slug'],
-            'component_name' => $validation['component_name'],
-            'type' => $validation['type'],
+        $validation = $request->validate([
+            'slug' => ['required','unique:salary_components,slug,NULL,id,deleted_at,NULL','string'],
+            'component_name' => ['required','unique:salary_components,component_name,NULL,id,deleted_at,NULL','string'],
+            'type' => ['required','unique:salary_components,type,NULL,id,deleted_at,NULL','string'],
         ]);
-        // try {
-            // $location = SalaryComponent::findOrFail($component);
-    
+
+        
+        try {
+            $component = SalaryComponent::findOrFail($id);
+
+            $component = SalaryComponent::create([
+                'slug' => $validation['slug'],
+                'component_name' => $validation['component_name'],
+                'type' => $validation['type'],
+            ]);
+            
             return response()->json([
                 'status_code' => 200,
                 'status' => 'success',
                 'message' => 'Komponen Gaji berhasil ditambahkan',
                 'data' => $component,
             ], 200);
-        // } catch (Exception $error) {
-        //     return response()->json([
-        //         'status_code' => 500,
-        //         'status' => 'error',
-        //         'message' => 'Komponen gaji tidak ditemukan',
-        //     ], 500);
-        // }
+        } catch (Exception $error) {
+            return response()->json([
+                'status_code' => 500,
+                'status' => 'error',
+                'message' => 'Komponen gaji tidak ditemukan',
+            ], 500);
+        }
     }
 
     /**

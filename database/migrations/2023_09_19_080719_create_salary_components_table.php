@@ -12,8 +12,9 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('salary_components', function (Blueprint $table) {
-            $table->string('slug')->primary();
-            $table->string('component_name');
+            $table->id();
+            $table->string('component_name')->unique();
+            $table->string('slug');
             $table->enum('type',['fixed pay','deductions']);
             $table->boolean('is_hide')->default(0);
             $table->boolean('is_edit')->default(1);
