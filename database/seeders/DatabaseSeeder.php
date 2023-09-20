@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 
+use App\Models\SalaryCompany;
 use App\Models\SalaryComponent;
 use Illuminate\Database\Seeder;
 
@@ -32,6 +33,7 @@ class DatabaseSeeder extends Seeder
             PositionSeeder::class,
             // EmployeeSeeder::class,
             SalaryComponentSeeder::class,
+            SalaryCompanySeeder::class,
         ]);
     }
 }
