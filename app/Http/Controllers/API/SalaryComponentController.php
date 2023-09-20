@@ -7,6 +7,7 @@ use App\Models\SalaryComponent;
 use Exception;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 
 class SalaryComponentController extends Controller
 {
@@ -41,18 +42,16 @@ class SalaryComponentController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request, SalaryComponent $component)
+    public function store(Request $request)
     {
-        if ($request->filled('component_name')) {
+
             $validation = $request->validate([
-                'slug' => ['required','unique:salary_components,slug,NULL,id,deleted_at,NULL','string'],
                 'component_name' => ['required','unique:salary_components,component_name,NULL,id,deleted_at,NULL','string'],
-                'type' => ['required','unique:salary_components,type,NULL,id,deleted_at,NULL','string'],
-                'is_hide' => ['required','unique:salary_components,is_hide,NULL,id,deleted_at,NULL','string'],
-                'is_edit' => ['required','unique:salary_components,is_edit,NULL,id,deleted_at,NULL','string'],
-                'is_active' => ['required','unique:salary_components,is_active,NULL,id,deleted_at,NULL','string'],
+                'type' => ['required','in:fixed pay,deductions'],
+                'is_hide' => ['required','boolean'],
+                'is_edit' => ['required','boolean'],
+                'is_active' => ['required','boolean'],
             ]);
-        }
 
         $salarycomponent = SalaryComponent::create([
             'slug' => $validation['slug'],
@@ -64,9 +63,20 @@ class SalaryComponentController extends Controller
             'is_active' => $validation['is_active'],
 
         ]);
-        // try {
-            // $location = SalaryComponent::findOrFail($component);
-    
+
+        
+        try {
+
+            $salarycomponent = SalaryComponent::create([
+            'slug' => $validation['slug'],
+            'component_name' => $validation['component_name'],
+            'type' => $validation['type'],
+            'is_hide' => $validation['is_hide'],
+            'type' => $validation['type'],
+            'is_edit' => $validation['is_edit'],
+            'is_active' => $validation['is_active'],
+        ]);
+            
             return response()->json([
                 'status_code' => 200,
                 'status' => 'success',
@@ -85,15 +95,24 @@ class SalaryComponentController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(SalaryComponent $salarycomponent)
+    public function show(String $id)
     {
-    
-        return response()->json([
-            'status_code' => 200,
-            'status' => 'success',
-            'message' => 'Komponen Gaji berhasil diambil',
-            'data' => $salarycomponent,
-        ], 200);
+        try {
+            $component = SalaryComponent::findOrFail($id);
+
+            return response()->json([
+                'status_code' => 200,
+                'status' => 'success',
+                'message' => 'Komponen Gaji berhasil ditambahkan',
+                'data' => $component,
+            ], 200);
+        } catch (Exception $error) {
+            return response()->json([
+                'status_code' => 500,
+                'status' => 'error',
+                'message' => 'Komponen gaji tidak ditemukan',
+            ], 500);
+        }
         
     }
 
@@ -110,40 +129,78 @@ class SalaryComponentController extends Controller
      */
     public function update(Request $request, string $slug)
     {
-        $validation = $this->validate($request, [
-            'slug' => ['required','unique:salary_components,slug,NULL,id,deleted_at,NULL','string'],
-            'component_name' => ['required','unique:salary_components,component_name,NULL,id,deleted_at,NULL','string'],
-            'type' => ['required','unique:salary_components,type,NULL,id,deleted_at,NULL','string'],
-            'is_hide' => ['required','unique:salary_components,is_hide,NULL,id,deleted_at,NULL','string'],
-            'is_edit' => ['required','unique:salary_components,is_edit,NULL,id,deleted_at,NULL','string'],
-            'is_active' => ['required','unique:salary_components,is_active,NULL,id,deleted_at,NULL','string'],
+        $validation = $request->validate([
+            'component_name' => ['required','string','unique:salary_components,component_name,'.$id.',id,deleted_at,NULL'],
+            'type' => ['required','in:fixed pay,deductions'],
+            'is_hide' => ['boolean'],
+            'is_edit' => ['boolean'],
+            'is_active' => ['boolean'],
         ]);
 
-        $item = SalaryComponent::findOrFail($slug);
+        
+        try {
+            $component = SalaryComponent::findOrFail($id);
 
-        $item->update([
-            'slug' => $request->slug,
-            'component_name' => $request->component_name,
-            'type' => $request->type,
-            'is_hide' => $request->is_hide,
-            'is_edit' => $request->is_edit,
-            'is_active' => $request->is_active,
-        ]);
+            $component->update([
+                'component_name' => $request->component_name,
+                'slug' => Str::slug($request->component_name),
+                'type' => $request->type,
+                'is_hide' => $request->is_hide,
+                'is_edit' => $request->is_edit,
+                'is_active' =>  $request->is_active
+            ]);
+            
+            return response()->json([
+                'status_code' => 200,
+                'status' => 'success',
+                'message' => 'Komponen Gaji berhasil ditambahkan',
+                'data' => $component,
+            ], 200);
+        } catch (Exception $error) {
+            return response()->json([
+                'status_code' => 500,
+                'status' => 'error',
+                'message' => 'Komponen gaji tidak ditemukan',
+            ], 500);
+        }
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(SalaryComponent $salarycomponent)
+    public function destroy(String $id)
     {
 
-        $salarycomponent->delete();
+        try {            
+            $component = SalaryComponent::findOrFail($id);
 
-        return response()->json([
-            'status_code' => 200, 
-            'status' => 'success',
-            'message' => 'Lokasi berhasil dihapus',
-            'data' => $salarycomponent,
-        ], 200);
+            //delete post
+            $component->delete();
+
+            return response()->json([
+                'status_code' => 200, 
+                'status' => 'success',
+                'message' => 'Komponen berhasil dihapus',
+                'data' => $component,
+            ], 200);
+
+
+        } catch (Exception $error) {
+
+            if ($error->getCode() == '23000') {
+                return response()->json([
+                    'status_code' => 500, 
+                    'status' => 'error',
+                    'message' => 'Tidak dapat menghapus, Komponen masih digunakan tabel lain',
+                ], 500);
+            }
+
+            return response()->json([
+                'status_code' => 404,
+                'status' => 'error',
+                'message' => 'ID Tidak ditemukan',
+            ], 404);
+        
+        }
     }
 }
