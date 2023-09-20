@@ -13,8 +13,7 @@ return new class extends Migration
     {
         Schema::create('salary_components', function (Blueprint $table) {
             $table->id();
-            $table->string('component_name')->unique();
-            $table->string('slug');
+            $table->string('component_name');
             $table->enum('type',['fixed pay','deductions']);
             $table->boolean('is_hide')->default(0);
             $table->boolean('is_edit')->default(1);

@@ -15,8 +15,8 @@ class SalaryComponentSeeder extends Seeder
     {
         $components = [
             [
-                'component_name' => 'Gaji Pokok',
                 'slug' => 'gaji-pokok',
+                'component_name' => 'Gaji Pokok',
                 'type' => 'fixed pay',
                 'is_hide' => 0,
                 'is_edit' => 1,
@@ -25,8 +25,8 @@ class SalaryComponentSeeder extends Seeder
                 'updated_at' => date('Y-m-d H:i:s', time()),
             ],
             [
-                'component_name' => 'Tunjangan Transportasi',
                 'slug' => 'tunjangan-transportasi',
+                'component_name' => 'Tunjangan Transportasi',
                 'type' => 'fixed pay',
                 'is_hide' => 0,
                 'is_edit' => 1,
@@ -35,8 +35,8 @@ class SalaryComponentSeeder extends Seeder
                 'updated_at' => date('Y-m-d H:i:s', time()),
             ],
             [
-                'component_name' => 'Tunjangan Komunikasi',
                 'slug' => 'tunjangan-komunikasi',
+                'component_name' => 'Tunjangan Komunikasi',
                 'type' => 'fixed pay',
                 'is_hide' => 0,
                 'is_edit' => 1,
@@ -45,8 +45,8 @@ class SalaryComponentSeeder extends Seeder
                 'updated_at' => date('Y-m-d H:i:s', time()),
             ],
             [
-                'component_name' => 'Tunjangan BPJS',
                 'slug' => 'tunjangan-bpjs',
+                'component_name' => 'Tunjangan BPJS',
                 'type' => 'deductions',
                 'is_hide' => 0,
                 'is_edit' => 1,
