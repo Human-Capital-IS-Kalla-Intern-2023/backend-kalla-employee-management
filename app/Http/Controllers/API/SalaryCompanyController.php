@@ -98,7 +98,7 @@ class SalaryCompanyController extends Controller
     public function show(String $id)
     {
         try {
-            $component = SalaryCompany::findOrFail($id);
+            $component = SalaryCompany::where('id',$id)->get();;
 
             return response()->json([
                 'status_code' => 200,
