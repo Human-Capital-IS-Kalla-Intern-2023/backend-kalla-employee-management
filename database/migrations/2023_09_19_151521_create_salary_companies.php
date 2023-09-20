@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('salary_companies', function (Blueprint $table) {
             $table->id();
             $table->foreignId('company_id')->constrained();
+            $table->string('order');
             $table->string('component');
             $table->enum('type',['fixed pay','deductions']);
             $table->boolean('is_hide')->default(0);
