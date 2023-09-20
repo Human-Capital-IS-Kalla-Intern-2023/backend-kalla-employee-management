@@ -6,11 +6,10 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\SoftDeletes;
 
 class EmployeeDetail extends Model
 {
-    use HasFactory, SoftDeletes;
+    use HasFactory;
 
 
 
@@ -63,7 +62,7 @@ class EmployeeDetail extends Model
 
     public function position()
     {
-        return $this->belongsTo(Posisi::class);
+        return $this->belongsTo(Position::class);
     }
     
 
