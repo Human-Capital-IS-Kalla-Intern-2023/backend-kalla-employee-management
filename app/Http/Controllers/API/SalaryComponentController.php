@@ -44,26 +44,42 @@ class SalaryComponentController extends Controller
      */
     public function store(Request $request)
     {
+            $validation = $request->validate([
+                'component_name' => ['required','unique:salary_components,component_name,NULL,id,deleted_at,NULL','string'],
+                'type' => ['required','in:fixed pay,deductions'],
+                'is_hide' => ['required','boolean'],
+                'is_edit' => ['required','boolean'],
+                'is_active' => ['required','boolean'],
+            ]);
 
-        $validation = $request->validate([
-            'component_name' => ['required','string','unique:salary_components,component_name,NULL,id,deleted_at,NULL'],
-            'type' => ['required','in:fixed pay,deductions'],
+        $salarycomponent = SalaryComponent::create([
+            'slug' => $validation['slug'],
+            'component_name' => $validation['component_name'],
+            'type' => $validation['type'],
+            'is_hide' => $validation['is_hide'],
+            'type' => $validation['type'],
+            'is_edit' => $validation['is_edit'],
+            'is_active' => $validation['is_active'],
         ]);
 
         
         try {
 
-            $component = SalaryComponent::create([
-                'component_name' => $request->component_name,
-                'slug' => Str::slug($request->component_name),
-                'type' => $request->type,
-            ]);
+            $salarycomponent = SalaryComponent::create([
+            'slug' => $validation['slug'],
+            'component_name' => $validation['component_name'],
+            'type' => $validation['type'],
+            'is_hide' => $validation['is_hide'],
+            'type' => $validation['type'],
+            'is_edit' => $validation['is_edit'],
+            'is_active' => $validation['is_active'],
+        ]);
             
             return response()->json([
                 'status_code' => 200,
                 'status' => 'success',
                 'message' => 'Komponen Gaji berhasil ditambahkan',
-                'data' => $component,
+                'data' => $salarycomponent,
             ], 200);
         } catch (Exception $error) {
             return response()->json([
@@ -109,7 +125,7 @@ class SalaryComponentController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, string $slug)
     {
         $validation = $request->validate([
             'component_name' => ['required','string','unique:salary_components,component_name,'.$id.',id,deleted_at,NULL'],
