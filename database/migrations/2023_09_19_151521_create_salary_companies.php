@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('salary_companies', function (Blueprint $table) {
-            $table->string('slug')->primary();
+            $table->id();
             $table->string('component');
             $table->enum('type',['fixed pay','deductions']);
             $table->boolean('is_hide')->default(0);
@@ -21,7 +21,7 @@ return new class extends Migration
             $table->timestamps();
             $table->softDeletes();
 
-            $table->foreign('slug')->references('slug')->on('salary_components');
+            $table->foreign('id')->references('id')->on('salary_components')->onDelete('cascade')->onUpdate('cascade');
         });
     }
 
