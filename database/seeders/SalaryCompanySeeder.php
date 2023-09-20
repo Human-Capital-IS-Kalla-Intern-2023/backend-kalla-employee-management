@@ -14,19 +14,13 @@ class SalaryCompanySeeder extends Seeder
      */
     public function run(): void
     {
-
         $components = SalaryComponent::all();
-
 
         foreach ($components as $component) {
             SalaryCompany::create([
             'component' => $component->component_name,
             'type' => $component->type,
-            'is_hide' => $component->is_hide,
-            'is_edit' => $component->is_edit,
-            'is_active' => $component->is_active,
-            'created_at' => $component->created_at,
-            'updated_at' => $component->updated_at,
+            'company_id' => rand(1,10),
         ]);
         }
     }

@@ -16,7 +16,11 @@ class SalaryCompany extends Model
     protected $fillable = ['slug','component_name','is_hide','is_edit','is_active'];
 
     public function salaryComponent() {
-        return $this->belongsTo(SalaryComponent::class, 'slug');
+        return $this->belongsTo(SalaryComponent::class, 'id');
+    }
+
+    public function salaryCompany() {
+        return $this->belongsTo(Company::class, 'id', 'company_id');
     }
 
 
