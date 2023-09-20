@@ -9,6 +9,7 @@ use App\Http\Controllers\API\UserController;
 use App\Http\Controllers\API\DivisionController;
 use App\Http\Controllers\API\PositionController;
 use App\Http\Controllers\API\SalaryComponentController;
+use App\Http\Controllers\API\SalaryCompanyController;
 use App\Http\Controllers\API\SectionController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -91,10 +92,17 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::put('section/{id}', [SectionController::class, 'update']);
     Route::delete('section/{id}', [SectionController::class, 'destroy']);
 
-    // Section
+    // Salary Component
     Route::get('salary-component', [SalaryComponentController::class, 'index']);
     Route::post('salary-component/', [SalaryComponentController::class, 'store']);
     Route::get('salary-component/{id}', [SalaryComponentController::class, 'show']);
     Route::put('salary-component/{id}', [SalaryComponentController::class, 'update']);
     Route::delete('salary-component/{id}', [SalaryComponentController::class, 'destroy']);
+
+    // Salary Company
+    Route::get('salary-company', [SalaryCompanyController::class, 'index']);
+    Route::post('salary-company/', [SalaryCompanyController::class, 'store']);
+    Route::get('salary-company/{id}', [SalaryCompanyController::class, 'show']);
+    Route::put('salary-company/{id}', [SalaryCompanyController::class, 'update']);
+    Route::delete('salary-company/{id}', [SalaryCompanyController::class, 'destroy']);
 });
