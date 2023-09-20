@@ -46,6 +46,7 @@ class SalaryCompanyController extends Controller
 
         $validation = $request->validate([
             'component' => ['required','unique:salary_companies,component,NULL,id,deleted_at,NULL','string'],
+            'company_id' => ['required','string'],
             'type' => ['required','in:fixed pay,deductions'],
             'is_hide' => ['required','boolean'],
             'is_edit' => ['required','boolean'],
@@ -54,6 +55,7 @@ class SalaryCompanyController extends Controller
 
         $salarycomponent = SalaryCompany::create([
             'component' => $validation['component'],
+            'company_id' => $validation['company_id'],
             'type' => $validation['type'],
             'is_hide' => $validation['is_hide'],
             'type' => $validation['type'],
@@ -67,6 +69,7 @@ class SalaryCompanyController extends Controller
 
             $salarycomponent = SalaryCompany::create([
             'component' => $validation['component'],
+            'company_id' => $validation['company_id'],
             'type' => $validation['type'],
             'is_hide' => $validation['is_hide'],
             'type' => $validation['type'],
@@ -128,6 +131,7 @@ class SalaryCompanyController extends Controller
     {
         $validation = $request->validate([
             'component' => ['required','string','unique:salary_companies,component,'.$id.',id,deleted_at,NULL'],
+            'company_id' => ['required','unique:company,id,NULL,id,'.$id.',deleted_at,NULL','string'],
             'type' => ['required','in:fixed pay,deductions'],
             'is_hide' => ['boolean'],
             'is_edit' => ['boolean'],
