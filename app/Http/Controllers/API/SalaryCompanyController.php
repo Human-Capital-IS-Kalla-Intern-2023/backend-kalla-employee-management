@@ -18,7 +18,7 @@ class SalaryCompanyController extends Controller
         $search = $request->get('search');
 
         $components = SalaryCompany::query()->when($search, function($query) use($search) {
-            $query->where('component_name','like','%'.$search.'%');
+            $query->where('component','like','%'.$search.'%');
         })->get();
         
 
@@ -45,7 +45,7 @@ class SalaryCompanyController extends Controller
     {
 
         $validation = $request->validate([
-            'component_name' => ['required','unique:salary_components,component_name,NULL,id,deleted_at,NULL','string'],
+            'component' => ['required','unique:salary_companies,component,NULL,id,deleted_at,NULL','string'],
             'type' => ['required','in:fixed pay,deductions'],
             'is_hide' => ['required','boolean'],
             'is_edit' => ['required','boolean'],
@@ -53,8 +53,7 @@ class SalaryCompanyController extends Controller
         ]);
 
         $salarycomponent = SalaryCompany::create([
-            'slug' => $validation['slug'],
-            'component_name' => $validation['component_name'],
+            'component' => $validation['component'],
             'type' => $validation['type'],
             'is_hide' => $validation['is_hide'],
             'type' => $validation['type'],
@@ -67,8 +66,7 @@ class SalaryCompanyController extends Controller
         try {
 
             $salarycomponent = SalaryCompany::create([
-            'slug' => $validation['slug'],
-            'component_name' => $validation['component_name'],
+            'component' => $validation['component'],
             'type' => $validation['type'],
             'is_hide' => $validation['is_hide'],
             'type' => $validation['type'],
@@ -129,7 +127,7 @@ class SalaryCompanyController extends Controller
     public function update(Request $request, String $id)
     {
         $validation = $request->validate([
-            'component_name' => ['required','string','unique:salary_components,component_name,'.$id.',id,deleted_at,NULL'],
+            'component' => ['required','string','unique:salary_companies,component,'.$id.',id,deleted_at,NULL'],
             'type' => ['required','in:fixed pay,deductions'],
             'is_hide' => ['boolean'],
             'is_edit' => ['boolean'],
@@ -142,7 +140,6 @@ class SalaryCompanyController extends Controller
 
             $component->update([
                 'component_name' => $request->component_name,
-                'slug' => Str::slug($request->component_name),
                 'type' => $request->type,
                 'is_hide' => $request->is_hide,
                 'is_edit' => $request->is_edit,
