@@ -45,13 +45,13 @@ class SalaryComponentController extends Controller
     public function store(Request $request)
     {
 
-            $validation = $request->validate([
-                'component_name' => ['required','unique:salary_components,component_name,NULL,id,deleted_at,NULL','string'],
-                'type' => ['required','in:fixed pay,deductions'],
-                'is_hide' => ['required','boolean'],
-                'is_edit' => ['required','boolean'],
-                'is_active' => ['required','boolean'],
-            ]);
+        $validation = $request->validate([
+            'component_name' => ['required','unique:salary_components,component_name,NULL,id,deleted_at,NULL','string'],
+            'type' => ['required','in:fixed pay,deductions'],
+            'is_hide' => ['required','boolean'],
+            'is_edit' => ['required','boolean'],
+            'is_active' => ['required','boolean'],
+        ]);
 
         $salarycomponent = SalaryComponent::create([
             'slug' => $validation['slug'],
@@ -83,13 +83,13 @@ class SalaryComponentController extends Controller
                 'message' => 'Komponen Gaji berhasil ditambahkan',
                 'data' => $salarycomponent,
             ], 200);
-        // } catch (Exception $error) {
-        //     return response()->json([
-        //         'status_code' => 500,
-        //         'status' => 'error',
-        //         'message' => 'Komponen gaji tidak ditemukan',
-        //     ], 500);
-        // }
+         } catch (Exception $error) {
+             return response()->json([
+                 'status_code' => 500,
+                 'status' => 'error',
+                 'message' => 'Komponen gaji tidak ditemukan',
+             ], 500);
+        }
     }
 
     /**
@@ -127,7 +127,7 @@ class SalaryComponentController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $slug)
+    public function update(Request $request, String $id)
     {
         $validation = $request->validate([
             'component_name' => ['required','string','unique:salary_components,component_name,'.$id.',id,deleted_at,NULL'],
