@@ -10,5 +10,5 @@ class SalaryComponent extends Model
 {
     use HasFactory, SoftDeletes;
 
-    protected $fillable = ['slug','component_name','is_hide','is_edit','is_active'];
+    protected $fillable = ['slug','component_name','type','is_hide','is_edit','is_active'];
 }
