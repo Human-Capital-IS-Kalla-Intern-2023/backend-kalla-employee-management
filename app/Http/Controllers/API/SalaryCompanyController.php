@@ -52,29 +52,17 @@ class SalaryCompanyController extends Controller
             'is_edit' => ['required','boolean'],
             'is_active' => ['required','boolean'],
         ]);
-
-        $salarycomponent = SalaryCompany::create([
-            'component' => $validation['component'],
-            'company_id' => $validation['company_id'],
-            'type' => $validation['type'],
-            'is_hide' => $validation['is_hide'],
-            'type' => $validation['type'],
-            'is_edit' => $validation['is_edit'],
-            'is_active' => $validation['is_active'],
-
-        ]);
-
         
         try {
 
             $salarycomponent = SalaryCompany::create([
-            'component' => $validation['component'],
-            'company_id' => $validation['company_id'],
-            'type' => $validation['type'],
-            'is_hide' => $validation['is_hide'],
-            'type' => $validation['type'],
-            'is_edit' => $validation['is_edit'],
-            'is_active' => $validation['is_active'],
+            'component' => $request->component,
+            'company_id' => $request->company_id,
+            'order' => $request->order,
+            'type' => $request->type,
+            'is_hide' => $request->is_hide,
+            'is_edit' => $request->is_edit,
+            'is_active' => $request->is_active,
         ]);
             
             return response()->json([
@@ -98,7 +86,7 @@ class SalaryCompanyController extends Controller
     public function show(String $id)
     {
         try {
-            $component = SalaryCompany::where('id',$id)->get();;
+            $component = SalaryCompany::where('id',$id)->orderBy('order', 'asc')->get();;
 
             return response()->json([
                 'status_code' => 200,
