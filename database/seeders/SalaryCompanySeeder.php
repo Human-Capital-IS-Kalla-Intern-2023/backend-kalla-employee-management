@@ -18,6 +18,7 @@ class SalaryCompanySeeder extends Seeder
 
         foreach ($components as $component) {
             SalaryCompany::create([
+            'order' => rand(1,10),
             'component' => $component->component_name,
             'type' => $component->type,
             'company_id' => rand(1,10),
