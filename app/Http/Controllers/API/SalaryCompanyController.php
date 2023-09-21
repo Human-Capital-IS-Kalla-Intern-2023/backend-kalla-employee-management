@@ -47,6 +47,7 @@ class SalaryCompanyController extends Controller
         $validation = $request->validate([
             'component' => ['required','unique:salary_companies,component,NULL,id,deleted_at,NULL','string'],
             'company_id' => ['required','string'],
+            'order' => ['required','string'],
             'type' => ['required','in:fixed pay,deductions'],
             'is_hide' => ['required','boolean'],
             'is_edit' => ['required','boolean'],
@@ -55,21 +56,21 @@ class SalaryCompanyController extends Controller
         
         try {
 
-            $salarycomponent = SalaryCompany::create([
-            'component' => $request->component,
-            'company_id' => $request->company_id,
-            'order' => $request->order,
-            'type' => $request->type,
-            'is_hide' => $request->is_hide,
-            'is_edit' => $request->is_edit,
-            'is_active' => $request->is_active,
-        ]);
+            $component = SalaryCompany::create([
+                'component' => $request->component,
+                'company_id' => $request->company_id,
+                'order' => $request->order,
+                'type' => $request->type,
+                'is_hide' => $request->is_hide,
+                'is_edit' => $request->is_edit,
+                'is_active' =>  $request->is_active
+            ]);
             
             return response()->json([
                 'status_code' => 200,
                 'status' => 'success',
                 'message' => 'Komponen Gaji berhasil ditambahkan',
-                'data' => $salarycomponent,
+                'data' => $component,
             ], 200);
          } catch (Exception $error) {
              return response()->json([
@@ -86,7 +87,7 @@ class SalaryCompanyController extends Controller
     public function show(String $id)
     {
         try {
-            $component = SalaryCompany::where('id',$id)->orderBy('order', 'asc')->get();;
+            $component = SalaryCompany::where('id',$id)->orderBy('order', 'asc')->get();
 
             return response()->json([
                 'status_code' => 200,
@@ -117,9 +118,10 @@ class SalaryCompanyController extends Controller
      */
     public function update(Request $request, String $id)
     {
-        $validation = $request->validate([
+        $validation = $this->validate($request, [
             'component' => ['required','string','unique:salary_companies,component,'.$id.',id,deleted_at,NULL'],
-            'company_id' => ['required','unique:company,id,NULL,id,'.$id.',deleted_at,NULL','string'],
+            'company_id' => ['required','string'],
+            'order' =>['required','string'],
             'type' => ['required','in:fixed pay,deductions'],
             'is_hide' => ['boolean'],
             'is_edit' => ['boolean'],
@@ -131,7 +133,9 @@ class SalaryCompanyController extends Controller
             $component = SalaryCompany::findOrFail($id);
 
             $component->update([
-                'component_name' => $request->component_name,
+                'component' => $request->component,
+                'company_id' => $request->company_id,
+                'order' => $request->order,
                 'type' => $request->type,
                 'is_hide' => $request->is_hide,
                 'is_edit' => $request->is_edit,
