@@ -56,7 +56,6 @@ class SalaryComponentController extends Controller
         try {
 
             $salarycomponent = SalaryComponent::create([
-                'slug' => Str::slug($request->component_name),
                 'component_name' => $request->component_name,
                 'type' => $request->type,
                 'is_hide' => $request->is_hide,
@@ -116,7 +115,7 @@ class SalaryComponentController extends Controller
      */
     public function update(Request $request, String $id)
     {
-        $validation = $request->validate([
+        $validation = $this->validate($request, [
             'component_name' => ['required','string','unique:salary_components,component_name,'.$id.',id,deleted_at,NULL'],
             'type' => ['required','in:fixed pay,deductions'],
             'is_hide' => ['required','boolean'],
@@ -130,7 +129,6 @@ class SalaryComponentController extends Controller
 
             $component->update([
                 'component_name' => $request->component_name,
-                'slug' => Str::slug($request->component_name),
                 'type' => $request->type,
                 'is_hide' => $request->is_hide,
                 'is_edit' => $request->is_edit,

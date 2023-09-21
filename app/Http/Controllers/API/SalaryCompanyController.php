@@ -57,13 +57,13 @@ class SalaryCompanyController extends Controller
         try {
 
             $component = SalaryCompany::create([
-                'component' => $validation['component'],
-                'company_id' => $validation['company_id'],
-                'order' => $validation['order'],
-                'type' => $validation['type'],
-                'is_hide' => $validation['is_hide'],
-                'is_edit' => $validation['is_edit'],
-                'is_active' => $validation['is_active'],
+                'component' => $request->component,
+                'company_id' => $request->company_id,
+                'order' => $request->order,
+                'type' => $request->type,
+                'is_hide' => $request->is_hide,
+                'is_edit' => $request->is_edit,
+                'is_active' =>  $request->is_active
             ]);
             
             return response()->json([
@@ -118,9 +118,10 @@ class SalaryCompanyController extends Controller
      */
     public function update(Request $request, String $id)
     {
-        $validation = $request->validate([
+        $validation = $this->validate($request, [
             'component' => ['required','string','unique:salary_companies,component,'.$id.',id,deleted_at,NULL'],
-            'company_id' => ['required','unique:company,id,NULL,id,'.$id.',deleted_at,NULL','string'],
+            'company_id' => ['required','string'],
+            'order' =>['required','string'],
             'type' => ['required','in:fixed pay,deductions'],
             'is_hide' => ['boolean'],
             'is_edit' => ['boolean'],
@@ -132,7 +133,9 @@ class SalaryCompanyController extends Controller
             $component = SalaryCompany::findOrFail($id);
 
             $component->update([
-                'component_name' => $request->component_name,
+                'component' => $request->component,
+                'company_id' => $request->company_id,
+                'order' => $request->order,
                 'type' => $request->type,
                 'is_hide' => $request->is_hide,
                 'is_edit' => $request->is_edit,
