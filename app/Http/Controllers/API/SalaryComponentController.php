@@ -52,30 +52,17 @@ class SalaryComponentController extends Controller
             'is_edit' => ['required','boolean'],
             'is_active' => ['required','boolean'],
         ]);
-
-        $salarycomponent = SalaryComponent::create([
-            'slug' => $validation['slug'],
-            'component_name' => $validation['component_name'],
-            'type' => $validation['type'],
-            'is_hide' => $validation['is_hide'],
-            'type' => $validation['type'],
-            'is_edit' => $validation['is_edit'],
-            'is_active' => $validation['is_active'],
-
-        ]);
-
         
         try {
 
             $salarycomponent = SalaryComponent::create([
-            'slug' => $validation['slug'],
-            'component_name' => $validation['component_name'],
-            'type' => $validation['type'],
-            'is_hide' => $validation['is_hide'],
-            'type' => $validation['type'],
-            'is_edit' => $validation['is_edit'],
-            'is_active' => $validation['is_active'],
-        ]);
+                'slug' => Str::slug($request->component_name),
+                'component_name' => $request->component_name,
+                'type' => $request->type,
+                'is_hide' => $request->is_hide,
+                'is_edit' => $request->is_edit,
+                'is_active' => $request->is_active,
+            ]);
             
             return response()->json([
                 'status_code' => 200,
@@ -83,12 +70,12 @@ class SalaryComponentController extends Controller
                 'message' => 'Komponen Gaji berhasil ditambahkan',
                 'data' => $salarycomponent,
             ], 200);
-         } catch (Exception $error) {
-             return response()->json([
-                 'status_code' => 500,
-                 'status' => 'error',
-                 'message' => 'Komponen gaji tidak ditemukan',
-             ], 500);
+        } catch (Exception $error) {
+            return response()->json([
+                'status_code' => 500,
+                'status' => 'error',
+                'message' => 'Komponen gaji gagal ditambahkan',
+            ], 500);
         }
     }
 
@@ -103,7 +90,7 @@ class SalaryComponentController extends Controller
             return response()->json([
                 'status_code' => 200,
                 'status' => 'success',
-                'message' => 'Komponen Gaji berhasil ditambahkan',
+                'message' => 'Komponen Gaji berhasil diambil',
                 'data' => $component,
             ], 200);
         } catch (Exception $error) {
@@ -132,9 +119,9 @@ class SalaryComponentController extends Controller
         $validation = $request->validate([
             'component_name' => ['required','string','unique:salary_components,component_name,'.$id.',id,deleted_at,NULL'],
             'type' => ['required','in:fixed pay,deductions'],
-            'is_hide' => ['boolean'],
-            'is_edit' => ['boolean'],
-            'is_active' => ['boolean'],
+            'is_hide' => ['required','boolean'],
+            'is_edit' => ['required','boolean'],
+            'is_active' => ['required','boolean'],
         ]);
 
         
@@ -153,7 +140,7 @@ class SalaryComponentController extends Controller
             return response()->json([
                 'status_code' => 200,
                 'status' => 'success',
-                'message' => 'Komponen Gaji berhasil ditambahkan',
+                'message' => 'Komponen Gaji berhasil diubah',
                 'data' => $component,
             ], 200);
         } catch (Exception $error) {
