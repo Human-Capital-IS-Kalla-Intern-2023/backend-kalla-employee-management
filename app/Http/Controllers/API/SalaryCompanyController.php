@@ -4,6 +4,7 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use App\Models\SalaryCompany;
+use App\Models\SalaryComponent;
 use Illuminate\Http\Request;
 use Exception;
 use Illuminate\Support\Str;
@@ -53,16 +54,6 @@ class SalaryCompanyController extends Controller
             'is_active' => ['required','boolean'],
         ]);
 
-        $salarycomponent = SalaryCompany::create([
-            'component' => $validation['component'],
-            'company_id' => $validation['company_id'],
-            'type' => $validation['type'],
-            'is_hide' => $validation['is_hide'],
-            'type' => $validation['type'],
-            'is_edit' => $validation['is_edit'],
-            'is_active' => $validation['is_active'],
-
-        ]);
 
         
         try {
@@ -97,8 +88,9 @@ class SalaryCompanyController extends Controller
      */
     public function show(String $id)
     {
-        try {
-            $component = SalaryCompany::findOrFail($id);
+        // try {
+            // $component = SalaryCompany::findOrFail($id);
+            $component = SalaryCompany::where('company_id', $id)->orderBy('order', 'asc')->get();
 
             return response()->json([
                 'status_code' => 200,
@@ -106,13 +98,13 @@ class SalaryCompanyController extends Controller
                 'message' => 'Komponen Gaji berhasil ditambahkan',
                 'data' => $component,
             ], 200);
-        } catch (Exception $error) {
-            return response()->json([
-                'status_code' => 500,
-                'status' => 'error',
-                'message' => 'Komponen gaji tidak ditemukan',
-            ], 500);
-        }
+        // } catch (Exception $error) {
+        //     return response()->json([
+        //         'status_code' => 500,
+        //         'status' => 'error',
+        //         'message' => 'Komponen gaji tidak ditemukan',
+        //     ], 500);
+        // }
         
     }
 
