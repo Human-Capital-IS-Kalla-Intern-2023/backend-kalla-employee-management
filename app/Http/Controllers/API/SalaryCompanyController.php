@@ -87,7 +87,7 @@ class SalaryCompanyController extends Controller
     public function show(String $id)
     {
         try {
-            $component = SalaryCompany::where('id',$id)->orderBy('order', 'asc')->get();
+            $component = SalaryCompany::where('company_id',$id)->orderBy('order')->get();
 
             return response()->json([
                 'status_code' => 200,
