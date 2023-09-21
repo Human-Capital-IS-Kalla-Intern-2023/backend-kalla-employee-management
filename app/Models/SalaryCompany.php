@@ -17,7 +17,7 @@ class SalaryCompany extends Model
     }
 
     public function salaryCompany() {
-        return $this->belongsTo(Company::class, 'id', 'company_id');
+        return $this->belongsTo(Company::class, 'company_id', 'id');
     }
 
 
