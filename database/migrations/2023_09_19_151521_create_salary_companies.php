@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('salary_companies', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('company_id')->constrained();
+            $table->unsignedBigInteger('company_id')->constrained();
             $table->string('order');
             $table->string('component');
             $table->enum('type',['fixed pay','deductions']);
@@ -23,7 +23,7 @@ return new class extends Migration
             $table->timestamps();
             $table->softDeletes();
 
-            $table->foreign('id')->references('id')->on('salary_components')->onDelete('cascade')->onUpdate('cascade');
+            $table->foreign('company_id')->references('id')->on('companies')->onDelete('restrict')->onUpdate('restrict');
         });
     }
 
