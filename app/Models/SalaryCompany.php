@@ -10,17 +10,14 @@ class SalaryCompany extends Model
 {
     use HasFactory,SoftDeletes;
 
-    protected $primaryKey = 'slug';
-    public $incrementing = false;
-
-    protected $fillable = ['slug','company_id', 'order','component_name','type','is_hide','is_edit','is_active'];
+    protected $fillable = ['component','company_id','order','type','is_hide','is_edit','is_active'];
 
     public function salaryComponent() {
         return $this->belongsTo(SalaryComponent::class, 'id');
     }
 
     public function salaryCompany() {
-        return $this->belongsTo(Company::class, 'company_id', 'id');
+        return $this->belongsTo(Company::class, 'id', 'company_id');
     }
 
 
