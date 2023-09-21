@@ -4,7 +4,6 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use App\Models\SalaryCompany;
-use App\Models\SalaryComponent;
 use Illuminate\Http\Request;
 use Exception;
 use Illuminate\Support\Str;
@@ -53,19 +52,17 @@ class SalaryCompanyController extends Controller
             'is_edit' => ['required','boolean'],
             'is_active' => ['required','boolean'],
         ]);
-
-
         
         try {
 
             $salarycomponent = SalaryCompany::create([
-            'component' => $validation['component'],
-            'company_id' => $validation['company_id'],
-            'type' => $validation['type'],
-            'is_hide' => $validation['is_hide'],
-            'type' => $validation['type'],
-            'is_edit' => $validation['is_edit'],
-            'is_active' => $validation['is_active'],
+            'component' => $request->component,
+            'company_id' => $request->company_id,
+            'order' => $request->order,
+            'type' => $request->type,
+            'is_hide' => $request->is_hide,
+            'is_edit' => $request->is_edit,
+            'is_active' => $request->is_active,
         ]);
             
             return response()->json([
@@ -88,9 +85,8 @@ class SalaryCompanyController extends Controller
      */
     public function show(String $id)
     {
-        // try {
-            // $component = SalaryCompany::findOrFail($id);
-            $component = SalaryCompany::where('company_id', $id)->orderBy('order', 'asc')->get();
+        try {
+            $component = SalaryCompany::where('id',$id)->orderBy('order', 'asc')->get();;
 
             return response()->json([
                 'status_code' => 200,
@@ -98,13 +94,13 @@ class SalaryCompanyController extends Controller
                 'message' => 'Komponen Gaji berhasil ditambahkan',
                 'data' => $component,
             ], 200);
-        // } catch (Exception $error) {
-        //     return response()->json([
-        //         'status_code' => 500,
-        //         'status' => 'error',
-        //         'message' => 'Komponen gaji tidak ditemukan',
-        //     ], 500);
-        // }
+        } catch (Exception $error) {
+            return response()->json([
+                'status_code' => 500,
+                'status' => 'error',
+                'message' => 'Komponen gaji tidak ditemukan',
+            ], 500);
+        }
         
     }
 
