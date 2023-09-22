@@ -12,6 +12,7 @@ use App\Http\Controllers\API\SalaryComponentController;
 use App\Http\Controllers\API\SalaryCompanyController;
 use App\Http\Controllers\API\SalaryController;
 use App\Http\Controllers\API\SectionController;
+use App\Http\Controllers\API\SalaryDetailController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -110,5 +111,12 @@ Route::middleware('auth:sanctum')->group(function () {
 
     //salary
     Route::get('salary', [SalaryController::class, 'index']);
+
+    // Salary Company
+    Route::get('salary-detail', [SalaryDetailController::class, 'index']);
+    Route::post('salary-detail/', [SalaryDetailController::class, 'store']);
+    Route::get('salary-detail/{id}', [SalaryDetailController::class, 'show']);
+    Route::put('salary-detail/{id}', [SalaryDetailController::class, 'update']);
+    Route::delete('salary-detail/{id}', [SalaryDetailController::class, 'destroy']);
 
 });
