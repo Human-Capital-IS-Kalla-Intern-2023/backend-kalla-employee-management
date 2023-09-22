@@ -10,6 +10,7 @@ use App\Http\Controllers\API\DivisionController;
 use App\Http\Controllers\API\PositionController;
 use App\Http\Controllers\API\SalaryComponentController;
 use App\Http\Controllers\API\SalaryCompanyController;
+use App\Http\Controllers\API\SalaryController;
 use App\Http\Controllers\API\SectionController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -105,4 +106,9 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('salary-company/{id}', [SalaryCompanyController::class, 'show']);
     Route::put('salary-company/{id}', [SalaryCompanyController::class, 'update']);
     Route::delete('salary-company/{id}', [SalaryCompanyController::class, 'destroy']);
+
+
+    //salary
+    Route::get('salary', [SalaryController::class, 'index']);
+
 });

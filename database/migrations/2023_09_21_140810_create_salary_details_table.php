@@ -11,19 +11,17 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('salary_companies', function (Blueprint $table) {
+        Schema::create('salary_details', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('company_id')->constrained();
-            $table->string('order');
-            $table->string('component');
+            $table->foreignId('salary_id')->constrained();
+            $table->integer('order');
+            $table->string('component_name');
             $table->enum('type',['fixed pay','deductions']);
             $table->boolean('is_hide')->default(0);
             $table->boolean('is_edit')->default(1);
             $table->boolean('is_active')->default(1);
             $table->timestamps();
             $table->softDeletes();
-
-            $table->foreign('company_id')->references('id')->on('companies')->onDelete('restrict')->onUpdate('restrict');
         });
     }
 
@@ -32,6 +30,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('salary_companies');
+        Schema::dropIfExists('salary_details');
     }
 };

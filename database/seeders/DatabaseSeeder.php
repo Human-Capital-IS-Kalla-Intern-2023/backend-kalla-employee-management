@@ -33,7 +33,8 @@ class DatabaseSeeder extends Seeder
             PositionSeeder::class,
             // EmployeeSeeder::class,
             SalaryComponentSeeder::class,
-            SalaryCompanySeeder::class,
+            SalarySeeder::class,
+            SalaryDetailSeeder::class,
         ]);
     }
 }
