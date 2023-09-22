@@ -4,6 +4,8 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use App\Models\Salary;
+use App\Models\SalaryDetail;
+use Exception;
 use Illuminate\Http\Request;
 
 class SalaryController extends Controller
@@ -60,17 +62,21 @@ class SalaryController extends Controller
     public function store(Request $request)
     {
         $validation = $this->validate($request, [
-            'location_name'     => 'required|string|unique:locations,location_name,NULL,id,deleted_at,NULL|max:255',
+            'salary_name'     => 'required|string|max:255',
+            'company_id' => 'required|exists:companies,id,deleted_at,NULL',
+            'is_active' => 'boolean',
         ]);
 
         $data = Salary::create([
-            'location_name' => $request->location_name,
+            'salary_name' => $request->salary_name,
+            'company_id' => $request->company_id,
+            'is_active' => $request->is_active,
         ]);
 
         return response()->json([
             'status_code' => 200,
             'status' => 'success',
-            'message' => 'Lokasi berhasil ditambahkan',
+            'message' => 'Gaji berhasil ditambahkan',
             'data' => $data,
         ], 200);
     }
@@ -80,7 +86,44 @@ class SalaryController extends Controller
      */
     public function show(string $id)
     {
-        //
+        
+
+        try {
+            $salary = Salary::with([
+                'company',
+                'salaryDetail',
+            ])->where('id', $id)->get()->first();
+
+            
+
+            $destructureSalary = [
+                "id" => $salary->id,
+                "salary_name" => $salary->salary_name,
+                "company_name" => $salary->company->company_name,
+                "is_active" => $salary->is_active,
+                "created_at" => $salary->created_at,
+                "updated_at" => $salary->updated_at,
+                "component" => $salary->salaryDetail,
+            ];
+
+            return response()->json([
+                'status_code' => 200,
+                'status' => 'success',
+                'message' => 'Data berhasil diambil',
+                'data' => $destructureSalary,
+            ], 200);
+
+            
+        
+        } catch (Exception $error) {
+            return response()->json([
+                'status_code' => 404,
+                'status' => 'error',
+                'message' => 'Data tidak ditemukan',
+            ], 404);
+        }
+
+
     }
 
     /**
@@ -96,7 +139,35 @@ class SalaryController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $validation = $this->validate($request, [
+            'salary_name'     => 'required|string|max:255',
+            'company_id' => 'required|exists:companies,id,deleted_at,NULL',
+            'is_active' => 'boolean',
+        ]);
+
+        try {
+            $salary = Salary::findOrFail($id);
+
+            $salary->update([
+                'salary_name' => $request->salary_name,
+                'company_id' => $request->company_id,
+                'is_active' => $request->is_active,
+            ]);
+
+            return response()->json([
+                'status_code' => 200,
+                'status' => 'success',
+                'message' => $salary->salary_name .' berhasil diubah',
+                'data' => $salary,
+            ], 200);
+        
+        } catch (Exception $error) {
+            return response()->json([
+                'status_code' => 404,
+                'status' => 'error',
+                'message' => 'Data tidak ditemukan',
+            ], 404);
+        }
     }
 
     /**
@@ -104,6 +175,27 @@ class SalaryController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        try {
+            $salary = Salary::findOrFail($id);
+            $salary->delete();
+            SalaryDetail::where('salary_id',$id)->delete();
+
+
+            return response()->json([
+                'status_code' => 200,
+                'status' => 'success',
+                'message' => $salary->salary_name.' berhasil dihapus',
+                'data' => $salary,
+            ]);
+
+        } catch (Exception $error) {
+
+            return response()->json([
+                'status_code' => 404,
+                'status' => 'error',
+                'message' => 'Data tidak ditemukan',
+            ], 404);
+
+        }
     }
 }

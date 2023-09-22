@@ -110,5 +110,9 @@ Route::middleware('auth:sanctum')->group(function () {
 
     //salary
     Route::get('salary', [SalaryController::class, 'index']);
+    Route::post('salary/', [SalaryController::class, 'store']);
+    Route::get('salary/{id}', [SalaryController::class, 'show']);
+    Route::put('salary/{id}', [SalaryController::class, 'update']);
+    Route::delete('salary/{id}', [SalaryController::class, 'destroy']);
 
 });
