@@ -47,7 +47,6 @@ class SalaryCompanyController extends Controller
         $validation = $request->validate([
             'component' => ['required', 'unique:salary_companies,component,NULL,id,deleted_at,NULL', 'string'],
             'company_id' => ['required', 'string'],
-            'order' => ['required', 'string'],
             'type' => ['required', 'in:fixed pay,deductions'],
             'is_hide' => ['required', 'boolean'],
             'is_edit' => ['required', 'boolean'],

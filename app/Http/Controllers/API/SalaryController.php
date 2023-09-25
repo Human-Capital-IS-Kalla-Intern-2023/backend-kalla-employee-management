@@ -4,9 +4,12 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use App\Models\Salary;
+use App\Models\SalaryCompany;
+use App\Models\SalaryComponent;
 use App\Models\SalaryDetail;
 use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class SalaryController extends Controller
 {
@@ -65,20 +68,57 @@ class SalaryController extends Controller
             'salary_name'     => 'required|string|max:255',
             'company_id' => 'required|exists:companies,id,deleted_at,NULL',
             'is_active' => 'boolean',
+            'component_name' => ['required','unique:salary_components,component_name,NULL,id,deleted_at,NULL','string'],
+            'type' => ['required','in:fixed pay,deductions'],
+            'is_hide' => ['required','boolean'],
+            'is_edit' => ['required','boolean'],
+            'is_active' => ['required','boolean'],
         ]);
 
-        $data = Salary::create([
-            'salary_name' => $request->salary_name,
-            'company_id' => $request->company_id,
-            'is_active' => $request->is_active,
-        ]);
+        try {
+            DB::beginTransaction();
 
-        return response()->json([
-            'status_code' => 200,
-            'status' => 'success',
-            'message' => 'Gaji berhasil ditambahkan',
-            'data' => $data,
-        ], 200);
+            $salary = Salary::firstOrCreate(
+                [
+                    'salary_name' => $request->salary_name,
+                    'company_id' => $request->company_id,
+                ],
+                [
+                    'salary_name' => $request->salary_name,
+                    'company_id' => $request->company_id,
+                    'is_active' => $request->is_active,
+                ]
+            );
+
+            $component = SalaryDetail::create([
+                'component_name' => $request->component_name,
+                'salary_id' => $salary->id,
+                'order' => 1,
+                'type' => $request->type,
+                'is_hide' => $request->is_hide,
+                'is_edit' => $request->is_edit,
+                'is_active' =>  $request->is_active
+            ]);
+
+            $salary['components'] = $component->component_name;
+            // DB::commit();
+
+            return response()->json([
+                'status_code' => 200,
+                'status' => 'success',
+                'message' => 'Gaji berhasil ditambahkan',
+                'data' => $salary,
+            ], 200);
+
+        } catch (\Exception $error) {
+            DB::rollback(); // Rollback transaksi jika ada kesalahan
+            // throw $error; // Re-throw exception jika perlu
+            return response()->json([
+                'status_code' => 500,
+                'status' => 'error',
+                'message' => 'Terjadi Kesalahan',
+            ], 500);
+        }
     }
 
     /**
