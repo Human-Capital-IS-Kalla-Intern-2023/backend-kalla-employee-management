@@ -47,7 +47,6 @@ class SalaryCompanyController extends Controller
         $validation = $request->validate([
             'component' => ['required','unique:salary_companies,component,NULL,id,deleted_at,NULL','string'],
             'company_id' => ['required','string'],
-            'order' => ['required','string'],
             'type' => ['required','in:fixed pay,deductions'],
             'is_hide' => ['required','boolean'],
             'is_edit' => ['required','boolean'],
@@ -59,7 +58,7 @@ class SalaryCompanyController extends Controller
             $component = SalaryCompany::create([
                 'component' => $request->component,
                 'company_id' => $request->company_id,
-                'order' => $request->order,
+                'order' => 1,
                 'type' => $request->type,
                 'is_hide' => $request->is_hide,
                 'is_edit' => $request->is_edit,
@@ -72,12 +71,12 @@ class SalaryCompanyController extends Controller
                 'message' => 'Komponen Gaji berhasil ditambahkan',
                 'data' => $component,
             ], 200);
-         } catch (Exception $error) {
-             return response()->json([
-                 'status_code' => 500,
-                 'status' => 'error',
-                 'message' => 'Komponen gaji tidak ditemukan',
-             ], 500);
+        } catch (Exception $error) {
+            return response()->json([
+                'status_code' => 500,
+                'status' => 'error',
+                'message' => 'Komponen gaji tidak ditemukan',
+            ], 500);
         }
     }
 
