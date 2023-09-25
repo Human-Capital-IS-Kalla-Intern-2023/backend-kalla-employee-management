@@ -4,9 +4,12 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use App\Models\Salary;
+use App\Models\SalaryCompany;
+use App\Models\SalaryComponent;
 use App\Models\SalaryDetail;
 use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class SalaryController extends Controller
 {
@@ -67,18 +70,49 @@ class SalaryController extends Controller
             'is_active' => 'boolean',
         ]);
 
-        $data = Salary::create([
-            'salary_name' => $request->salary_name,
-            'company_id' => $request->company_id,
-            'is_active' => $request->is_active,
-        ]);
+        // try {
+        //     DB::beginTransaction();
 
-        return response()->json([
-            'status_code' => 200,
-            'status' => 'success',
-            'message' => 'Gaji berhasil ditambahkan',
-            'data' => $data,
-        ], 200);
+            $salary = Salary::updateOrCreate(
+                [
+                    'salary_name' => $request->salary_name,
+                    'company_id' => $request->company_id,
+                ],
+                [
+                    'salary_name' => $request->salary_name,
+                    'company_id' => $request->company_id,
+                    'is_active' => $request->is_active,
+                ]
+            );
+
+            $component = SalaryCompany::create([
+                'component' => $request->component,
+                'company_id' => $salary->id,
+                'order' => $request->order,
+                'type' => $request->type,
+                'is_hide' => $request->is_hide,
+                'is_edit' => $request->is_edit,
+                'is_active' =>  $request->is_active
+            ]);
+
+            // DB::commit();
+
+            return response()->json([
+                'status_code' => 200,
+                'status' => 'success',
+                'message' => 'Gaji berhasil ditambahkan',
+                'data' => $salary,
+            ], 200);
+
+        // } catch (\Exception $error) {
+        //     DB::rollback(); // Rollback transaksi jika ada kesalahan
+        //     // throw $error; // Re-throw exception jika perlu
+        //     return response()->json([
+        //         'status_code' => 500,
+        //         'status' => 'error',
+        //         'message' => 'Terjadi Kesalahan',
+        //     ], 500);
+        // }
     }
 
     /**
