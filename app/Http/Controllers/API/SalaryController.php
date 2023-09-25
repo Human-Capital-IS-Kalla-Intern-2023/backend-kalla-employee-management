@@ -65,15 +65,20 @@ class SalaryController extends Controller
      */
     public function store(Request $request)
     {
-        // $validation = $this->validate($request, [
-        //     'salary_name'     => 'required|string|max:255',
-        //     'company_id' => 'required|exists:companies,id,deleted_at,NULL',
-        //     'is_active' => 'boolean',
-        //     'component_name' => ['required','unique:salary_components,component_name,NULL,id,deleted_at,NULL','string'],
-        //     'type' => ['required','in:fixed pay,deductions'],
-        // ]);
+        $validation = $this->validate($request, [
+            'salary_name'     => 'required|string|max:255',
+            'company_id' => 'required|exists:companies,id,deleted_at,NULL',
+            'is_active' => 'boolean',
+        ]);
 
-        try {
+        if($request->filled('component_name')) {
+            $this->validate($request, [
+                'component_name' => 'required|unique:salary_components,component_name,NULL,id,deleted_at,NULL|string',
+                'type' => 'required|in:fixed pay,deductions',
+            ]);
+        }
+
+        // try {
             DB::beginTransaction();
 
             $salary = Salary::firstOrCreate(
@@ -88,17 +93,22 @@ class SalaryController extends Controller
                 ]
             );
 
-            $component = SalaryDetail::create([
-                'component_name' => $request->component_name,
-                'salary_id' => $salary->id,
-                'order' => 1,
-                'type' => $request->type,
-                'is_hide' => 0,
-                'is_edit' => 1,
-                'is_active' =>  1,
-            ]);
+            if($request->filled('component_name')) {
+                $component = SalaryDetail::create([
+                    'component_name' => $request->component_name,
+                    'salary_id' => $salary->id,
+                    'order' => 1,
+                    'type' => $request->type,
+                    'is_hide' => 0,
+                    'is_edit' => 1,
+                    'is_active' =>  1,
+                ]);
+                
+                $salary['components'] = $component->component_name;
+            }
 
-            $salary['components'] = $component->component_name;
+            
+
             // DB::commit();
 
             return response()->json([
@@ -108,15 +118,15 @@ class SalaryController extends Controller
                 'data' => $salary,
             ], 200);
 
-        } catch (\Exception $error) {
-            DB::rollback(); // Rollback transaksi jika ada kesalahan
-            // throw $error; // Re-throw exception jika perlu
-            return response()->json([
-                'status_code' => 500,
-                'status' => 'error',
-                'message' => $error,
-            ], 500);
-        }
+        // } catch (\Exception $error) {
+        //     DB::rollback(); // Rollback transaksi jika ada kesalahan
+        //     // throw $error; // Re-throw exception jika perlu
+        //     return response()->json([
+        //         'status_code' => 500,
+        //         'status' => 'error',
+        //         'message' => $error,
+        //     ], 500);
+        // }
     }
 
     /**
