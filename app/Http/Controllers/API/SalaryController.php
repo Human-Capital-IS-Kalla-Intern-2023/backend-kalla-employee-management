@@ -84,6 +84,7 @@ class SalaryController extends Controller
                 [
                     'salary_name' => $request->salary_name,
                     'company_id' => $request->company_id,
+                    'is_active' => 1,
                 ]
             );
 
