@@ -68,7 +68,6 @@ class SalaryController extends Controller
             'salary_name'     => 'required|string|max:255',
             'company_id' => 'required|exists:companies,id,deleted_at,NULL',
             'is_active' => 'boolean',
-            'order' => ['required', 'string'],
             'component_name' => ['required','unique:salary_components,component_name,NULL,id,deleted_at,NULL','string'],
             'type' => ['required','in:fixed pay,deductions'],
             'is_hide' => ['required','boolean'],
@@ -92,9 +91,9 @@ class SalaryController extends Controller
             );
 
             $component = SalaryDetail::create([
-                'component_name' => $request->component,
+                'component_name' => $request->component_name,
                 'salary_id' => $salary->id,
-                'order' => $request->order,
+                'order' => 1,
                 'type' => $request->type,
                 'is_hide' => $request->is_hide,
                 'is_edit' => $request->is_edit,
