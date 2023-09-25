@@ -33,6 +33,7 @@ class SalaryController extends Controller
             $salary = [
                 "id" => $salaries[$i]->id,
                 "salary_name" => $salaries[$i]->salary_name,
+                "company_id" => $salaries[$i]->company->id,
                 "company_name" => $salaries[$i]->company->company_name,
                 "is_active" => $salaries[$i]->is_active,
                 "created_at" => $salaries[$i]->created_at,
@@ -46,7 +47,7 @@ class SalaryController extends Controller
         return response()->json([
             'status_code' => 200,
             'status' => 'success',
-            'message' => 'Data Posisi berhasil diambil',
+            'message' => 'Data Gaji berhasil diambil',
             'data' => $dataSalary,
         ], 200);
     }
@@ -64,13 +65,13 @@ class SalaryController extends Controller
      */
     public function store(Request $request)
     {
-        $validation = $this->validate($request, [
-            'salary_name'     => 'required|string|max:255',
-            'company_id' => 'required|exists:companies,id,deleted_at,NULL',
-            'is_active' => 'boolean',
-            'component_name' => ['required','unique:salary_components,component_name,NULL,id,deleted_at,NULL','string'],
-            'type' => ['required','in:fixed pay,deductions'],
-        ]);
+        // $validation = $this->validate($request, [
+        //     'salary_name'     => 'required|string|max:255',
+        //     'company_id' => 'required|exists:companies,id,deleted_at,NULL',
+        //     'is_active' => 'boolean',
+        //     'component_name' => ['required','unique:salary_components,component_name,NULL,id,deleted_at,NULL','string'],
+        //     'type' => ['required','in:fixed pay,deductions'],
+        // ]);
 
         try {
             DB::beginTransaction();
