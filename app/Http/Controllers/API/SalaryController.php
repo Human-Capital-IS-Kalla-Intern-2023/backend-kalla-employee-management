@@ -137,6 +137,7 @@ class SalaryController extends Controller
             $destructureSalary = [
                 "id" => $salary->id,
                 "salary_name" => $salary->salary_name,
+                "company_id" => $salary->company->id,
                 "company_name" => $salary->company->company_name,
                 "is_active" => $salary->is_active,
                 "created_at" => $salary->created_at,
