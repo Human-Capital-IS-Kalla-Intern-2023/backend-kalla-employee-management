@@ -84,7 +84,6 @@ class SalaryController extends Controller
                 [
                     'salary_name' => $request->salary_name,
                     'company_id' => $request->company_id,
-                    'is_active' => $request->is_active,
                 ]
             );
 
@@ -114,7 +113,7 @@ class SalaryController extends Controller
             return response()->json([
                 'status_code' => 500,
                 'status' => 'error',
-                'message' => 'Terjadi Kesalahan',
+                'message' => $error,
             ], 500);
         }
     }
