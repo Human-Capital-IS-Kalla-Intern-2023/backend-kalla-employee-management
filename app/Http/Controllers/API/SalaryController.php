@@ -70,9 +70,6 @@ class SalaryController extends Controller
             'is_active' => 'boolean',
             'component_name' => ['required','unique:salary_components,component_name,NULL,id,deleted_at,NULL','string'],
             'type' => ['required','in:fixed pay,deductions'],
-            'is_hide' => ['required','boolean'],
-            'is_edit' => ['required','boolean'],
-            'is_active' => ['required','boolean'],
         ]);
 
         try {
@@ -95,9 +92,9 @@ class SalaryController extends Controller
                 'salary_id' => $salary->id,
                 'order' => 1,
                 'type' => $request->type,
-                'is_hide' => $request->is_hide,
-                'is_edit' => $request->is_edit,
-                'is_active' =>  $request->is_active
+                'is_hide' => 0,
+                'is_edit' => 1,
+                'is_active' =>  1,
             ]);
 
             $salary['components'] = $component->component_name;
