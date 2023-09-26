@@ -95,18 +95,21 @@ class SalaryController extends Controller
                 // ]
             );
 
-            if ($request->filled('component_name')) {
-                $component = SalaryDetail::create([
-                    'component_name' => $request->component_name,
-                    'salary_id' => $salary->id,
-                    'order' => 1,
-                    'type' => $request->type,
-                    // 'is_hide' => 0,
-                    // 'is_edit' => 1,
-                    // 'is_active' =>  1,
-                ]);
+            $additional_salary = $request->id_additional_salary;
+            if ($request->filled('id_additional_salary')) {
+                foreach ($additional_salary as $salary) {
+                    $component = SalaryDetail::create([
+                        'order' => $request->order,
+                        'component_name' => $request->component_name,
+                        'type' => $request->type,
+                        // 'is_hide' => 0,
+                        // 'is_edit' => 1,
+                        // 'is_active' =>  1,
+                    ]);
+                }
 
-                $salary['components'] = $component->component_name;
+
+                // $salary['components'] = $component->component_name;
             }
 
 
