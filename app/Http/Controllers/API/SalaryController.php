@@ -58,59 +58,63 @@ class SalaryController extends Controller
      */
     public function store(Request $request)
     {
-        // $validation = $this->validate($request, [
-        //     'salary_name'     => 'required|string|max:255',
-        //     'company_id' => 'required|exists:companies,id,deleted_at,NULL',
-        //     'is_active' => 'boolean',
-        // ]);
+        $validation = $this->validate($request, [
+            'salary_name'     => 'required|string|max:255',
+            'company_id' => 'required|exists:companies,id,deleted_at,NULL',
+            'is_active' => 'required|boolean',
+            'components.*.order' => 'required|integer',
+            'components.*.component_name' => 'required|string',
+            'components.*.type' => 'required|in:fixed pay,deductions',
+            'components.*.is_hide' => 'required|boolean',
+            'components.*.is_edit' => 'required|boolean',
+            'components.*.is_active' => 'required|boolean',
+        ]);
 
-        if ($request->filled('component_name')) {
-            $validation = $this->validate($request, [
-                'salary_name'     => 'required|string|max:255',
-                'company_id' => 'required|exists:companies,id,deleted_at,NULL',
-                'is_active' => 'boolean',
-            ]);
-        }
 
-        $salary = Salary::create(
-            [
-                'salary_name' => $request->salary_name,
-                'company_id' => $request->company_id,
-            ],
-            // [
-            //     'salary_name' => $request->salary_name,
-            //     'company_id' => $request->company_id,
-            //     'is_active' => 1,
-            // ]
-        );
+        DB::beginTransaction();
 
-        if($request->filled('component_name')) {
-            $component = SalaryDetail::create([
-                'component_name' => $request->component_name,
-                'salary_id' => $salary->id,
-                'order' => 1,
-                'type' => $request->type,
-                'is_hide' => 0,
-                'is_edit' => 1,
-                'is_active' =>  1,
-            ]);
-            
-            $salary['components'] = $component->component_name;
+        try {
+            $salary = Salary::create(
+                [
+                    'salary_name' => $request->salary_name,
+                    'company_id' => $request->company_id,
+                    'is_active' => $request->is_active,
+                ]
+            );
 
-            $additional_salary = $request->id_additional_salary;
-            if ($request->filled('id_additional_salary')) {
-                foreach ($additional_salary as $salary) {
-                    $component = SalaryDetail::create([
-                        'order' => $request->order,
-                        'component_name' => $request->component_name,
-                        'type' => $request->type,
-                        // 'is_hide' => 0,
-                        // 'is_edit' => 1,
-                        // 'is_active' =>  1,
+            $components = $request->components;
+
+            for ($i = 0; $i < count($components); $i++) {
+                $component = $components[$i]['component_name'];
+
+                $data = SalaryComponent::where('component_name', $component)->get()->first();
+
+                if ($data) {
+                    SalaryDetail::create([
+                        'salary_id' => $salary->id,
+                        'order' => $components[$i]['order'],
+                        'salary_component_id' => $data->id,
+                        'type' => $components[$i]['type'],
+                        'is_hide' => $components[$i]['is_hide'],
+                        'is_edit' => $components[$i]['is_edit'],
+                        'is_active' =>  $components[$i]['is_active'],
+                    ]);
+                } else {
+                    SalaryDetail::create([
+                        'salary_id' => $salary->id,
+                        'order' => $components[$i]['order'],
+                        'component_name' => $components[$i]['component_name'],
+                        'type' => $components[$i]['type'],
+                        'is_hide' => $components[$i]['is_hide'],
+                        'is_edit' => $components[$i]['is_edit'],
+                        'is_active' =>  $components[$i]['is_active'],
                     ]);
                 }
-
             }
+
+            $salary['components'] = $components;
+
+            DB::commit();
 
             return response()->json([
                 'status_code' => 200,
@@ -118,7 +122,14 @@ class SalaryController extends Controller
                 'message' => 'Gaji berhasil ditambahkan',
                 'data' => $salary,
             ], 200);
-
+        } catch (\Exception $error) {
+            DB::rollback(); // Rollback transaksi jika ada kesalahan
+            // throw $error; // Re-throw exception jika perlu
+            return response()->json([
+                'status_code' => 500,
+                'status' => 'error',
+                'message' => $error,
+            ], 500);
         }
     }
 
@@ -140,7 +151,7 @@ class SalaryController extends Controller
             foreach ($salary->salaryDetail as $item) {
                 $checkData = null;
 
-                if(is_null($item->component_name)) {
+                if (is_null($item->component_name)) {
                     $checkData = SalaryComponent::where('id', $item->salary_component_id)->get()->first();
                 }
 
@@ -212,16 +223,16 @@ class SalaryController extends Controller
                 'is_active' => $request->is_active,
             ]);
 
-            SalaryDetail::where('salary_id',$id)->delete();            
+            SalaryDetail::where('salary_id', $id)->delete();
 
             $components = $request->components;
 
-            for($i = 0; $i < count($components); $i++ ) {
+            for ($i = 0; $i < count($components); $i++) {
                 $component = $components[$i]['component_name'];
 
                 $data = SalaryComponent::where('component_name', $component)->get()->first();
-            
-                if($data) {  
+
+                if ($data) {
                     SalaryDetail::create([
                         'salary_id' => $salary->id,
                         'order' => $components[$i]['order'],
@@ -244,6 +255,8 @@ class SalaryController extends Controller
                 }
             }
 
+            $salary['components'] = $components;
+
             DB::commit();
 
             return response()->json([
@@ -259,7 +272,6 @@ class SalaryController extends Controller
                 'message' => 'Data tidak ditemukan',
             ], 404);
         }
-
     }
 
     /**
