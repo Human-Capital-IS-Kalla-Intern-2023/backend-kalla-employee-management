@@ -20,8 +20,8 @@ class SalaryController extends Controller
     {
         $search = $request->get('search');
 
-        $salaries = Salary::query()->when($search, function($query) use($search){
-            $query->where('salary_name', 'LIKE', "%".$search."%");
+        $salaries = Salary::query()->when($search, function ($query) use ($search) {
+            $query->where('salary_name', 'LIKE', "%" . $search . "%");
         })->with([
             'company',
             'salaryDetail',
@@ -29,7 +29,7 @@ class SalaryController extends Controller
 
         $dataSalary = [];
 
-        for($i = 0; $i < $salaries->count(); $i++) {
+        for ($i = 0; $i < $salaries->count(); $i++) {
             $salary = [
                 "id" => $salaries[$i]->id,
                 "salary_name" => $salaries[$i]->salary_name,
@@ -52,64 +52,65 @@ class SalaryController extends Controller
         ], 200);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
 
     /**
      * Store a newly created resource in storage.
      */
     public function store(Request $request)
     {
-        $validation = $this->validate($request, [
-            'salary_name'     => 'required|string|max:255',
-            'company_id' => 'required|exists:companies,id,deleted_at,NULL',
-            'is_active' => 'boolean',
-        ]);
+        // $validation = $this->validate($request, [
+        //     'salary_name'     => 'required|string|max:255',
+        //     'company_id' => 'required|exists:companies,id,deleted_at,NULL',
+        //     'is_active' => 'boolean',
+        // ]);
 
-        if($request->filled('component_name')) {
-            $this->validate($request, [
-                'component_name' => 'required|unique:salary_components,component_name,NULL,id,deleted_at,NULL|string',
-                'type' => 'required|in:fixed pay,deductions',
+        if ($request->filled('component_name')) {
+            $validation = $this->validate($request, [
+                'salary_name'     => 'required|string|max:255',
+                'company_id' => 'required|exists:companies,id,deleted_at,NULL',
+                'is_active' => 'boolean',
             ]);
         }
 
-        try {
-            DB::beginTransaction();
+        $salary = Salary::create(
+            [
+                'salary_name' => $request->salary_name,
+                'company_id' => $request->company_id,
+            ],
+            // [
+            //     'salary_name' => $request->salary_name,
+            //     'company_id' => $request->company_id,
+            //     'is_active' => 1,
+            // ]
+        );
 
-            $salary = Salary::firstOrCreate(
-                [
-                    'salary_name' => $request->salary_name,
-                    'company_id' => $request->company_id,
-                ],
-                [
-                    'salary_name' => $request->salary_name,
-                    'company_id' => $request->company_id,
-                    'is_active' => 1,
-                ]
-            );
- 
-            if($request->filled('component_name')) {
-                $component = SalaryDetail::create([
-                    'component_name' => $request->component_name,
-                    'salary_id' => $salary->id,
-                    'order' => 1,
-                    'type' => $request->type,
-                    'is_hide' => 0,
-                    'is_edit' => 1,
-                    'is_active' =>  1,
-                ]);
-                
-                $salary['components'] = $component->component_name;
-            }
-
+        if($request->filled('component_name')) {
+            $component = SalaryDetail::create([
+                'component_name' => $request->component_name,
+                'salary_id' => $salary->id,
+                'order' => 1,
+                'type' => $request->type,
+                'is_hide' => 0,
+                'is_edit' => 1,
+                'is_active' =>  1,
+            ]);
             
+            $salary['components'] = $component->component_name;
 
-            DB::commit();
+            $additional_salary = $request->id_additional_salary;
+            if ($request->filled('id_additional_salary')) {
+                foreach ($additional_salary as $salary) {
+                    $component = SalaryDetail::create([
+                        'order' => $request->order,
+                        'component_name' => $request->component_name,
+                        'type' => $request->type,
+                        // 'is_hide' => 0,
+                        // 'is_edit' => 1,
+                        // 'is_active' =>  1,
+                    ]);
+                }
+
+            }
 
             return response()->json([
                 'status_code' => 200,
@@ -118,14 +119,6 @@ class SalaryController extends Controller
                 'data' => $salary,
             ], 200);
 
-        } catch (\Exception $error) {
-            DB::rollback(); // Rollback transaksi jika ada kesalahan
-            // throw $error; // Re-throw exception jika perlu
-            return response()->json([
-                'status_code' => 500,
-                'status' => 'error',
-                'message' => $error,
-            ], 500);
         }
     }
 
@@ -134,14 +127,14 @@ class SalaryController extends Controller
      */
     public function show(string $id)
     {
-        
+
 
         try {
             $salary = Salary::with([
                 'company',
                 'salaryDetail',
             ])->where('id', $id)->get()->first();
-            
+
             $destructureSalaryDetail = [];
 
             foreach ($salary->salaryDetail as $item) {
@@ -180,9 +173,6 @@ class SalaryController extends Controller
                 'message' => 'Data berhasil diambil',
                 'data' => $destructureSalary,
             ], 200);
-
-            
-        
         } catch (Exception $error) {
             return response()->json([
                 'status_code' => 404,
@@ -190,8 +180,6 @@ class SalaryController extends Controller
                 'message' => 'Data tidak ditemukan',
             ], 404);
         }
-
-
     }
 
 
@@ -212,7 +200,7 @@ class SalaryController extends Controller
             'components.*.is_active' => 'required|boolean',
         ]);
 
-        // try {
+        try {
             DB::beginTransaction();
 
             $salary = Salary::findOrFail($id);
@@ -261,19 +249,17 @@ class SalaryController extends Controller
             return response()->json([
                 'status_code' => 200,
                 'status' => 'success',
-                'message' => 'Salary berhasil ditambahkan',
-                'data' => $components,
+                'message' => $salary->salary_name . ' berhasil diubah',
+                'data' => $salary,
             ], 200);
+        } catch (Exception $error) {
+            return response()->json([
+                'status_code' => 404,
+                'status' => 'error',
+                'message' => 'Data tidak ditemukan',
+            ], 404);
+        }
 
-        // } catch (\Exception $error) {
-        //     DB::rollback(); // Rollback transaksi jika ada kesalahan
-        //     // throw $error; // Re-throw exception jika perlu
-        //     return response()->json([
-        //         'status_code' => 500,
-        //         'status' => 'error',
-        //         'message' => $error,
-        //     ], 500);
-        // }
     }
 
     /**
@@ -284,16 +270,15 @@ class SalaryController extends Controller
         try {
             $salary = Salary::findOrFail($id);
             $salary->delete();
-            SalaryDetail::where('salary_id',$id)->delete();
+            SalaryDetail::where('salary_id', $id)->delete();
 
 
             return response()->json([
                 'status_code' => 200,
                 'status' => 'success',
-                'message' => $salary->salary_name.' berhasil dihapus',
+                'message' => $salary->salary_name . ' berhasil dihapus',
                 'data' => $salary,
             ]);
-
         } catch (Exception $error) {
 
             return response()->json([
@@ -301,7 +286,6 @@ class SalaryController extends Controller
                 'status' => 'error',
                 'message' => 'Data tidak ditemukan',
             ], 404);
-
         }
     }
 }
