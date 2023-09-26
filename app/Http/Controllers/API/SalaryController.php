@@ -244,6 +244,8 @@ class SalaryController extends Controller
                 }
             }
 
+            $salary['components'] = $components;
+
             DB::commit();
 
             return response()->json([
