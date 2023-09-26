@@ -136,13 +136,26 @@ class SalaryController extends Controller
     {
         
 
-        try {
+        // try {
             $salary = Salary::with([
                 'company',
                 'salaryDetail',
             ])->where('id', $id)->get()->first();
-
             
+            $destructureSalaryDetail = [];
+
+            foreach ($salary->salaryDetail as $item) {
+                $salaryComponent = [
+                    "order" =>  $item->id,
+                    "salary_component_id" =>  $item->salary_component,
+                    "type" =>  $item->type,
+                    "is_hide" =>  $item->is_hide,
+                    "is_edit" =>  $item->is_edit,
+                    "is_active" =>  $item->is_active,
+                ];
+
+                $destructureSalaryDetail[] = $salaryComponent;
+            }
 
             $destructureSalary = [
                 "id" => $salary->id,
@@ -152,7 +165,7 @@ class SalaryController extends Controller
                 "is_active" => $salary->is_active,
                 "created_at" => $salary->created_at,
                 "updated_at" => $salary->updated_at,
-                "component" => $salary->salaryDetail,
+                "component" => $destructureSalaryDetail,
             ];
 
             return response()->json([
@@ -164,13 +177,13 @@ class SalaryController extends Controller
 
             
         
-        } catch (Exception $error) {
-            return response()->json([
-                'status_code' => 404,
-                'status' => 'error',
-                'message' => 'Data tidak ditemukan',
-            ], 404);
-        }
+        // } catch (Exception $error) {
+        //     return response()->json([
+        //         'status_code' => 404,
+        //         'status' => 'error',
+        //         'message' => 'Data tidak ditemukan',
+        //     ], 404);
+        // }
 
 
     }

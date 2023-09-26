@@ -22,4 +22,10 @@ class SalaryDetail extends Model
     {
         return $this->hasOne(SalaryComponent::class, 'salary_component_id', 'id');
     }
+
+     // Definisikan accessor untuk computed field 'average_price'
+    public function getSalaryComponentAttribute()
+    {
+        return $this->salary_component_id . $this->component_name;
+    }
 }
