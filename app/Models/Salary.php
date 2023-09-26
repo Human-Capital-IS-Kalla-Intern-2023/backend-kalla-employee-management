@@ -36,4 +36,6 @@ class Salary extends Model
     {
         return $this->hasMany(SalaryDetail::class, 'salary_id', 'id');
     }
+
+    
 }

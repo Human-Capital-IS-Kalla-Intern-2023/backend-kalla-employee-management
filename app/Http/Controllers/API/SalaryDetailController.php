@@ -144,14 +144,14 @@ class SalaryDetailController extends Controller
             return response()->json([
                 'status_code' => 200,
                 'status' => 'success',
-                'message' => 'Komponen Gaji berhasil diubah',
+                'message' => 'Salary berhasil diubah',
                 'data' => $component,
             ], 200);
         } catch (Exception $error) {
             return response()->json([
                 'status_code' => 500,
                 'status' => 'error',
-                'message' => 'Komponen gaji tidak ditemukan',
+                'message' => 'Salary berhasil tidak ditemukan',
             ], 500);
         }
     }
