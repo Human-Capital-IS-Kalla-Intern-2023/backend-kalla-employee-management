@@ -92,7 +92,7 @@ class SalaryController extends Controller
                     'is_active' => 1,
                 ]
             );
-
+ 
             if($request->filled('component_name')) {
                 $component = SalaryDetail::create([
                     'component_name' => $request->component_name,
@@ -136,7 +136,7 @@ class SalaryController extends Controller
     {
         
 
-        // try {
+        try {
             $salary = Salary::with([
                 'company',
                 'salaryDetail',
@@ -145,9 +145,15 @@ class SalaryController extends Controller
             $destructureSalaryDetail = [];
 
             foreach ($salary->salaryDetail as $item) {
+                $checkData = null;
+
+                if(is_null($item->component_name)) {
+                    $checkData = SalaryComponent::where('id', $item->salary_component_id)->get()->first();
+                }
+
                 $salaryComponent = [
-                    "order" =>  $item->id,
-                    "salary_component_id" =>  $item->salary_component,
+                    "order" =>  $item->order,
+                    "component_name" => $checkData ? $checkData->component_name : $item->component_name,
                     "type" =>  $item->type,
                     "is_hide" =>  $item->is_hide,
                     "is_edit" =>  $item->is_edit,
@@ -177,24 +183,17 @@ class SalaryController extends Controller
 
             
         
-        // } catch (Exception $error) {
-        //     return response()->json([
-        //         'status_code' => 404,
-        //         'status' => 'error',
-        //         'message' => 'Data tidak ditemukan',
-        //     ], 404);
-        // }
+        } catch (Exception $error) {
+            return response()->json([
+                'status_code' => 404,
+                'status' => 'error',
+                'message' => 'Data tidak ditemukan',
+            ], 404);
+        }
 
 
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
-    }
 
     /**
      * Update the specified resource in storage.
@@ -206,14 +205,14 @@ class SalaryController extends Controller
             'company_id' => 'required|exists:companies,id,deleted_at,NULL',
             'is_active' => 'required|boolean',
             'components.*.order' => 'required|integer',
-            'components.*.salary_component_id' => 'required|string',
+            'components.*.component_name' => 'required|string',
             'components.*.type' => 'required|in:fixed pay,deductions',
             'components.*.is_hide' => 'required|boolean',
             'components.*.is_edit' => 'required|boolean',
             'components.*.is_active' => 'required|boolean',
         ]);
 
-        try {
+        // try {
             DB::beginTransaction();
 
             $salary = Salary::findOrFail($id);
@@ -230,35 +229,31 @@ class SalaryController extends Controller
             $components = $request->components;
 
             for($i = 0; $i < count($components); $i++ ) {
-                $salaryComponentId = $components[$i]['salary_component_id'];
+                $component = $components[$i]['component_name'];
 
-                
-                
-                $data = SalaryComponent::find($salaryComponentId);
-                if($data) {
-                    
+                $data = SalaryComponent::where('component_name', $component)->get()->first();
+            
+                if($data) {  
                     SalaryDetail::create([
                         'salary_id' => $salary->id,
                         'order' => $components[$i]['order'],
-                        'salary_component_id' =>$salaryComponentId,
+                        'salary_component_id' => $data->id,
                         'type' => $components[$i]['type'],
                         'is_hide' => $components[$i]['is_hide'],
                         'is_edit' => $components[$i]['is_edit'],
                         'is_active' =>  $components[$i]['is_active'],
                     ]);
-
-                }  else {
+                } else {
                     SalaryDetail::create([
                         'salary_id' => $salary->id,
                         'order' => $components[$i]['order'],
-                        'component_name' => $salaryComponentId,
+                        'component_name' => $components[$i]['component_name'],
                         'type' => $components[$i]['type'],
                         'is_hide' => $components[$i]['is_hide'],
                         'is_edit' => $components[$i]['is_edit'],
                         'is_active' =>  $components[$i]['is_active'],
                     ]);
                 }
-
             }
 
             DB::commit();
@@ -267,18 +262,18 @@ class SalaryController extends Controller
                 'status_code' => 200,
                 'status' => 'success',
                 'message' => 'Salary berhasil ditambahkan',
-                'data' => $salary,
+                'data' => $components,
             ], 200);
 
-        } catch (\Exception $error) {
-            DB::rollback(); // Rollback transaksi jika ada kesalahan
-            // throw $error; // Re-throw exception jika perlu
-            return response()->json([
-                'status_code' => 500,
-                'status' => 'error',
-                'message' => $error,
-            ], 500);
-        }
+        // } catch (\Exception $error) {
+        //     DB::rollback(); // Rollback transaksi jika ada kesalahan
+        //     // throw $error; // Re-throw exception jika perlu
+        //     return response()->json([
+        //         'status_code' => 500,
+        //         'status' => 'error',
+        //         'message' => $error,
+        //     ], 500);
+        // }
     }
 
     /**
