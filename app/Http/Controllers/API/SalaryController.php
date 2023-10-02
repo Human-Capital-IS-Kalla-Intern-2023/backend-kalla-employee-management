@@ -33,8 +33,8 @@ class SalaryController extends Controller
             return $salary->salaryDetail->count() > 0;
         });
 
-        $dataSalary = $filteredSalaries->map(function ($salary) {
-            return [
+        foreach ($filteredSalaries as $salary) {
+            $dataSalary[] = [
                 "id" => $salary->id,
                 "salary_name" => $salary->salary_name,
                 "company_id" => $salary->company->id,
@@ -44,7 +44,7 @@ class SalaryController extends Controller
                 "updated_at" => $salary->updated_at,
                 "component" => $salary->salaryDetail->count(),
             ];
-        });
+        }
 
         return response()->json([
             'status_code' => 200,
@@ -203,7 +203,7 @@ class SalaryController extends Controller
     public function update(Request $request, string $id)
     {
         $validation = $this->validate($request, [
-            'salary_name'     => 'required|unique:salaries,salary_name,'.$id.',id,deleted_at,NULL|string|max:255',
+            'salary_name'     => 'required|unique:salaries,salary_name,' . $id . ',id,deleted_at,NULL|string|max:255',
             'company_id' => 'required|exists:companies,id,deleted_at,NULL',
             'is_active' => 'required|boolean',
             'components' => 'required',
@@ -305,7 +305,8 @@ class SalaryController extends Controller
         }
     }
 
-    public function updateIsActive(Request $request, String $id) {
+    public function updateIsActive(Request $request, String $id)
+    {
         $validation = $this->validate($request, [
             'is_active' => 'required|boolean',
         ]);
@@ -332,8 +333,5 @@ class SalaryController extends Controller
                 'message' => 'Data tidak ditemukan',
             ], 404);
         }
-
-        
-
     }
 }
