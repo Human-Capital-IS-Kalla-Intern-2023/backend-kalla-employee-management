@@ -100,13 +100,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('salary-component/{id}', [SalaryComponentController::class, 'show']);
     Route::put('salary-component/{id}', [SalaryComponentController::class, 'update']);
     Route::delete('salary-component/{id}', [SalaryComponentController::class, 'destroy']);
+    Route::put('salary-component/is_active/{id}', [SalaryComponentController::class, 'updateIsActive']);
 
-    // Salary Company
-    Route::get('salary-company', [SalaryCompanyController::class, 'index']);
-    Route::post('salary-company/', [SalaryCompanyController::class, 'store']);
-    Route::get('salary-company/{id}', [SalaryCompanyController::class, 'show']);
-    Route::put('salary-company/{id}', [SalaryCompanyController::class, 'update']);
-    Route::delete('salary-company/{id}', [SalaryCompanyController::class, 'destroy']);
 
 
     //salary
@@ -115,12 +110,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('salary/{id}', [SalaryController::class, 'show']);
     Route::put('salary/{id}', [SalaryController::class, 'update']);
     Route::delete('salary/{id}', [SalaryController::class, 'destroy']);
+    Route::put('salary/is_active/{id}', [SalaryController::class, 'updateIsActive']);
 
-    // Salary Company
-    Route::get('salary-detail', [SalaryDetailController::class, 'index']);
-    Route::post('salary-detail/', [SalaryDetailController::class, 'store']);
-    Route::get('salary-detail/{id}', [SalaryDetailController::class, 'show']);
-    Route::put('salary-detail/{id}', [SalaryDetailController::class, 'update']);
-    Route::delete('salary-detail/{id}', [SalaryDetailController::class, 'destroy']);
 
 });

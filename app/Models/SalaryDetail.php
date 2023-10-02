@@ -24,8 +24,8 @@ class SalaryDetail extends Model
     }
 
      // Definisikan accessor untuk computed field 'average_price'
-    public function getSalaryComponentAttribute()
-    {
-        return $this->salary_component_id . $this->component_name;
-    }
+    // public function getSalaryComponentAttribute()
+    // {
+    //     return $this->salary_component_id . $this->component_name;
+    // }
 }
