@@ -26,9 +26,28 @@ class EmployeeController extends Controller
             $query->withTrashed(); // Mengambil data yang terhapus secara lembut (soft deleted)
         }])->get();
 
+      
+
         $dataEmployee = [];
 
         for ($i = 0; $i < $employees->count(); $i++) {
+            $dataPosition = [];
+
+            for($j = 1; $j < $employees[$i]->positions->count(); $j++) {
+                $employee = [
+                    "id_position_name" => $employees[$i]->positions[$j]->id,
+                    "position_name" => $employees[$i]->positions[$j]->position_name,
+                    "company_name" => $employees[$i]->positions[$j]->company[0]->company_name,
+                    "directorate_name" => $employees[$i]->positions[$j]->directorate[0]->directorat_name,
+                    "division_name" => $employees[$i]->positions[$j]->division[0]->division_name,
+                    "section_name" => $employees[$i]->positions[$j]->section[0]->section_name,
+                    "grade_main" => $employees[$i]->positions[$j]->job_grade[0]->grade_name,
+                    
+                ];
+    
+                $dataPosition[] = $employee;
+            }
+
             $employee = [
                 "id" => $employees[$i]->id,
                 "nip" => $employees[$i]->nip,
@@ -38,8 +57,15 @@ class EmployeeController extends Controller
                 "company_email" => $employees[$i]->company_email,
                 "id_main_position" => $employees[$i]->positions[0]->id,
                 "main_position" => $employees[$i]->positions[0]->position_name,
+                "company_main" => $employees[$i]->positions[0]->company[0]->company_name,
+                "directorate_main" => $employees[$i]->positions[0]->directorate[0]->directorat_name,
+                "division_main" => $employees[$i]->positions[0]->division[0]->division_name,
+                "section_main" => $employees[$i]->positions[0]->section[0]->section_name,
+                "job_grade_main" => $employees[$i]->positions[0]->job_grade[0]->grade_name,
                 "created_at" =>  $employees[$i]->created_at,
                 "updated_at" =>  $employees[$i]->updated_at,
+                "additional_position" => $dataPosition,
+
             ];
 
             $dataEmployee[] = $employee;
@@ -133,7 +159,7 @@ class EmployeeController extends Controller
     // Done
     public function show(string $id)
     {
-        // try {
+        try {
         $employees = Employee::with('positions', 'positions.directorate', 'positions.company', 'positions.division', 'positions.section', 'positions.job_grade', 'positions.employees')->withTrashed()->where('id', $id)->get();
 
 
@@ -178,13 +204,13 @@ class EmployeeController extends Controller
             'message' => 'Karyawan baru berhasil diambil',
             'data' => $employee,
         ], 200);
-        // } catch (Exception $error) {
-        //     return response()->json([
-        //         'status_code' => 404,
-        //         'status' => 'error',
-        //         'message' => 'Data tidak ditemukan',
-        //     ], 404);
-        // }
+        } catch (Exception $error) {
+            return response()->json([
+                'status_code' => 404,
+                'status' => 'error',
+                'message' => 'Data tidak ditemukan',
+            ], 404);
+        }
     }
 
     public function update(Request $request, $id)
