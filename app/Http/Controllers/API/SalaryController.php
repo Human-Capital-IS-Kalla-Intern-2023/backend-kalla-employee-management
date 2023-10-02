@@ -42,7 +42,7 @@ class SalaryController extends Controller
                 "is_active" => $salary->is_active,
                 "created_at" => $salary->created_at,
                 "updated_at" => $salary->updated_at,
-                "component" => $salary->salaryDetail->count(),
+                "components" => $salary->salaryDetail->count(),
             ];
         }
 
