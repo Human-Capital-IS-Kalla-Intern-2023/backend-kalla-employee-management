@@ -61,9 +61,10 @@ class SalaryController extends Controller
     public function store(Request $request)
     {
         $validation = $this->validate($request, [
-            'salary_name'     => 'required|string|max:255',
+            'salary_name'     => 'required|unique:salaries,salary_name,NULL,id,deleted_at,NULL|string|max:255',
             'company_id' => 'required|exists:companies,id,deleted_at,NULL',
             'is_active' => 'required|boolean',
+            'components' => 'required',
             'components.*.order' => 'required|integer',
             'components.*.component_name' => 'required|string',
             'components.*.type' => 'required|in:fixed pay,deductions',
@@ -202,9 +203,10 @@ class SalaryController extends Controller
     public function update(Request $request, string $id)
     {
         $validation = $this->validate($request, [
-            'salary_name'     => 'required|string|max:255',
+            'salary_name'     => 'required|unique:salaries,salary_name,'.$id.',id,deleted_at,NULL|string|max:255',
             'company_id' => 'required|exists:companies,id,deleted_at,NULL',
             'is_active' => 'required|boolean',
+            'components' => 'required',
             'components.*.order' => 'required|integer',
             'components.*.component_name' => 'required|string',
             'components.*.type' => 'required|in:fixed pay,deductions',
