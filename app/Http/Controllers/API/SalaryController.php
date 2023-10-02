@@ -29,20 +29,22 @@ class SalaryController extends Controller
 
         $dataSalary = [];
 
-        for ($i = 0; $i < $salaries->count(); $i++) {
-            $salary = [
-                "id" => $salaries[$i]->id,
-                "salary_name" => $salaries[$i]->salary_name,
-                "company_id" => $salaries[$i]->company->id,
-                "company_name" => $salaries[$i]->company->company_name,
-                "is_active" => $salaries[$i]->is_active,
-                "created_at" => $salaries[$i]->created_at,
-                "updated_at" => $salaries[$i]->updated_at,
-                "component" => $salaries[$i]->salaryDetail->count(),
-            ];
+        $filteredSalaries = $salaries->filter(function ($salary) {
+            return $salary->salaryDetail->count() > 0;
+        });
 
-            $dataSalary[] = $salary;
-        }
+        $dataSalary = $filteredSalaries->map(function ($salary) {
+            return [
+                "id" => $salary->id,
+                "salary_name" => $salary->salary_name,
+                "company_id" => $salary->company->id,
+                "company_name" => $salary->company->company_name,
+                "is_active" => $salary->is_active,
+                "created_at" => $salary->created_at,
+                "updated_at" => $salary->updated_at,
+                "component" => $salary->salaryDetail->count(),
+            ];
+        });
 
         return response()->json([
             'status_code' => 200,
