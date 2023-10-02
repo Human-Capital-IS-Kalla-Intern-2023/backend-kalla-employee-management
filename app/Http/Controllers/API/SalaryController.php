@@ -159,6 +159,7 @@ class SalaryController extends Controller
                 }
 
                 $salaryComponent = [
+                    "component_id" => $item->id,
                     "order" =>  $item->order,
                     "component_name" => $checkData ? $checkData->component_name : $item->component_name,
                     "type" =>  $item->type,
