@@ -304,4 +304,36 @@ class SalaryController extends Controller
             ], 404);
         }
     }
+
+    public function updateIsActive(Request $request, String $id) {
+        $validation = $this->validate($request, [
+            'is_active' => 'required|boolean',
+        ]);
+
+        try {
+
+            $salary = Salary::findOrFail($id);
+
+
+            $salary->update([
+                'is_active' => $request->is_active,
+            ]);
+
+            return response()->json([
+                'status_code' => 200,
+                'status' => 'success',
+                'message' => $salary->salary_name . ' berhasil diubah',
+                'data' => $salary,
+            ], 200);
+        } catch (Exception $error) {
+            return response()->json([
+                'status_code' => 404,
+                'status' => 'error',
+                'message' => 'Data tidak ditemukan',
+            ], 404);
+        }
+
+        
+
+    }
 }

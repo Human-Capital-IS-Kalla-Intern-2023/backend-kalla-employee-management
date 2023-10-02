@@ -188,4 +188,36 @@ class SalaryComponentController extends Controller
         
         }
     }
+
+    public function updateIsActive(Request $request, String $id) {
+        $validation = $this->validate($request, [
+            'is_active' => 'required|boolean',
+        ]);
+
+        try {
+
+            $salaryComponent = SalaryComponent::findOrFail($id);
+
+
+            $salaryComponent->update([
+                'is_active' => $request->is_active,
+            ]);
+
+            return response()->json([
+                'status_code' => 200,
+                'status' => 'success',
+                'message' => $salaryComponent->component_name . ' berhasil diubah',
+                'data' => $salaryComponent,
+            ], 200);
+        } catch (Exception $error) {
+            return response()->json([
+                'status_code' => 404,
+                'status' => 'error',
+                'message' => 'Data tidak ditemukan',
+            ], 404);
+        }
+
+        
+
+    }
 }
