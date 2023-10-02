@@ -137,6 +137,22 @@ class EmployeeController extends Controller
         try {
             $employees = Employee::with('positions','positions.directorate','positions.company','positions.division','positions.section','positions.job_grade')->withTrashed()->where('id',$id)->get();
 
+                $dataPosition = [];
+
+                for($i = 1; $i < $employees[0]->positions->count(); $i++) {
+                    $employee = [
+                        "id_position_name" => $employees[0]->positions[$i]->id,
+                        "position_name" => $employees[0]->positions[$i]->position_name,
+                        "company_name" => $employees[0]->positions[$i]->company[0]->company_name,
+                        "directorate_name" => $employees[0]->positions[$i]->directorate[0]->directorat_name,
+                        "division_name" => $employees[0]->positions[$i]->division[0]->division_name,
+                        "section_name" => $employees[0]->positions[$i]->section[0]->section_name,
+                        "grade_main" => $employees[0]->positions[$i]->job_grade[0]->grade_name,
+                    ];
+    
+                    $dataPosition[] = $employee;
+                }
+
                 $employee = [
                     "id" => $employees[0]->id,
                     "nip" => $employees[0]->nip,
@@ -144,12 +160,14 @@ class EmployeeController extends Controller
                     "nickname" => $employees[0]->nickname,
                     "hire_date" => $employees[0]->hire_date,
                     "company_email" => $employees[0]->company_email,
+                    "id_main_position" => $employees[0]->positions[0]->id,
                     "main_position" => $employees[0]->positions[0]->position_name,
                     "company_main" => $employees[0]->positions[0]->company[0]->company_name,
                     "directorate_main" => $employees[0]->positions[0]->directorate[0]->directorat_name,
                     "division_main" => $employees[0]->positions[0]->division[0]->division_name,
                     "section_main" => $employees[0]->positions[0]->section[0]->section_name,
                     "job_grade_main" => $employees[0]->positions[0]->job_grade[0]->grade_name,
+                    "additional_position" => $dataPosition,
                 ];
 
             return response()->json([
