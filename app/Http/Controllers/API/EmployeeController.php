@@ -26,25 +26,25 @@ class EmployeeController extends Controller
             $query->withTrashed(); // Mengambil data yang terhapus secara lembut (soft deleted)
         }])->get();
 
-      
+
 
         $dataEmployee = [];
 
         for ($i = 0; $i < $employees->count(); $i++) {
             $dataPosition = [];
 
-            for($j = 1; $j < $employees[$i]->positions->count(); $j++) {
+            for ($j = 1; $j < $employees[$i]->positions->count(); $j++) {
                 $employee = [
-                    "id_position_name" => $employees[$i]->positions[$j]->id,
+                    "id_additional_position" => $employees[$i]->positions[$j]->id,
                     "position_name" => $employees[$i]->positions[$j]->position_name,
                     "company_name" => $employees[$i]->positions[$j]->company[0]->company_name,
                     "directorate_name" => $employees[$i]->positions[$j]->directorate[0]->directorat_name,
                     "division_name" => $employees[$i]->positions[$j]->division[0]->division_name,
                     "section_name" => $employees[$i]->positions[$j]->section[0]->section_name,
                     "grade_main" => $employees[$i]->positions[$j]->job_grade[0]->grade_name,
-                    
+
                 ];
-    
+
                 $dataPosition[] = $employee;
             }
 
@@ -160,50 +160,50 @@ class EmployeeController extends Controller
     public function show(string $id)
     {
         try {
-        $employees = Employee::with('positions', 'positions.directorate', 'positions.company', 'positions.division', 'positions.section', 'positions.job_grade', 'positions.employees')->withTrashed()->where('id', $id)->get();
+            $employees = Employee::with('positions', 'positions.directorate', 'positions.company', 'positions.division', 'positions.section', 'positions.job_grade', 'positions.employees')->withTrashed()->where('id', $id)->get();
 
 
-                $dataPosition = [];
+            $dataPosition = [];
 
-                for($i = 1; $i < $employees[0]->positions->count(); $i++) {
-                    $employee = [
-                        "id_position_name" => $employees[0]->positions[$i]->id,
-                        "position_name" => $employees[0]->positions[$i]->position_name,
-                        "company_name" => $employees[0]->positions[$i]->company[0]->company_name,
-                        "directorate_name" => $employees[0]->positions[$i]->directorate[0]->directorat_name,
-                        "division_name" => $employees[0]->positions[$i]->division[0]->division_name,
-                        "section_name" => $employees[0]->positions[$i]->section[0]->section_name,
-                        "grade_main" => $employees[0]->positions[$i]->job_grade[0]->grade_name,
-                    ];
-    
-                    $dataPosition[] = $employee;
-                }
-
+            for ($i = 1; $i < $employees[0]->positions->count(); $i++) {
                 $employee = [
-                    "id" => $employees[0]->id,
-                    "nip" => $employees[0]->nip,
-                    "fullname" => $employees[0]->fullname,
-                    "nickname" => $employees[0]->nickname,
-                    "hire_date" => $employees[0]->hire_date,
-                    "company_email" => $employees[0]->company_email,
-                    "id_main_position" => $employees[0]->positions[0]->id,
-                    "main_position" => $employees[0]->positions[0]->position_name,
-                    "company_main" => $employees[0]->positions[0]->company[0]->company_name,
-                    "directorate_main" => $employees[0]->positions[0]->directorate[0]->directorat_name,
-                    "division_main" => $employees[0]->positions[0]->division[0]->division_name,
-                    "section_main" => $employees[0]->positions[0]->section[0]->section_name,
-                    "job_grade_main" => $employees[0]->positions[0]->job_grade[0]->grade_name,
-                    "additional_position" => $dataPosition,
+                    "id_additional_position" => $employees[0]->positions[$i]->id,
+                    "position_name" => $employees[0]->positions[$i]->position_name,
+                    "company_name" => $employees[0]->positions[$i]->company[0]->company_name,
+                    "directorate_name" => $employees[0]->positions[$i]->directorate[0]->directorat_name,
+                    "division_name" => $employees[0]->positions[$i]->division[0]->division_name,
+                    "section_name" => $employees[0]->positions[$i]->section[0]->section_name,
+                    "grade_main" => $employees[0]->positions[$i]->job_grade[0]->grade_name,
                 ];
 
+                $dataPosition[] = $employee;
+            }
+
+            $employee = [
+                "id" => $employees[0]->id,
+                "nip" => $employees[0]->nip,
+                "fullname" => $employees[0]->fullname,
+                "nickname" => $employees[0]->nickname,
+                "hire_date" => $employees[0]->hire_date,
+                "company_email" => $employees[0]->company_email,
+                "id_main_position" => $employees[0]->positions[0]->id,
+                "main_position" => $employees[0]->positions[0]->position_name,
+                "company_main" => $employees[0]->positions[0]->company[0]->company_name,
+                "directorate_main" => $employees[0]->positions[0]->directorate[0]->directorat_name,
+                "division_main" => $employees[0]->positions[0]->division[0]->division_name,
+                "section_main" => $employees[0]->positions[0]->section[0]->section_name,
+                "job_grade_main" => $employees[0]->positions[0]->job_grade[0]->grade_name,
+                "additional_position" => $dataPosition,
+            ];
 
 
-        return response()->json([
-            'status_code' => 200,
-            'status' => 'success',
-            'message' => 'Karyawan baru berhasil diambil',
-            'data' => $employee,
-        ], 200);
+
+            return response()->json([
+                'status_code' => 200,
+                'status' => 'success',
+                'message' => 'Karyawan baru berhasil diambil',
+                'data' => $employee,
+            ], 200);
         } catch (Exception $error) {
             return response()->json([
                 'status_code' => 404,
