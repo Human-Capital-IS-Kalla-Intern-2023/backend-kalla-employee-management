@@ -9,9 +9,9 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class SalaryDetail extends Model
 {
-    use HasFactory,SoftDeletes;
+    use HasFactory, SoftDeletes;
 
-    protected $fillable = ['salary_id','order', 'salary_component_id','component_name','type','is_hide','is_edit','is_active'];
+    protected $fillable = ['salary_id', 'order', 'salary_component_id', 'component_name', 'type', 'is_hide', 'is_edit', 'is_active'];
 
     /**
      * Get the user associated with the SalaryDetail
@@ -20,10 +20,10 @@ class SalaryDetail extends Model
      */
     public function salaryComponent(): HasOne
     {
-        return $this->hasOne(SalaryComponent::class, 'salary_component_id', 'id');
+        return $this->hasOne(SalaryComponent::class, 'salary_component_id', 'id')->sortBy('type', 'asc');
     }
 
-     // Definisikan accessor untuk computed field 'average_price'
+    // Definisikan accessor untuk computed field 'average_price'
     // public function getSalaryComponentAttribute()
     // {
     //     return $this->salary_component_id . $this->component_name;

@@ -18,10 +18,10 @@ class SalaryComponentController extends Controller
     {
         $search = $request->get('search');
 
-        $components = SalaryComponent::query()->when($search, function($query) use($search) {
-            $query->where('component_name','like','%'.$search.'%');
-        })->get();
-        
+        $components = SalaryComponent::query()->when($search, function ($query) use ($search) {
+            $query->where('component_name', 'like', '%' . $search . '%');
+        })->orderBy('type', 'asc')->get();
+
 
         return response()->json([
             'status_code' => 200,
@@ -46,13 +46,13 @@ class SalaryComponentController extends Controller
     {
 
         $validation = $request->validate([
-            'component_name' => ['required','unique:salary_components,component_name,NULL,id,deleted_at,NULL','string'],
-            'type' => ['required','in:fixed pay,deductions'],
-            'is_hide' => ['required','boolean'],
-            'is_edit' => ['required','boolean'],
-            'is_active' => ['required','boolean'],
+            'component_name' => ['required', 'unique:salary_components,component_name,NULL,id,deleted_at,NULL', 'string'],
+            'type' => ['required', 'in:fixed pay,deductions'],
+            'is_hide' => ['required', 'boolean'],
+            'is_edit' => ['required', 'boolean'],
+            'is_active' => ['required', 'boolean'],
         ]);
-        
+
         try {
 
             $salarycomponent = SalaryComponent::create([
@@ -62,7 +62,7 @@ class SalaryComponentController extends Controller
                 'is_edit' => $request->is_edit,
                 'is_active' => $request->is_active,
             ]);
-            
+
             return response()->json([
                 'status_code' => 200,
                 'status' => 'success',
@@ -99,7 +99,6 @@ class SalaryComponentController extends Controller
                 'message' => 'Komponen gaji tidak ditemukan',
             ], 500);
         }
-        
     }
 
     /**
@@ -116,14 +115,14 @@ class SalaryComponentController extends Controller
     public function update(Request $request, String $id)
     {
         $validation = $this->validate($request, [
-            'component_name' => ['required','string','unique:salary_components,component_name,'.$id.',id,deleted_at,NULL'],
-            'type' => ['required','in:fixed pay,deductions'],
-            'is_hide' => ['required','boolean'],
-            'is_edit' => ['required','boolean'],
-            'is_active' => ['required','boolean'],
+            'component_name' => ['required', 'string', 'unique:salary_components,component_name,' . $id . ',id,deleted_at,NULL'],
+            'type' => ['required', 'in:fixed pay,deductions'],
+            'is_hide' => ['required', 'boolean'],
+            'is_edit' => ['required', 'boolean'],
+            'is_active' => ['required', 'boolean'],
         ]);
 
-        
+
         try {
             $component = SalaryComponent::findOrFail($id);
 
@@ -134,7 +133,7 @@ class SalaryComponentController extends Controller
                 'is_edit' => $request->is_edit,
                 'is_active' =>  $request->is_active
             ]);
-            
+
             return response()->json([
                 'status_code' => 200,
                 'status' => 'success',
@@ -156,25 +155,23 @@ class SalaryComponentController extends Controller
     public function destroy(String $id)
     {
 
-        try {            
+        try {
             $component = SalaryComponent::findOrFail($id);
 
             //delete post
             $component->delete();
 
             return response()->json([
-                'status_code' => 200, 
+                'status_code' => 200,
                 'status' => 'success',
                 'message' => 'Komponen berhasil dihapus',
                 'data' => $component,
             ], 200);
-
-
         } catch (Exception $error) {
 
             if ($error->getCode() == '23000') {
                 return response()->json([
-                    'status_code' => 500, 
+                    'status_code' => 500,
                     'status' => 'error',
                     'message' => 'Tidak dapat menghapus, Komponen masih digunakan tabel lain',
                 ], 500);
@@ -185,11 +182,11 @@ class SalaryComponentController extends Controller
                 'status' => 'error',
                 'message' => 'ID Tidak ditemukan',
             ], 404);
-        
         }
     }
 
-    public function updateIsActive(Request $request, String $id) {
+    public function updateIsActive(Request $request, String $id)
+    {
         $validation = $this->validate($request, [
             'is_active' => 'required|boolean',
         ]);
@@ -216,8 +213,5 @@ class SalaryComponentController extends Controller
                 'message' => 'Data tidak ditemukan',
             ], 404);
         }
-
-        
-
     }
 }
