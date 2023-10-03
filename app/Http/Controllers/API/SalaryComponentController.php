@@ -20,7 +20,7 @@ class SalaryComponentController extends Controller
 
         $components = SalaryComponent::query()->when($search, function ($query) use ($search) {
             $query->where('component_name', 'like', '%' . $search . '%');
-        })->orderBy('type', 'asc')->get();
+        })->get();
 
 
         return response()->json([
