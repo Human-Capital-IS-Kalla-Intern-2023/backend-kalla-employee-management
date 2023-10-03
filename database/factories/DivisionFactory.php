@@ -17,7 +17,7 @@ class DivisionFactory extends Factory
     public function definition(): array
     {
         return [
-            'division_name' => $this->faker->company()
+            // 'division_name' => $this->faker->company()
         ];
     }
 }
