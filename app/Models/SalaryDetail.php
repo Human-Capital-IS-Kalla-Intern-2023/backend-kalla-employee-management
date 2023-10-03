@@ -20,7 +20,7 @@ class SalaryDetail extends Model
      */
     public function salaryComponent(): HasOne
     {
-        return $this->hasOne(SalaryComponent::class, 'salary_component_id', 'id')->sortBy('type', 'asc');
+        return $this->hasOne(SalaryComponent::class, 'salary_component_id', 'id');
     }
 
     // Definisikan accessor untuk computed field 'average_price'
