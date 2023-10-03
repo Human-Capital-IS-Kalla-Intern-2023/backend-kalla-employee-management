@@ -155,7 +155,7 @@ class SalaryController extends Controller
                 $checkData = null;
 
                 if (is_null($item->component_name)) {
-                    $checkData = SalaryComponent::where('id', $item->salary_component_id)->get()->first();
+                    $checkData = SalaryComponent::where('id', $item->salary_component_id)->orderBy('type, order', 'asc')->get()->first();
                 }
 
                 $salaryComponent = [
