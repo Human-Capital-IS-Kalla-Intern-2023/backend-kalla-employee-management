@@ -15,40 +15,40 @@ class DivisionSeeder extends Seeder
     public function run(): void
     {
 
-        Division::factory(10)->create();
-        // $division = [
-        //     [
-        //         'division_name' => 'CICT',
-        //     ],
-        //     [
-        //         'division_name' => 'CICT',
-        //     ],
-        //     [
-        //         'division_name' => 'Database',
-        //     ],
-        //     [
-        //         'division_name' => 'Marketing',
-        //     ],
-        //     [
-        //         'division_name' => 'CICT',
-        //     ],
-        //     [
-        //         'division_name' => 'CICT',
-        //     ],
-        //     [
-        //         'division_name' => 'CICT',
-        //     ],
-        //     [
-        //         'division_name' => 'CICT',
-        //     ],
-        //     [
-        //         'division_name' => 'CICT',
-        //     ],
-        //     [
-        //         'division_name' => 'CICT',
-        //     ],
-        // ];
+        // Division::factory(10)->create();
+        $division = [
+            [
+                'division_name' => 'CICT',
+            ],
+            [
+                'division_name' => 'Produksi',
+            ],
+            [
+                'division_name' => 'Database',
+            ],
+            [
+                'division_name' => 'Marketing',
+            ],
+            [
+                'division_name' => 'HCBP',
+            ],
+            [
+                'division_name' => 'Umum',
+            ],
+            [
+                'division_name' => 'Personalia',
+            ],
+            [
+                'division_name' => 'Keuangan',
+            ],
+            [
+                'division_name' => 'Pabrik',
+            ],
+            [
+                'division_name' => 'Perencanaan',
+            ],
+        ];
 
-        // Division::insert($division);
+        Division::insert($division);
     }
 }
