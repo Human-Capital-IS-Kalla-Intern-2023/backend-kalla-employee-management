@@ -23,7 +23,7 @@ class EmployeeController extends Controller
             $query->where('fullname', 'like', '%' . $search . '%');
         })->with(['positions' => function ($query) {
             $query->select('positions.*', 'employee_details.status');
-            $query->withTrashed(); // Mengambil data yang terhapus secara lembut (soft deleted)
+            $query->withTrashed()->orderBy('status', 'desc'); // Menambahkan ORDER BY status secara descending pada tabel pivot
         }])->get();
 
 
@@ -160,7 +160,22 @@ class EmployeeController extends Controller
     public function show(string $id)
     {
         try {
-            $employees = Employee::with('positions', 'positions.directorate', 'positions.company', 'positions.division', 'positions.section', 'positions.job_grade', 'positions.employees')->withTrashed()->where('id', $id)->get();
+            
+
+            $employees = Employee::with([
+                'positions' => function ($query) {
+                    $query->withTrashed()
+                          ->orderBy('status', 'desc'); // Menambahkan ORDER BY status secara descending pada tabel pivot
+                },
+                'positions.directorate', 
+                'positions.company', 
+                'positions.division', 
+                'positions.section', 
+                'positions.job_grade'
+            ])
+            ->withTrashed()
+            ->where('id', $id)
+            ->get();
 
 
             $dataPosition = [];
@@ -195,7 +210,6 @@ class EmployeeController extends Controller
                 "job_grade_main" => $employees[0]->positions[0]->job_grade[0]->grade_name,
                 "additional_position" => $dataPosition,
             ];
-
 
 
             return response()->json([
