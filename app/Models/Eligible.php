@@ -9,9 +9,9 @@ class Eligible extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['employee_detail_id','salary_detail','type_bank','account_number'];
+    protected $fillable = ['employee_detail_id', 'salary_detail', 'type_bank', 'account_number', 'account_name'];
 
-    
+
     /**
      * user
      *
