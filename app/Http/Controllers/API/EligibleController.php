@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 use App\Models\Eligible;
 use App\Models\Employee;
+use App\Models\EmployeeDetail;
 use Exception;
 use Illuminate\Http\Request;
 
@@ -14,54 +15,58 @@ class EligibleController extends Controller
         // try {
             
 
-            $employees = Employee::with([
-                'positions' => function ($query) {
-                    $query->withTrashed()
-                          ->orderBy('status', 'desc'); // Menambahkan ORDER BY status secara descending pada tabel pivot
-                },
-                'employeeDetail.eligible',
-                'positions.directorate', 
-                'positions.company', 
-                'positions.division', 
-                'positions.section', 
-                'positions.job_grade'
+            $dataEmployee = EmployeeDetail::with([
+                'position',
+                'eligible',
+                'employee',
             ])
-            ->withTrashed()
-            ->where('id', $id)
-            ->get();
+            // ->withTrashed()
+            ->where('employee_id', $id)
+            // ->where('status', 1)
+            ->get()->first();
+            
+            // $dataEmployee = EmployeeDetail::with([
+            //     'position',
+            //     'eligible',
+            //     'employee',
+            // ])
+            // // ->withTrashed()
+            // ->where('employee_id', $id)
+            // ->where('status', 0)
+            // ->get();
 
+            // $dataPosition = [];
 
-            $dataPosition = [];
+            // for ($i = 1; $i < $employees[0]->positions->count(); $i++) {
+            //     $employee = [
+            //         "id_additional_position" => $employees[0]->positions[$i]->id,
+            //         "position_name" => $employees[0]->positions[$i]->position_name,
+            //         "company_name" => $employees[0]->positions[$i]->company[0]->company_name,
+            //         "directorate_name" => $employees[0]->positions[$i]->directorate[0]->directorat_name,
+            //         "division_name" => $employees[0]->positions[$i]->division[0]->division_name,
+            //         "section_name" => $employees[0]->positions[$i]->section[0]->section_name,
+            //         "grade_main" => $employees[0]->positions[$i]->job_grade[0]->grade_name,
+            //     ];
 
-            for ($i = 1; $i < $employees[0]->positions->count(); $i++) {
-                $employee = [
-                    "id_additional_position" => $employees[0]->positions[$i]->id,
-                    "position_name" => $employees[0]->positions[$i]->position_name,
-                    "company_name" => $employees[0]->positions[$i]->company[0]->company_name,
-                    "directorate_name" => $employees[0]->positions[$i]->directorate[0]->directorat_name,
-                    "division_name" => $employees[0]->positions[$i]->division[0]->division_name,
-                    "section_name" => $employees[0]->positions[$i]->section[0]->section_name,
-                    "grade_main" => $employees[0]->positions[$i]->job_grade[0]->grade_name,
-                ];
+            //     $dataPosition[] = $employee;
+            // }
+            $salaryDetail = json_decode($dataEmployee->eligible->salary_detail);
 
-                $dataPosition[] = $employee;
-            }
-
-            $employee = [
-                "id" => $employees[0]->id,
-                "nip" => $employees[0]->nip,
-                "fullname" => $employees[0]->fullname,
-                "nickname" => $employees[0]->nickname,
-                "hire_date" => $employees[0]->hire_date,
-                "company_email" => $employees[0]->company_email,
-                "id_main_position" => $employees[0]->positions[0]->id,
-                "main_position" => $employees[0]->positions[0]->position_name,
-                "company_main" => $employees[0]->positions[0]->company[0]->company_name,
-                "directorate_main" => $employees[0]->positions[0]->directorate[0]->directorat_name,
-                "division_main" => $employees[0]->positions[0]->division[0]->division_name,
-                "section_main" => $employees[0]->positions[0]->section[0]->section_name,
-                "job_grade_main" => $employees[0]->positions[0]->job_grade[0]->grade_name,
-                "additional_position" => $dataPosition,
+            $employeeDestructure = [
+                "id" => $dataEmployee->id,
+                "nip" => $dataEmployee->employee->nip,
+                "fullname" => $dataEmployee->employee->fullname,
+                "nickname" => $dataEmployee->employee->nickname,
+                "hire_date" => $dataEmployee->employee->hire_date,
+                "company_email" => $dataEmployee->employee->company_email,
+                "id_position" => $dataEmployee->position->id,
+                "position_name" => $dataEmployee->position->position_name,
+                "company_name" => $dataEmployee->position->company[0]->company_name,
+                "directorate_name" => $dataEmployee->position->directorate[0]->directorat_name,
+                "division_name" => $dataEmployee->position->division[0]->division_name,
+                "section_name" => $dataEmployee->position->section[0]->section_name,
+                "grade_name" => $dataEmployee->position->job_grade[0]->grade_name,
+                "salary_detail" => $salaryDetail,
             ];
 
 
@@ -69,7 +74,8 @@ class EligibleController extends Controller
                 'status_code' => 200,
                 'status' => 'success',
                 'message' => 'Karyawan baru berhasil diambil',
-                'data' => $employees,
+                'data' => $employeeDestructure,
+                // 'data' => $dataEmployee,
             ], 200);
         // } catch (Exception $error) {
         //     return response()->json([

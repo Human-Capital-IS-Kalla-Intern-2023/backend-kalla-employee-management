@@ -15,22 +15,6 @@ class Employee extends Model
 
     protected $fillable = ['nip','fullname','nickname','hire_date','company_email'];
 
-    // public function position(){
-    //     return $this->belongsToMany(Position::class, 'id', 'position');
-    //     // ->withPivot('status');
-    // }
-
-        
-    /**
-     * Get the user that owns the Employee
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    // public function employee(): BelongsTo
-    // {
-    //     return $this->belongsTo(Employee::class, 'foreign_key', 'other_key');
-    // }
-
     /**
      * Get the user that owns the Employee
      *
