@@ -5,13 +5,14 @@ namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 use App\Models\Eligible;
 use App\Models\Employee;
+use App\Models\Position;
 use App\Models\EmployeeDetail;
 use Exception;
 use Illuminate\Http\Request;
 
 class EligibleController extends Controller
 { 
-    public function index(string $id) {
+    public function index(Employee $employee, Position $position) {
         // try {
             
 
@@ -21,36 +22,30 @@ class EligibleController extends Controller
                 'employee',
             ])
             // ->withTrashed()
-            ->where('employee_id', $id)
-            // ->where('status', 1)
+            ->where('employee_id', $employee->id)
+            ->where('position_id', $position->id)
             ->get()->first();
             
-            // $dataEmployee = EmployeeDetail::with([
-            //     'position',
-            //     'eligible',
-            //     'employee',
-            // ])
-            // // ->withTrashed()
-            // ->where('employee_id', $id)
-            // ->where('status', 0)
-            // ->get();
+            $dataEmployeeNotActive = EmployeeDetail::with([
+                'position'
+            ])
+            // ->withTrashed()
+            ->where('employee_id', $employee->id)
+            ->whereNot('position_id', $position->id)
+            ->get();
 
-            // $dataPosition = [];
+            $additionalPosition = [];
 
-            // for ($i = 1; $i < $employees[0]->positions->count(); $i++) {
-            //     $employee = [
-            //         "id_additional_position" => $employees[0]->positions[$i]->id,
-            //         "position_name" => $employees[0]->positions[$i]->position_name,
-            //         "company_name" => $employees[0]->positions[$i]->company[0]->company_name,
-            //         "directorate_name" => $employees[0]->positions[$i]->directorate[0]->directorat_name,
-            //         "division_name" => $employees[0]->positions[$i]->division[0]->division_name,
-            //         "section_name" => $employees[0]->positions[$i]->section[0]->section_name,
-            //         "grade_main" => $employees[0]->positions[$i]->job_grade[0]->grade_name,
-            //     ];
+            for ($i = 0; $i < $dataEmployeeNotActive->count(); $i++) {
+                $employee = [
+                    "id_additional_position" => $dataEmployeeNotActive[$i]->position->id,
+                    "position_name" => $dataEmployeeNotActive[$i]->position->position_name,
+                ];
 
-            //     $dataPosition[] = $employee;
-            // }
-            $salaryDetail = json_decode($dataEmployee->eligible->salary_detail);
+                $additionalPosition[] = $employee;
+            }
+
+            $salaryDetail = (!empty($dataEmployee->eligible->salary_detail)) ?  json_decode($dataEmployee->eligible->salary_detail) : null ;
 
             $employeeDestructure = [
                 "id" => $dataEmployee->id,
@@ -66,7 +61,10 @@ class EligibleController extends Controller
                 "division_name" => $dataEmployee->position->division[0]->division_name,
                 "section_name" => $dataEmployee->position->section[0]->section_name,
                 "grade_name" => $dataEmployee->position->job_grade[0]->grade_name,
+                "type_bank" => (!empty($dataEmployee->eligible->type_bank)) ? $dataEmployee->eligible->type_bank : null ,
+                "account_number" => (!empty($dataEmployee->eligible->account_number)) ? $dataEmployee->eligible->type_bank : null,
                 "salary_detail" => $salaryDetail,
+                "additional_position" => $additionalPosition,
             ];
 
 
@@ -111,6 +109,7 @@ class EligibleController extends Controller
                     'is_hide' => $detail['is_hide'],
                     'is_edit' => $detail['is_edit'],
                     'is_active' => $detail['is_active'],
+                    // 'is_status' => $detail['is_status'],
                 ];
             }
         }
