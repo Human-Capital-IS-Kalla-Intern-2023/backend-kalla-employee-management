@@ -7,6 +7,7 @@ use App\Http\Controllers\API\LocationController;
 use App\Http\Controllers\API\EmployeeController;
 use App\Http\Controllers\API\UserController;
 use App\Http\Controllers\API\DivisionController;
+use App\Http\Controllers\API\EligibleController;
 use App\Http\Controllers\API\PositionController;
 use App\Http\Controllers\API\SalaryComponentController;
 use App\Http\Controllers\API\SalaryCompanyController;
@@ -111,6 +112,11 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::put('salary/{id}', [SalaryController::class, 'update']);
     Route::delete('salary/{id}', [SalaryController::class, 'destroy']);
     Route::put('salary/is_active/{id}', [SalaryController::class, 'updateIsActive']);
+
+    // Eligible
+    Route::get('eligibles/{id}', [EligibleController::class, 'index']);
+    Route::post('eligibles/', [EligibleController::class, 'store']);
+
 
 
 });

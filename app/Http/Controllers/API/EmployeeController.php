@@ -319,7 +319,7 @@ class EmployeeController extends Controller
                 'status' => 'success',
                 'message' => 'Karyawan berhasil dihapus',
                 'data' => $employee,
-            ]);
+            ], 200);
         } catch (\Exception $e) {
 
             DB::rollback();
