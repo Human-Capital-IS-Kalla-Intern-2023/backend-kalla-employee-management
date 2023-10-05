@@ -17,6 +17,7 @@ return new class extends Migration
             $table->json('salary_detail');
             $table->string('type_bank');
             $table->string('account_number');
+            $table->string('account_name');
             $table->timestamps();
         });
     }
