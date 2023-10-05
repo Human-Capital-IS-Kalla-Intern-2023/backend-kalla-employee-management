@@ -156,6 +156,10 @@ class EligibleController extends Controller
             if ($detail['status'] == 1) {
                 $salaryDetails[] = [
                     'order' => $detail['order'],
+                    'component_name' => $detail['component_name'],
+                    'type' => $detail['type'],
+                    'is_hide' => $detail['is_hide'],
+                    'is_edit' => $detail['is_edit'],
                     'is_active' => $detail['is_active'],
                 ];
             }
