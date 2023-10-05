@@ -13,7 +13,7 @@ use Illuminate\Http\Request;
 class EligibleController extends Controller
 { 
     public function index(Employee $employee, Position $position) {
-        // try {
+        try {
             
 
             $dataEmployee = EmployeeDetail::with([
@@ -73,15 +73,14 @@ class EligibleController extends Controller
                 'status' => 'success',
                 'message' => 'Karyawan baru berhasil diambil',
                 'data' => $employeeDestructure,
-                // 'data' => $dataEmployee,
             ], 200);
-        // } catch (Exception $error) {
-        //     return response()->json([
-        //         'status_code' => 404,
-        //         'status' => 'error',
-        //         'message' => 'Data tidak ditemukan',
-        //     ], 404);
-        // }
+        } catch (Exception $error) {
+            return response()->json([
+                'status_code' => 404,
+                'status' => 'error',
+                'message' => 'Data tidak ditemukan',
+            ], 404);
+        }
     }
 
     public function store(Request $request) {
