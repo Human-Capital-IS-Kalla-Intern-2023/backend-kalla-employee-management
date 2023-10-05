@@ -138,9 +138,10 @@ class EligibleController extends Controller
         $employee = Eligible::findOrFail($id);
 
         // Update data karyawan
-        $employee->employee_detail_id = $request->employee_detail_id;
+        // $employee->employee_detail_id = $request->employee_detail_id;
         $employee->type_bank = $request->type_bank;
         $employee->account_number = $request->account_number;
+        $employee->account_name = $request->account_name;
 
         // Update detail gaji dalam format JSON
         $salaryDetails = [];
