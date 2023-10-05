@@ -13,6 +13,7 @@ use App\Http\Controllers\API\SalaryCompanyController;
 use App\Http\Controllers\API\SalaryController;
 use App\Http\Controllers\API\SectionController;
 use App\Http\Controllers\API\SalaryDetailController;
+use App\Http\Controllers\API\EligibleController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -112,5 +113,6 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::delete('salary/{id}', [SalaryController::class, 'destroy']);
     Route::put('salary/is_active/{id}', [SalaryController::class, 'updateIsActive']);
 
-
+    // eligible
+    Route::get('eligible', [EligibleController::class, 'store']);
 });
