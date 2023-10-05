@@ -27,7 +27,7 @@ class EmployeeDetail extends Model
 
     public function position()
     {
-        return $this->belongsTo(Posisi::class);
+        return $this->belongsTo(Position::class);
     }
     
     public function eligible() 
