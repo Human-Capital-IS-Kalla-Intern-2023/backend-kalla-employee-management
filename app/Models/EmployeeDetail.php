@@ -30,5 +30,9 @@ class EmployeeDetail extends Model
         return $this->belongsTo(Posisi::class);
     }
     
+    public function eligible() 
+    {
+        return $this->hasOne(Eligible::class);
+    }
 
 }
