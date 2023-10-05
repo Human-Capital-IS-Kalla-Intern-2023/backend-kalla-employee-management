@@ -128,4 +128,51 @@ class EligibleController extends Controller
             'data' => $employee,
         ], 200);
     }
+
+    public function update(Request $request, $id)
+    {
+        $validation = $request->validate([
+            'employee_detail_id' => ['required'],
+            'type_bank' => ['required'],
+            'account_number' => ['required'],
+        ]);
+
+        // Temukan data Eligible yang ingin diupdate
+        $employee = Eligible::find($id);
+
+        if (!$employee) {
+            return response()->json([
+                'status_code' => 404,
+                'status' => 'error',
+                'message' => 'Data tidak ditemukan',
+            ], 404);
+        }
+
+        // Update data karyawan
+        $employee->employee_detail_id = $request->employee_detail_id;
+        $employee->type_bank = $request->type_bank;
+        $employee->account_number = $request->account_number;
+        $employee->save();
+
+        // Update detail gaji dalam format JSON
+        $salaryDetails = [];
+        foreach ($request->salary_detail as $detail) {
+            if ($detail['status'] == 1) {
+                $salaryDetails[] = [
+                    'order' => $detail['order'],
+                    'is_active' => $detail['is_active'],
+                ];
+            }
+        }
+
+        $employee->salary_detail = json_encode($salaryDetails);
+        $employee->save();
+
+        return response()->json([
+            'status_code' => 200,
+            'status' => 'success',
+            'message' => 'Data Eligible berhasil diupdate',
+            'data' => $employee,
+        ], 200);
+    }
 }
