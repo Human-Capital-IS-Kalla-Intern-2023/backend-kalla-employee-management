@@ -27,7 +27,8 @@ class Company extends Model
         return $this->belongsTo(Position::class, 'id', 'company_id');
     }
 
-    public function salary(){
-        return $this->hasMany(SalaryCompany::class, 'company_id', 'id');
+    public function salary(): HasMany
+    {
+        return $this->hasMany(Salary::class,  'company_id', 'id');
     }
 }

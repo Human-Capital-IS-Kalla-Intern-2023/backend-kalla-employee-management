@@ -3,12 +3,15 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
+use App\Models\Company;
 use App\Models\Eligible;
 use App\Models\Employee;
 use App\Models\Position;
 use App\Models\EmployeeDetail;
+use App\Models\SalaryComponent;
 use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class EligibleController extends Controller
 { 
@@ -67,6 +70,8 @@ class EligibleController extends Controller
                 "additional_position" => $additionalPosition,
             ];
 
+            
+
 
             return response()->json([
                 'status_code' => 200,
@@ -90,6 +95,7 @@ class EligibleController extends Controller
             'account_number' => ['required'],
         ]);
 
+
         // Simpan data karyawan
         $employee = new Eligible;
         $employee->employee_detail_id = $request->employee_detail_id;
@@ -100,7 +106,7 @@ class EligibleController extends Controller
         // Simpan detail gaji dalam format JSON
         $salaryDetails = [];
         foreach ($request->salary_detail as $detail) {
-            if($detail['status'] == 1) {
+            // if($detail['status'] == 1) {
                 $salaryDetails[] = [
                     'order' => $detail['order'],
                     'component_name' => $detail['component_name'],
@@ -108,9 +114,9 @@ class EligibleController extends Controller
                     'is_hide' => $detail['is_hide'],
                     'is_edit' => $detail['is_edit'],
                     'is_active' => $detail['is_active'],
-                    // 'is_status' => $detail['is_status'],
+                    'is_status' => $detail['is_status'],
                 ];
-            }
+            // }
         }
 
         $employee->salary_detail = json_encode($salaryDetails);
@@ -122,5 +128,100 @@ class EligibleController extends Controller
             'message' => 'Karyawan berhasil dihapus',
             'data' => $employee,
         ], 200);
+    }
+
+    public function show(Employee $employee, Position $position) {
+        try {
+            return DB::transaction(function () use ($employee, $position) {
+                $dataEmployee = EmployeeDetail::with([
+                    'position',
+                    'eligible',
+                    'employee',
+                ])
+                // ->withTrashed()
+                ->where('employee_id', $employee->id)
+                ->where('position_id', $position->id)
+                ->get()->first();
+
+                $querySalaryComponents = Company::with([
+                    'salary',
+                    'salary.salaryDetail'
+                ])->where('id', $position->company_id)->get()->first();
+
+                if ($querySalaryComponents) {
+                    // Mengakses data salary_detail dari objek Company
+                    $salaryDetails = $querySalaryComponents->salary->flatMap(function ($salary) {
+                        return $salary->salaryDetail;
+                    });
+
+                    $destructureSalaryDetail = [];
+
+                    foreach ($salaryDetails as $item) {
+                        $checkData = null;
+
+                        if (is_null($item->component_name)) {
+                            $checkData = SalaryComponent::where('id', $item->salary_component_id)->get()->first();
+                        }
+
+                        $salaryComponent = [
+                            "component_id" => $item->id,
+                            "order" =>  $item->order,
+                            "component_name" => $checkData ? $checkData->component_name : $item->component_name,
+                            "type" =>  $item->type,
+                            "is_hide" =>  $item->is_hide,
+                            "is_edit" =>  $item->is_edit,
+                            "is_active" =>  $item->is_active,
+                        ];
+
+                        $destructureSalaryDetail[] = $salaryComponent;
+                    }
+                    // Gunakan collect() untuk membuat koleksi dari array
+                    $destructuredCollection = collect($destructureSalaryDetail);
+                    $uniqueSalaryDetails = $destructuredCollection->reduce(function ($carry, $item) {
+                        $componentName = $item['component_name'];
+                
+                        // Jika $componentName belum ada dalam $carry, tambahkan
+                        if (!isset($carry[$componentName])) {
+                            $carry[$componentName] = $item;
+                        }
+                
+                        return $carry;
+                    }, []);
+                
+                    // Hasil berupa array dengan data unik berdasarkan 'component_name'
+                    $uniqueSalaryDetails = array_values($uniqueSalaryDetails);
+
+                    $employee['id_position'] = $dataEmployee->position->id;
+                    $employee['position_name'] = $dataEmployee->position->position_name;
+                    $employee['company_name'] = $dataEmployee->position->company[0]->company_name;
+                    $employee['directorate_name'] = $dataEmployee->position->directorate[0]->directorat_name;
+                    $employee['division_name'] = $dataEmployee->position->division[0]->division_name;
+                    $employee['section_name'] = $dataEmployee->position->section[0]->section_name;
+                    $employee['grade_name'] = $dataEmployee->position->job_grade[0]->grade_name;
+                    $employee['components'] = $uniqueSalaryDetails;
+
+                    return response()->json([
+                        'status_code' => 200,
+                        'status' => 'success',
+                        'message' => 'Karyawan baru berhasil diambil',
+                        'data' => $employee,
+                    ], 200);
+                } else {
+                    // Handle jika objek $querySalaryComponents kosong
+                    return response()->json([
+                        'status_code' => 404,
+                        'status' => 'error',
+                        'message' => 'Data tidak ditemukan',
+                    ], 404);
+                }
+            });
+
+        } catch (Exception $error) {
+            return response()->json([
+                'status_code' => 500,
+                'status' => 'error',
+                'message' => 'Terjadi kesalahan saat memproses data',
+            ], 500);
+        }
     }
 }
