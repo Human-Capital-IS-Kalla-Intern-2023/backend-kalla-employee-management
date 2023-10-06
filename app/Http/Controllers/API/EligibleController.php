@@ -14,29 +14,28 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 class EligibleController extends Controller
-{
-    public function index(Employee $employee, Position $position)
-    {
+{ 
+    public function index(Employee $employee, Position $position) {
         try {
-
+            
 
             $dataEmployee = EmployeeDetail::with([
                 'position',
                 'eligible',
                 'employee',
             ])
-                // ->withTrashed()
-                ->where('employee_id', $employee->id)
-                ->where('position_id', $position->id)
-                ->get()->first();
-
+            // ->withTrashed()
+            ->where('employee_id', $employee->id)
+            ->where('position_id', $position->id)
+            ->get()->first();
+            
             $dataEmployeeNotActive = EmployeeDetail::with([
                 'position'
             ])
-                // ->withTrashed()
-                ->where('employee_id', $employee->id)
-                ->whereNot('position_id', $position->id)
-                ->get();
+            // ->withTrashed()
+            ->where('employee_id', $employee->id)
+            ->whereNot('position_id', $position->id)
+            ->get();
 
             $additionalPosition = [];
 
@@ -49,7 +48,7 @@ class EligibleController extends Controller
                 $additionalPosition[] = $employee;
             }
 
-            $salaryDetail = (!empty($dataEmployee->eligible->salary_detail)) ?  json_decode($dataEmployee->eligible->salary_detail) : null;
+            $salaryDetail = (!empty($dataEmployee->eligible->salary_detail)) ?  json_decode($dataEmployee->eligible->salary_detail) : null ;
 
             $employeeDestructure = [
                 "id" => $dataEmployee->id,
@@ -65,7 +64,7 @@ class EligibleController extends Controller
                 "division_name" => $dataEmployee->position->division[0]->division_name,
                 "section_name" => $dataEmployee->position->section[0]->section_name,
                 "grade_name" => $dataEmployee->position->job_grade[0]->grade_name,
-                "type_bank" => (!empty($dataEmployee->eligible->type_bank)) ? $dataEmployee->eligible->type_bank : null,
+                "type_bank" => (!empty($dataEmployee->eligible->type_bank)) ? $dataEmployee->eligible->type_bank : null ,
                 "account_number" => (!empty($dataEmployee->eligible->account_number)) ? $dataEmployee->eligible->type_bank : null,
                 "salary_detail" => $salaryDetail,
                 "additional_position" => $additionalPosition,
@@ -89,8 +88,7 @@ class EligibleController extends Controller
         }
     }
 
-    public function store(Request $request)
-    {
+    public function store(Request $request) {
         $validation = $request->validate([
             'employee_detail_id' => ['required'],
             'type_bank' => ['required','string'],
@@ -107,19 +105,21 @@ class EligibleController extends Controller
             $employee->account_number = $request->account_number;
             $employee->save();
 
-        // Simpan detail gaji dalam format JSON
-        $salaryDetails = [];
-        foreach ($request->salary_detail as $detail) {
-            if($detail['status'] == 1) {
-                $salaryDetails[] = [
-                    'order' => $detail['order'],
-                    'component_name' => $detail['component_name'],
-                    'type' => $detail['type'],
-                    'is_hide' => $detail['is_hide'],
-                    'is_edit' => $detail['is_edit'],
-                    'is_active' => $detail['is_active'],
-                    // 'is_status' => $detail['is_status'],
-                ];
+            // Simpan detail gaji dalam format JSON
+            $salaryDetails = [];
+            foreach ($request->salary_detail as $detail) {
+                // if($detail['status'] == 1) {
+                    $salaryDetails[] = [
+                        'component_id' => $detail['component_id'],
+                        'order' => $detail['order'],
+                        'component_name' => $detail['component_name'],
+                        'type' => $detail['type'],
+                        'is_hide' => $detail['is_hide'],
+                        'is_edit' => $detail['is_edit'],
+                        'is_active' => $detail['is_active'],
+                        'is_status' => $detail['is_status'],
+                    ];
+                // }
             }
 
             $employee->salary_detail = json_encode($salaryDetails);
@@ -273,14 +273,25 @@ class EligibleController extends Controller
                 // }
             }
 
-        $employee->salary_detail = json_encode($salaryDetails);
-        $employee->save();
-
-        return response()->json([
-            'status_code' => 200,
-            'status' => 'success',
-            'message' => 'Karyawan berhasil dihapus',
-            'data' => $employee,
-        ], 200);
+            $employee->salary_detail = json_encode($salaryDetails);
+            $employee->save();
+            DB::commit(); // Commit the transaction
+            return response()->json([
+                'status_code' => 200,
+                'status' => 'success',
+                'message' => 'Karyawan berhasil dihapus',
+                'data' => $employee,
+            ], 200);
+        } catch (\Exception $e) {
+            DB::rollBack(); // Rollback the transaction on exception
+    
+            return response()->json([
+                'status_code' => 500,
+                'status' => 'error',
+                'message' => 'Terjadi kesalahan saat menyimpan data.',
+                'error' => $e->getMessage(),
+            ], 500);
+        }
     }
+    
 }
