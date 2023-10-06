@@ -91,43 +91,56 @@ class EligibleController extends Controller
     public function store(Request $request) {
         $validation = $request->validate([
             'employee_detail_id' => ['required'],
-            'type_bank' => ['required'],
-            'account_number' => ['required'],
+            'type_bank' => ['required','string'],
+            'account_number' => ['required','string'],
         ]);
+        DB::beginTransaction(); // Start a database transaction
 
+        try {
 
-        // Simpan data karyawan
-        $employee = new Eligible;
-        $employee->employee_detail_id = $request->employee_detail_id;
-        $employee->type_bank = $request->type_bank;
-        $employee->account_number = $request->account_number;
-        $employee->save();
+            // Simpan data karyawan
+            $employee = new Eligible;
+            $employee->employee_detail_id = $request->employee_detail_id;
+            $employee->type_bank = $request->type_bank;
+            $employee->account_number = $request->account_number;
+            $employee->save();
 
-        // Simpan detail gaji dalam format JSON
-        $salaryDetails = [];
-        foreach ($request->salary_detail as $detail) {
-            // if($detail['status'] == 1) {
-                $salaryDetails[] = [
-                    'order' => $detail['order'],
-                    'component_name' => $detail['component_name'],
-                    'type' => $detail['type'],
-                    'is_hide' => $detail['is_hide'],
-                    'is_edit' => $detail['is_edit'],
-                    'is_active' => $detail['is_active'],
-                    'is_status' => $detail['is_status'],
-                ];
-            // }
+            // Simpan detail gaji dalam format JSON
+            $salaryDetails = [];
+            foreach ($request->salary_detail as $detail) {
+                // if($detail['status'] == 1) {
+                    $salaryDetails[] = [
+                        'component_id' => $detail['component_id'],
+                        'order' => $detail['order'],
+                        'component_name' => $detail['component_name'],
+                        'type' => $detail['type'],
+                        'is_hide' => $detail['is_hide'],
+                        'is_edit' => $detail['is_edit'],
+                        'is_active' => $detail['is_active'],
+                        'is_status' => $detail['is_status'],
+                    ];
+                // }
+            }
+
+            $employee->salary_detail = json_encode($salaryDetails);
+            $employee->save();
+            DB::commit(); // Commit the transaction
+            return response()->json([
+                'status_code' => 200,
+                'status' => 'success',
+                'message' => 'Eligible berhasil ditambahkan',
+                'data' => $employee,
+            ], 200);
+        } catch (\Exception $e) {
+            DB::rollBack(); // Rollback the transaction on exception
+    
+            return response()->json([
+                'status_code' => 500,
+                'status' => 'error',
+                'message' => 'Terjadi kesalahan saat menyimpan data.',
+                'error' => $e->getMessage(),
+            ], 500);
         }
-
-        $employee->salary_detail = json_encode($salaryDetails);
-        $employee->save();
-
-        return response()->json([
-            'status_code' => 200,
-            'status' => 'success',
-            'message' => 'Karyawan berhasil dihapus',
-            'data' => $employee,
-        ], 200);
     }
 
     public function show(Employee $employee, Position $position) {
@@ -224,4 +237,61 @@ class EligibleController extends Controller
             ], 500);
         }
     }
+
+    public function update(Request $request, String $id) {
+        $validation = $request->validate([
+            'employee_detail_id' => ['required'],
+            'type_bank' => ['required','string'],
+            'account_number' => ['required','string'],
+        ]);
+        DB::beginTransaction(); // Start a database transaction
+
+        try {
+
+            $employee = Eligible::findOrFail($id);
+
+            // Simpan data karyawan
+            $employee->employee_detail_id = $request->employee_detail_id;
+            $employee->type_bank = $request->type_bank;
+            $employee->account_number = $request->account_number;
+            $employee->save();
+
+            // Simpan detail gaji dalam format JSON
+            $salaryDetails = [];
+            foreach ($request->salary_detail as $detail) {
+                // if($detail['status'] == 1) {
+                    $salaryDetails[] = [
+                        'component_id' => $detail['component_id'],
+                        'order' => $detail['order'],
+                        'component_name' => $detail['component_name'],
+                        'type' => $detail['type'],
+                        'is_hide' => $detail['is_hide'],
+                        'is_edit' => $detail['is_edit'],
+                        'is_active' => $detail['is_active'],
+                        'is_status' => $detail['is_status'],
+                    ];
+                // }
+            }
+
+            $employee->salary_detail = json_encode($salaryDetails);
+            $employee->save();
+            DB::commit(); // Commit the transaction
+            return response()->json([
+                'status_code' => 200,
+                'status' => 'success',
+                'message' => 'Karyawan berhasil dihapus',
+                'data' => $employee,
+            ], 200);
+        } catch (\Exception $e) {
+            DB::rollBack(); // Rollback the transaction on exception
+    
+            return response()->json([
+                'status_code' => 500,
+                'status' => 'error',
+                'message' => 'Terjadi kesalahan saat menyimpan data.',
+                'error' => $e->getMessage(),
+            ], 500);
+        }
+    }
+    
 }
