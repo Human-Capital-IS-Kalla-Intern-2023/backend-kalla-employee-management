@@ -14,28 +14,29 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 class EligibleController extends Controller
-{ 
-    public function index(Employee $employee, Position $position) {
+{
+    public function index(Employee $employee, Position $position)
+    {
         try {
-            
+
 
             $dataEmployee = EmployeeDetail::with([
                 'position',
                 'eligible',
                 'employee',
             ])
-            // ->withTrashed()
-            ->where('employee_id', $employee->id)
-            ->where('position_id', $position->id)
-            ->get()->first();
-            
+                // ->withTrashed()
+                ->where('employee_id', $employee->id)
+                ->where('position_id', $position->id)
+                ->get()->first();
+
             $dataEmployeeNotActive = EmployeeDetail::with([
                 'position'
             ])
-            // ->withTrashed()
-            ->where('employee_id', $employee->id)
-            ->whereNot('position_id', $position->id)
-            ->get();
+                // ->withTrashed()
+                ->where('employee_id', $employee->id)
+                ->whereNot('position_id', $position->id)
+                ->get();
 
             $additionalPosition = [];
 
@@ -48,7 +49,7 @@ class EligibleController extends Controller
                 $additionalPosition[] = $employee;
             }
 
-            $salaryDetail = (!empty($dataEmployee->eligible->salary_detail)) ?  json_decode($dataEmployee->eligible->salary_detail) : null ;
+            $salaryDetail = (!empty($dataEmployee->eligible->salary_detail)) ?  json_decode($dataEmployee->eligible->salary_detail) : null;
 
             $employeeDestructure = [
                 "id" => $dataEmployee->id,
@@ -64,13 +65,13 @@ class EligibleController extends Controller
                 "division_name" => $dataEmployee->position->division[0]->division_name,
                 "section_name" => $dataEmployee->position->section[0]->section_name,
                 "grade_name" => $dataEmployee->position->job_grade[0]->grade_name,
-                "type_bank" => (!empty($dataEmployee->eligible->type_bank)) ? $dataEmployee->eligible->type_bank : null ,
+                "type_bank" => (!empty($dataEmployee->eligible->type_bank)) ? $dataEmployee->eligible->type_bank : null,
                 "account_number" => (!empty($dataEmployee->eligible->account_number)) ? $dataEmployee->eligible->type_bank : null,
                 "salary_detail" => $salaryDetail,
                 "additional_position" => $additionalPosition,
             ];
 
-            
+
 
 
             return response()->json([
@@ -88,13 +89,14 @@ class EligibleController extends Controller
         }
     }
 
-    public function store(Request $request) {
+    public function store(Request $request)
+    {
         $validation = $request->validate([
             'employee_detail_id' => ['required'],
-            'type_bank' => ['required','string'],
-            'account_number' => ['required','string'],
+            'type_bank' => ['required', 'string'],
+            'account_number' => ['required', 'string'],
         ]);
-        DB::beginTransaction(); // Start a database transaction
+        // DB::beginTransaction(); // Start a database transaction
 
         try {
 
@@ -103,28 +105,29 @@ class EligibleController extends Controller
             $employee->employee_detail_id = $request->employee_detail_id;
             $employee->type_bank = $request->type_bank;
             $employee->account_number = $request->account_number;
-            $employee->save();
+            $employee->account_name = $request->account_name;
+            // $employee->save();
 
             // Simpan detail gaji dalam format JSON
             $salaryDetails = [];
             foreach ($request->salary_detail as $detail) {
                 // if($detail['status'] == 1) {
-                    $salaryDetails[] = [
-                        'component_id' => $detail['component_id'],
-                        'order' => $detail['order'],
-                        'component_name' => $detail['component_name'],
-                        'type' => $detail['type'],
-                        'is_hide' => $detail['is_hide'],
-                        'is_edit' => $detail['is_edit'],
-                        'is_active' => $detail['is_active'],
-                        'is_status' => $detail['is_status'],
-                    ];
+                $salaryDetails[] = [
+                    'component_id' => $detail['component_id'],
+                    'order' => $detail['order'],
+                    'component_name' => $detail['component_name'],
+                    'type' => $detail['type'],
+                    'is_hide' => $detail['is_hide'],
+                    'is_edit' => $detail['is_edit'],
+                    'is_active' => $detail['is_active'],
+                    'is_status' => $detail['is_status']
+                ];
                 // }
             }
 
             $employee->salary_detail = json_encode($salaryDetails);
             $employee->save();
-            DB::commit(); // Commit the transaction
+            // DB::commit(); // Commit the transaction
             return response()->json([
                 'status_code' => 200,
                 'status' => 'success',
@@ -133,7 +136,7 @@ class EligibleController extends Controller
             ], 200);
         } catch (\Exception $e) {
             DB::rollBack(); // Rollback the transaction on exception
-    
+
             return response()->json([
                 'status_code' => 500,
                 'status' => 'error',
@@ -143,7 +146,8 @@ class EligibleController extends Controller
         }
     }
 
-    public function show(Employee $employee, Position $position) {
+    public function show(Employee $employee, Position $position)
+    {
         try {
             return DB::transaction(function () use ($employee, $position) {
                 $dataEmployee = EmployeeDetail::with([
@@ -151,10 +155,10 @@ class EligibleController extends Controller
                     'eligible',
                     'employee',
                 ])
-                // ->withTrashed()
-                ->where('employee_id', $employee->id)
-                ->where('position_id', $position->id)
-                ->get()->first();
+                    // ->withTrashed()
+                    ->where('employee_id', $employee->id)
+                    ->where('position_id', $position->id)
+                    ->get()->first();
 
                 $querySalaryComponents = Company::with([
                     'salary',
@@ -192,15 +196,15 @@ class EligibleController extends Controller
                     $destructuredCollection = collect($destructureSalaryDetail);
                     $uniqueSalaryDetails = $destructuredCollection->reduce(function ($carry, $item) {
                         $componentName = $item['component_name'];
-                
+
                         // Jika $componentName belum ada dalam $carry, tambahkan
                         if (!isset($carry[$componentName])) {
                             $carry[$componentName] = $item;
                         }
-                
+
                         return $carry;
                     }, []);
-                
+
                     // Hasil berupa array dengan data unik berdasarkan 'component_name'
                     $uniqueSalaryDetails = array_values($uniqueSalaryDetails);
 
@@ -228,7 +232,6 @@ class EligibleController extends Controller
                     ], 404);
                 }
             });
-
         } catch (Exception $error) {
             return response()->json([
                 'status_code' => 500,
@@ -238,11 +241,12 @@ class EligibleController extends Controller
         }
     }
 
-    public function update(Request $request, String $id) {
+    public function update(Request $request, String $id)
+    {
         $validation = $request->validate([
             'employee_detail_id' => ['required'],
-            'type_bank' => ['required','string'],
-            'account_number' => ['required','string'],
+            'type_bank' => ['required', 'string'],
+            'account_number' => ['required', 'string'],
         ]);
         DB::beginTransaction(); // Start a database transaction
 
@@ -260,16 +264,16 @@ class EligibleController extends Controller
             $salaryDetails = [];
             foreach ($request->salary_detail as $detail) {
                 // if($detail['status'] == 1) {
-                    $salaryDetails[] = [
-                        'component_id' => $detail['component_id'],
-                        'order' => $detail['order'],
-                        'component_name' => $detail['component_name'],
-                        'type' => $detail['type'],
-                        'is_hide' => $detail['is_hide'],
-                        'is_edit' => $detail['is_edit'],
-                        'is_active' => $detail['is_active'],
-                        'is_status' => $detail['is_status'],
-                    ];
+                $salaryDetails[] = [
+                    'component_id' => $detail['component_id'],
+                    'order' => $detail['order'],
+                    'component_name' => $detail['component_name'],
+                    'type' => $detail['type'],
+                    'is_hide' => $detail['is_hide'],
+                    'is_edit' => $detail['is_edit'],
+                    'is_active' => $detail['is_active'],
+                    'is_status' => $detail['is_status'],
+                ];
                 // }
             }
 
@@ -284,7 +288,7 @@ class EligibleController extends Controller
             ], 200);
         } catch (\Exception $e) {
             DB::rollBack(); // Rollback the transaction on exception
-    
+
             return response()->json([
                 'status_code' => 500,
                 'status' => 'error',
@@ -293,5 +297,4 @@ class EligibleController extends Controller
             ], 500);
         }
     }
-    
 }
