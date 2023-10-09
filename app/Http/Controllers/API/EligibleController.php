@@ -132,7 +132,13 @@ class EligibleController extends Controller
                 'status_code' => 200,
                 'status' => 'success',
                 'message' => 'Eligible berhasil ditambahkan',
-                'data' => $employee,
+                'data' => [
+                    "employee_detail_id" => $employee->employee_detail_id,
+                    "type_bank" => $employee->type_bank,
+                    "account_number" => $employee->account_number,
+                    "account_name" => $employee->account_name,
+                    'salary_details' => $salaryDetails,
+                ],
             ], 200);
         } catch (\Exception $e) {
             DB::rollBack(); // Rollback the transaction on exception
