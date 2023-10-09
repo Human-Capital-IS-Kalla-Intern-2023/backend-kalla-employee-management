@@ -137,7 +137,7 @@ class EligibleController extends Controller
                     "type_bank" => $employee->type_bank,
                     "account_number" => $employee->account_number,
                     "account_name" => $employee->account_name,
-                    'salary_details' => $salaryDetails,
+                    'components' => $salaryDetails,
                 ],
             ], 200);
         } catch (\Exception $e) {
@@ -295,7 +295,7 @@ class EligibleController extends Controller
                     "type_bank" => $employee->type_bank,
                     "account_number" => $employee->account_number,
                     "account_name" => $employee->account_name,
-                    'salary_details' => $salaryDetails,
+                    'components' => $salaryDetails,
                 ],
             ], 200);
         } catch (\Exception $e) {
