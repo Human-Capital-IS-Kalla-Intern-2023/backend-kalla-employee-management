@@ -264,7 +264,7 @@ class EligibleController extends Controller
             $employee->employee_detail_id = $request->employee_detail_id;
             $employee->type_bank = $request->type_bank;
             $employee->account_number = $request->account_number;
-            $employee->save();
+            // $employee->save();
 
             // Simpan detail gaji dalam format JSON
             $salaryDetails = [];
@@ -289,8 +289,14 @@ class EligibleController extends Controller
             return response()->json([
                 'status_code' => 200,
                 'status' => 'success',
-                'message' => 'Karyawan berhasil dihapus',
-                'data' => $employee,
+                'message' => 'Karyawan berhasil diubah',
+                'data' => [
+                    "employee_detail_id" => $employee->employee_detail_id,
+                    "type_bank" => $employee->type_bank,
+                    "account_number" => $employee->account_number,
+                    "account_name" => $employee->account_name,
+                    'salary_details' => $salaryDetails,
+                ],
             ], 200);
         } catch (\Exception $e) {
             DB::rollBack(); // Rollback the transaction on exception
