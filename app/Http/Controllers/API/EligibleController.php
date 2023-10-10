@@ -8,6 +8,7 @@ use App\Models\Eligible;
 use App\Models\Employee;
 use App\Models\Position;
 use App\Models\EmployeeDetail;
+use App\Models\Salary;
 use App\Models\SalaryComponent;
 use Exception;
 use Illuminate\Http\Request;
@@ -96,7 +97,7 @@ class EligibleController extends Controller
             'type_bank' => ['required', 'string'],
             'account_number' => ['required', 'string'],
         ]);
-        // DB::beginTransaction(); // Start a database transaction
+        DB::beginTransaction(); // Start a database transaction
 
         try {
 
@@ -111,18 +112,17 @@ class EligibleController extends Controller
             // Simpan detail gaji dalam format JSON
             $salaryDetails = [];
             foreach ($request->salary_detail as $detail) {
-                // if($detail['status'] == 1) {
-                $salaryDetails[] = [
-                    'component_id' => $detail['component_id'],
-                    'order' => $detail['order'],
-                    'component_name' => $detail['component_name'],
-                    'type' => $detail['type'],
-                    'is_hide' => $detail['is_hide'],
-                    'is_edit' => $detail['is_edit'],
-                    'is_active' => $detail['is_active'],
-                    'is_status' => $detail['is_status']
-                ];
-                // }
+                if($detail['status'] == 1) {
+                    $salaryDetails[] = [
+                        'component_id' => $detail['component_id'],
+                        'order' => $detail['order'],
+                        'component_name' => $detail['component_name'],
+                        'type' => $detail['type'],
+                        'is_hide' => $detail['is_hide'],
+                        'is_edit' => $detail['is_edit'],
+                        'is_active' => $detail['is_active']
+                    ];
+                }
             }
 
             $employee->salary_detail = json_encode($salaryDetails);
@@ -166,14 +166,11 @@ class EligibleController extends Controller
                     ->where('position_id', $position->id)
                     ->get()->first();
 
-                $querySalaryComponents = Company::with([
-                    'salary',
-                    'salary.salaryDetail'
-                ])->where('id', $position->company_id)->get()->first();
+                $querySalaryComponents = Salary::with(['salaryDetail'])->where('company_id', $position->company_id)->where('is_active', 1)->get();
 
                 if ($querySalaryComponents) {
                     // Mengakses data salary_detail dari objek Company
-                    $salaryDetails = $querySalaryComponents->salary->flatMap(function ($salary) {
+                    $salaryDetails = $querySalaryComponents->flatMap(function ($salary) {
                         return $salary->salaryDetail;
                     });
 
@@ -186,17 +183,20 @@ class EligibleController extends Controller
                             $checkData = SalaryComponent::where('id', $item->salary_component_id)->get()->first();
                         }
 
-                        $salaryComponent = [
-                            "component_id" => $item->id,
-                            "order" =>  $item->order,
-                            "component_name" => $checkData ? $checkData->component_name : $item->component_name,
-                            "type" =>  $item->type,
-                            "is_hide" =>  $item->is_hide,
-                            "is_edit" =>  $item->is_edit,
-                            "is_active" =>  $item->is_active,
-                        ];
-
-                        $destructureSalaryDetail[] = $salaryComponent;
+                        if($item->is_active) {
+                            $salaryComponent = [
+                                "component_id" => $item->id,
+                                "order" =>  $item->order,
+                                "component_name" => $checkData ? $checkData->component_name : $item->component_name,
+                                "type" =>  $item->type,
+                                "is_hide" =>  $item->is_hide,
+                                "is_edit" =>  $item->is_edit,
+                                "is_active" =>  $item->is_active,
+                            ];
+    
+                            $destructureSalaryDetail[] = $salaryComponent;
+                        }
+                        
                     }
                     // Gunakan collect() untuk membuat koleksi dari array
                     $destructuredCollection = collect($destructureSalaryDetail);
@@ -269,18 +269,17 @@ class EligibleController extends Controller
             // Simpan detail gaji dalam format JSON
             $salaryDetails = [];
             foreach ($request->salary_detail as $detail) {
-                // if($detail['status'] == 1) {
-                $salaryDetails[] = [
-                    'component_id' => $detail['component_id'],
-                    'order' => $detail['order'],
-                    'component_name' => $detail['component_name'],
-                    'type' => $detail['type'],
-                    'is_hide' => $detail['is_hide'],
-                    'is_edit' => $detail['is_edit'],
-                    'is_active' => $detail['is_active'],
-                    'is_status' => $detail['is_status'],
-                ];
-                // }
+                if($detail['status'] == 1) {
+                    $salaryDetails[] = [
+                        'component_id' => $detail['component_id'],
+                        'order' => $detail['order'],
+                        'component_name' => $detail['component_name'],
+                        'type' => $detail['type'],
+                        'is_hide' => $detail['is_hide'],
+                        'is_edit' => $detail['is_edit'],
+                        'is_active' => $detail['is_active'],
+                    ];
+                }
             }
 
             $employee->salary_detail = json_encode($salaryDetails);
