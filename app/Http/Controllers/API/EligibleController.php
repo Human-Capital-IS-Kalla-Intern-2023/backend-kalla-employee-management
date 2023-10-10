@@ -32,11 +32,13 @@ class EligibleController extends Controller
                 ->get()->first();
 
             $dataEmployeeNotActive = EmployeeDetail::with([
-                'position'
+                'position',
+                'eligible'
             ])
                 // ->withTrashed()
                 ->where('employee_id', $employee->id)
-                ->whereNot('position_id', $position->id)
+                ->where('position_id', '!=', $position->id)
+                ->has('eligible')
                 ->get();
 
             $additionalPosition = [];
@@ -49,10 +51,10 @@ class EligibleController extends Controller
 
                 $additionalPosition[] = $employee;
             }
+            
 
             $salaryDetail = (!empty($dataEmployee->eligible->salary_detail)) ?  json_decode($dataEmployee->eligible->salary_detail) : null;
             
-
             // Query Dari Salary Detail
             $querySalaryComponents = Salary::with(['salaryDetail'])->where('company_id', $position->company_id)->where('is_active', 1)->get();
 
@@ -163,6 +165,8 @@ class EligibleController extends Controller
                         'message' => 'Data tidak ditemukan',
                     ], 404);
                 }
+
+            
 
         } catch (Exception $error) {
             return response()->json([
