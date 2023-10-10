@@ -22,4 +22,13 @@ class Company extends Model
     {
         return $this->hasMany(Location::class, 'id', 'locations_id');
     }
+
+    public function position(){
+        return $this->belongsTo(Position::class, 'id', 'company_id');
+    }
+
+    public function salary(): HasMany
+    {
+        return $this->hasMany(Salary::class,  'company_id', 'id');
+    }
 }

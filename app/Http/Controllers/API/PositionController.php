@@ -14,95 +14,142 @@ class PositionController extends Controller
     public function index(Request $request) {  
         $search = $request->get('search');
 
-        $position = Position::query()->when($search, function($query) use($search){
+        $positions = Position::query()->when($search, function($query) use($search){
             $query->where('position_name', 'LIKE', "%".$search."%");
-        })->get();
+        })->with([
+            'company',
+            'job_grade',
+            'directorate',
+            'division',
+            'section',
+        ])->get();
 
-        return ResponseFormatter::success(
-            $position,
-            'Data Position berhasil diambil'
-        );
+        $dataPosision = [];
+
+        for($i = 0; $i < $positions->count(); $i++) {
+            $position = [
+                "id" => $positions[$i]->id,
+                "position_name" => $positions[$i]->position_name,
+
+                "company_id" => $positions[$i]->company[0]->id,
+                "company_name" => $positions[$i]->company[0]->company_name,
+
+                "directorat_id" => $positions[$i]->directorate[0]->id,
+                "directorat_name" => $positions[$i]->directorate[0]->directorat_name,
+
+                "division_id" => $positions[$i]->division[0]->id,
+                "division_name" => $positions[$i]->division[0]->division_name,
+
+                "section_id" => $positions[$i]->section[0]->id,
+                "section_name" => $positions[$i]->section[0]->section_name,
+
+                "grade_id" => $positions[$i]->job_grade[0]->id,
+                "grade_name" => $positions[$i]->job_grade[0]->grade_name,
+            ];
+
+            $dataPosition[] = $position;
+        }
+
+        return response()->json([
+            'status_code' => 200,
+            'status' => 'success',
+            'message' => 'Data Posisi berhasil diambil',
+            'data' => $dataPosition,
+        ], 200);
 
     }
 
     public function store(Request $request) {
-        // try {
-        //     //define validation rules
-        //     $validator = Validator::make($request->all(), [
-        //         'position_name'     => 'required|string',
-        //     ]);
-
-        //      //check if validation fails
-        //     if ($validator->fails()) {
-        //         return ResponseFormatter::error([
-        //             'message' => 'Validation Error',
-        //             'error' => $validator->errors(),
-        //         ], 'Validation Error', 422);
-        //     }
-
-
-        //     $data = Position::create([
-        //         'position_name' => $request->position_name,
-        //     ]);
-
-
-        //     return ResponseFormatter::success(
-        //         $data,
-        //         'Data Berhasil Ditambahkan'
-        //     );
-
-        // } catch (Exception $error) {
-        //     return ResponseFormatter::error([
-        //                 'message' => 'Something went wrong',
-        //                 'error' => $error,
-        //     ], 'Error', 500);
-        // }
 
         $validation = $request->validate([
-            'position_name' => ['required','string']
+            'position_name' => ['required','unique:positions,position_name,NULL,id,deleted_at,NULL','string'],
         ]);
         
 
-        Position::create([
-            'position_name' => $validation['position_name'],
+        $data = Position::create([
+            'position_name' => $request->position_name,
+            'company_id' => $request->company_id,      
+            'directorat_id' => $request->directorat_id,   
+            'division_id' => $request->division_id,   
+            'section_id' => $request->section_id,
+            'job_grade_id' => $request->job_grade_id,   
         ]);
 
-        return response()->json(['message' => 'Data berhasil disimpan']);
+        return response()->json([
+            'status_code' => 200,
+            'status' => 'success',
+            'message' => 'Posisi berhasil ditambahkan',
+            'data' => $data,
+        ], 200);
     }
 
     public function show(string $id)
     {
         try {
 
-            $position = Position::findOrFail($id);
-    
-            return ResponseFormatter::success(
-                $position,
-                'Data berhasil diambil'
-            );
+            $positions = Position::with([
+                'company',
+                'job_grade',
+                'directorate',
+                'division',
+                'section',
+            ])->withTrashed()->where('id',$id)->get();
+
+            $position = [
+                "id" => $positions[0]->id,
+                "position_name" => $positions[0]->position_name,
+
+                "company_id" => $positions[0]->company[0]->id,
+                "company_name" => $positions[0]->company[0]->company_name,
+
+                "directorat_id" => $positions[0]->directorate[0]->id,
+                "directorat_name" => $positions[0]->directorate[0]->directorat_name,
+
+                "division_id" => $positions[0]->division[0]->id,
+                "division_name" => $positions[0]->division[0]->division_name,
+
+                "section_id" => $positions[0]->section[0]->id,
+                "section_name" => $positions[0]->section[0]->section_name,
+
+                "grade_id" => $positions[0]->job_grade[0]->id,
+                "grade_name" => $positions[0]->job_grade[0]->grade_name,
+            ];
+
+            return response()->json([
+                'status_code' => 200,
+                'status' => 'success',
+                'message' => 'Posisi berhasil diambil',
+                'data' => $position,
+            ], 200);
+
         } catch (Exception $error) {
-            return ResponseFormatter::error([
-                        'message' => 'Something went wrong',
-                        'error' => $error,
-            ], 'Error', 500);
+            return response()->json([
+                'status_code' => 500,
+                'status' => 'error',
+                'message' => 'Data tidak ditemukan',
+            ], 500);
         }
     }
 
     public function update(Request $request, $id) {
+        $validation = $this->validate($request, [
+            'position_name' => 'required|string|unique:positions,position_name,'.$id.',id,deleted_at,NULL|max:255'
+        ]);
+        
         try {
 
-            //define validation rules
-            $validator = Validator::make($request->all(), [
-                'position_name'     => 'required|string',
-            ]);
+            // //define validation rules
+            // $validator = Validator::make($request->all(), [
+            //     'position_name'     => 'required|string',
+            // ]);
 
-             //check if validation fails
-            if ($validator->fails()) {
-                return ResponseFormatter::error([
-                    'message' => 'Validation Error',
-                    'error' => $validator->errors(),
-                ], 'Validation Error', 422);
-            }
+            //  //check if validation fails
+            // if ($validator->fails()) {
+            //     return ResponseFormatter::error([
+            //         'message' => 'Validation Error',
+            //         'error' => $validator->errors(),
+            //     ], 'Validation Error', 422);
+            // }
     
             $item = Position::findOrFail($id);
             
@@ -110,15 +157,18 @@ class PositionController extends Controller
                 'position_name' => $request->position_name,
             ]);
     
-            return ResponseFormatter::success(
-                $item,
-                'Data Berhasil Diubah'
-            );
+            return response()->json([
+                'status_code' => 200,
+                'status' => 'success',
+                'message' => 'Posisi berhasil diubah',
+                'data' => $item,
+            ], 200);
         } catch (Exception $error) {
-            return ResponseFormatter::error([
-                        'message' => 'Something went wrong',
-                        'error' => $error,
-            ], 'Error', 500);
+            return response()->json([
+                'status_code' => 500,
+                'status' => 'error',
+                'message' => 'Data tidak ditemukan',
+            ], 500);
         }
         
     }
@@ -133,14 +183,27 @@ class PositionController extends Controller
             //delete post
             $position->delete();
 
-            return ResponseFormatter::success(
-                'Data Berhasil Dihapus'
-            );
+            return response()->json([
+                'status_code' => 200, 
+                'status' => 'success',
+                'message' => 'Posisi berhasil dihapus',
+                'data' => $position,
+            ], 200);
+
         } catch (Exception $error) {
-            return ResponseFormatter::error([
-                        'message' => 'Something went wrong',
-                        'error' => $error,
-            ], 'Error', 500);
+            if ($error->getCode() == '23000') {
+                return response()->json([
+                    'status_code' => 500, 
+                    'status' => 'error',
+                    'message' => 'Tidak dapat menghapus, Posisi masih digunakan tabel lain',
+                ], 500);
+            }
+
+            return response()->json([
+                'status_code' => 404,
+                'status' => 'error',
+                'message' => 'Data Tidak ditemukan',
+            ], 404);
         }
     }
 }

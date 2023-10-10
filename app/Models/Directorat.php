@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Directorat extends Model
@@ -22,4 +23,6 @@ class Directorat extends Model
     {
         return $this->belongsTo(Position::class, 'directorat', 'id');
     }
+
+
 }

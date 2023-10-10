@@ -22,10 +22,12 @@ class DivisionController extends Controller
             $query->where('division_name', 'LIKE', "%".$search."%");
         })->get();
 
-        return ResponseFormatter::success(
-            $division,
-            'Data Division berhasil diambil'
-        );
+        return response()->json([
+            'status_code' => 200,
+            'status' => 'success',
+            'message' => 'Data Divisi berhasil diambil',
+            'data' => $division,
+        ], 200);
 
     }
 
@@ -41,46 +43,22 @@ class DivisionController extends Controller
      * Store a newly created resource in storage.
      */
     public function store(Request $request) {
-        // try {
-        //     //define validation rules
-        //     $validator = Validator::make($request->all(), [
-        //         'division_name'     => 'required|string|unique:divisions,division_name|max:255',
-        //     ]);
-
-        //      //check if validation fails
-        //     if ($validator->fails()) {
-        //         $errors  = $validator->errors()->first();
-
-        //         return ResponseFormatter::error('', $errors, 400);
-        //     }
-
-        //     $data = Division::create([
-        //         'division_name' => $request->division_name,
-        //     ]);
-
-
-        //     return ResponseFormatter::success(
-        //         $data,
-        //         'Data Berhasil Ditambahkan'
-        //     );
-
-        // } catch (Exception $error) {
-        //     return ResponseFormatter::error([
-        //                 'message' => 'Something went wrong',
-        //                 'error' => $error,
-        //     ], 'Error', 500);
-        // }
 
         $validation = $request->validate([
-            'division_name' => ['required','string']
+            'division_name' => ['required','unique:divisions,division_name,NULL,id,deleted_at,NULL','string']
         ]);
         
 
-        Division::create([
+        $data = Division::create([
             'division_name' => $validation['division_name'],
         ]);
 
-        return response()->json(['message' => 'Data berhasil disimpan']);
+        return response()->json([
+            'status_code' => 200,
+            'status' => 'success',
+            'message' => 'Divisi berhasil ditambahkan',
+            'data' => $data,
+        ], 200);
     }
 
     /**
@@ -92,15 +70,18 @@ class DivisionController extends Controller
 
             $data = Division::findOrFail($id);
     
-            return ResponseFormatter::success(
-                $data,
-                'Data berhasil diambil'
-            );
+            return response()->json([
+                'status_code' => 200,
+                'status' => 'success',
+                'message' => 'Divisi berhasil diambil',
+                'data' => $data,
+            ], 200);
         } catch (Exception $error) {
-            return ResponseFormatter::error([
-                        'message' => 'Something went wrong',
-                        'error' => $error,
-            ], 'Error', 500);
+            return response()->json([
+                'status_code' => 500,
+                'status' => 'error',
+                'message' => 'Data tidak ditemukan',
+            ], 500);
         }
     }
 
@@ -117,21 +98,25 @@ class DivisionController extends Controller
      */
 
     public function update(Request $request, string $id) {
+        $validation = $this->validate($request, [
+            'division_name'     => 'required|string|unique:divisions,division_name,NULL,id,deleted_at,NULL|max:255',
+        ]);
+
         try {
-            //define validation rules
-            $validator = Validator::make($request->all(), [
-                'division_name'     => 'required|string|unique:divisions,division_name|max:255',
-            ]);
+            // //define validation rules
+            // $validator = Validator::make($request->all(), [
+            //     'division_name'     => 'required|string|unique:divisions,division_name|max:255',
+            // ]);
 
             
-             //check if validation fails
-            if ($validator->fails()) {
-                $errors  = $validator->errors()->first();
-                // $errors  = $validator->errors();
+            //  //check if validation fails
+            // if ($validator->fails()) {
+            //     $errors  = $validator->errors()->first();
+            //     // $errors  = $validator->errors();
 
-                return ResponseFormatter::error('', $errors,400);
+            //     return ResponseFormatter::error('', $errors,400);
 
-            }
+            // }
     
             $item = Division::findOrFail($id);
     
@@ -139,15 +124,18 @@ class DivisionController extends Controller
                 'division_name' => $request->division_name,
             ]);
     
-            return ResponseFormatter::success(
-                $item,
-                'Data Berhasil Diubah'
-            );
+            return response()->json([
+                'status_code' => 200,
+                'status' => 'success',
+                'message' => 'Divisi berhasil diubah',
+                'data' => $item,
+            ], 200);
         } catch (Exception $error) {
-            return ResponseFormatter::error([
-                        'message' => 'Something went wrong',
-                        'error' => $error,
-            ], 'Error', 500);
+            return response()->json([
+                'status_code' => 500,
+                'status' => 'error',
+                'message' => 'Data tidak ditemukan',
+            ], 500);
         }
         
     }
@@ -165,18 +153,28 @@ class DivisionController extends Controller
             //delete post
             $division->delete();
 
-            return ResponseFormatter::success('', 'Data Berhasil Dihapus', 200);
+            return response()->json([
+                'status_code' => 200, 
+                'status' => 'success',
+                'message' => 'Divisi berhasil dihapus',
+                'data' => $division,
+            ], 200);
 
 
         } catch (Exception $error) {
             if ($error->getCode() == '23000') {
-                return ResponseFormatter::error('','Tidak dapat menghapus, Division masih digunakan tabel lain', 500);
+                return response()->json([
+                    'status_code' => 500, 
+                    'status' => 'error',
+                    'message' => 'Tidak dapat menghapus, Divisi masih digunakan tabel lain',
+                ], 500);
             }
 
-            return ResponseFormatter::error([
-                        'message' => 'Something went wrong',
-                        'error' => $error,
-            ], 'Error', 500);
+            return response()->json([
+                'status_code' => 404,
+                'status' => 'error',
+                'message' => 'Data Tidak ditemukan',
+            ], 404);
         }
     }
 }

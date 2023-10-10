@@ -6,12 +6,9 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Section extends Model
+class SalaryComponent extends Model
 {
     use HasFactory, SoftDeletes;
-    protected $fillable = ['section_name'];
 
-    public function section(){
-        return $this->belongsTo(Position::class, 'id', 'section_name');
-    }
+    protected $fillable = ['slug','component_name','type','is_hide','is_edit','is_active'];
 }

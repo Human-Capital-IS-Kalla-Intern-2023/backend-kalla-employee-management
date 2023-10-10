@@ -11,14 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('positions', function (Blueprint $table) {
+        Schema::create('salary_components', function (Blueprint $table) {
             $table->id();
-            $table->string('position_name');
-            $table->foreignId('company_id')->constrained();
-            $table->foreignId('directorat_id')->constrained();
-            $table->foreignId('division_id')->constrained();
-            $table->foreignId('section_id')->constrained();
-            $table->foreignId('job_grade_id')->constrained();
+            $table->string('component_name');
+            $table->enum('type',['fixed pay','deductions']);
+            $table->boolean('is_hide')->default(0);
+            $table->boolean('is_edit')->default(1);
+            $table->boolean('is_active')->default(1);
             $table->timestamps();
             $table->softDeletes();
         });
@@ -29,6 +28,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('positions');
+        Schema::dropIfExists('salary_components');
     }
 };

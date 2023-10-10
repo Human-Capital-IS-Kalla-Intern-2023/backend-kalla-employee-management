@@ -23,7 +23,6 @@ class EmployeeFactory extends Factory
             'nickname' => $this->faker->firstName(),
             'hire_date' => $this->faker->date(),
             'company_email' => $this->faker->companyEmail(),
-            'position' => rand(1, 3),
 
         ];
     }

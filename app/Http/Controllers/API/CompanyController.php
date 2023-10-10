@@ -73,8 +73,26 @@ class CompanyController extends Controller
     {
         try {
 
-            $company = Company::with('location')->findOrFail($id);
+            // $company = Company::with('location')->withTrashed()->where('id',$id)->get();
+            // $company = Company::with('location')->withTrashed()->find($id);
+            // $company = Company::with('location')->withTrashed()->get();
+           
+            // $employees = Employee::withTrashed()->get();
+
     
+            // $search = $request->get('search'); 
+
+            // $company = Company::query()->when($search, function($query) use($search) {
+            //     $query->where('company_name','like','%'.$search.'%');
+            // })->with(['location' => function ($query) {
+            //     $query->withTrashed(); // Mengambil data yang terhapus secara lembut (soft deleted)
+            // }])->get();
+
+
+            $company = Company::with(['location' => function ($query) {
+                $query->withTrashed(); // Mengambil data yang terhapus secara lembut (soft deleted)
+            }])->where('id',$id)->get()->first();
+
             return response()->json([
                 'status_code' => 200,
                 'status' => 'success',
@@ -99,23 +117,6 @@ class CompanyController extends Controller
         
         try {
             $item = Company::findOrFail($id);
-
-            
-
-            //  //define validation rules
-            // $validator = Validator::make($request->all(), [
-            //     'company_name' => ['required','string','unique:companies,company_name,NULL,id,deleted_at,NULL','max:255'],
-            //     'locations_id' => ['required','exists:locations,id,deleted_at,NULL'],
-            // ]);
-
-            //  //check if validation fails
-            // if ($validator->fails()) {
-            //     return response()->json([
-            //         'status_code' => 400,
-            //         'status' => 'error',
-            //         'message' => $validator->errors(),
-            //     ]);
-            // }
     
             $item->update([
                 'company_name' => $request->company_name,
@@ -167,7 +168,7 @@ class CompanyController extends Controller
                 'status_code' => 404,
                 'status' => 'error',
                 'message' => 'Data tidak ditemukan',
-            ]);
+            ], 404);
 
         }
     }

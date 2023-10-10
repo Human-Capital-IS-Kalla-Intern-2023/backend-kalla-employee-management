@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API;
 use App\Helpers\ResponseFormatter;
 use App\Http\Controllers\Controller;
 use App\Models\Section;
+use DragonCode\Contracts\Cashier\Config\Queues\Unique;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -21,10 +22,12 @@ class SectionController extends Controller
             $query->where('section_name', 'LIKE', "%".$search."%");
         })->get();
 
-        return ResponseFormatter::success(
-            $section,
-            'Data Section berhasil diambil'
-        );
+        return response()->json([
+            'status_code' => 200,
+            'status' => 'success',
+            'message' => 'Data Seksi berhasil diambil',
+            'data' => $section,
+        ], 200);
  
     }
 
@@ -40,47 +43,22 @@ class SectionController extends Controller
      * Store a newly created resource in storage.
      */
     public function store(Request $request) {
-        // try {
-        //     //define validation rules
-        //     $validator = Validator::make($request->all(), [
-        //         'section_name'     => 'required|string|unique:sections,section_name|max:255',
-        //     ]);
-
-        //      //check if validation fails
-        //     if ($validator->fails()) {
-        //         $errors  = $validator->errors()->first();
-
-        //         return ResponseFormatter::error('', $errors, 400);
-        //     }
-
-        //     $data = Section::create([
-        //         'section_name' => $request->section_name,
-        //     ]);
-
-
-        //     return ResponseFormatter::success(
-        //         $data,
-        //         'Data Berhasil Ditambahkan'
-        //     );
-
-        // } catch (Exception $error) {
-        //     return ResponseFormatter::error([
-        //                 'message' => 'Something went wrong',
-        //                 'error' => $error,
-        //     ], 'Error', 500);
-        // }
-
         
         $validation = $request->validate([
-            'section_name' => ['required','string']
+            'section_name' => ['required','unique:sections,section_name,NULL,id,deleted_at,NULL','string']
         ]);
         
 
-        Section::create([
+        $data = Section::create([
             'section_name' => $validation['section_name'],
         ]);
 
-        return response()->json(['message' => 'Data berhasil disimpan']);
+        return response()->json([
+            'status_code' => 200,
+            'status' => 'success',
+            'message' => 'Section berhasil ditambahkan',
+            'data'  => $data,
+        ]);
         
     }
 
@@ -93,15 +71,18 @@ class SectionController extends Controller
 
             $data = Section::findOrFail($id);
     
-            return ResponseFormatter::success(
-                $data,
-                'Data berhasil diambil'
-            );
+            return response()->json([
+                'status_code' => 200,
+                'status' => 'success',
+                'message' => 'Seksi berhasil diambil',
+                'data' => $data,
+            ], 200);
         } catch (Exception $error) {
-            return ResponseFormatter::error([
-                        'message' => 'Something went wrong',
-                        'error' => $error,
-            ], 'Error', 500);
+            return response()->json([
+                'status_code' => 500,
+                'status' => 'error',
+                'message' => 'Data tidak ditemukan',
+            ], 500);
         }
     }
 
@@ -118,21 +99,25 @@ class SectionController extends Controller
      */
 
     public function update(Request $request, string $id) {
+        $validation = $this->validate($request, [
+            'section_name'     => 'required|string|unique:sections,section_name,NULL,id,deleted_at,NULL|max:255',
+        ]);
+
         try {
-            //define validation rules
-            $validator = Validator::make($request->all(), [
-                'section_name'     => 'required|string|unique:sections,section_name|max:255',
-            ]);
+            // //define validation rules
+            // $validator = Validator::make($request->all(), [
+            //     'section_name'     => 'required|string|unique:sections,section_name|max:255',
+            // ]);
 
             
-             //check if validation fails
-            if ($validator->fails()) {
-                $errors  = $validator->errors()->first();
-                // $errors  = $validator->errors();
+            //  //check if validation fails
+            // if ($validator->fails()) {
+            //     $errors  = $validator->errors()->first();
+            //     // $errors  = $validator->errors();
 
-                return ResponseFormatter::error('', $errors,400);
+            //     return ResponseFormatter::error('', $errors,400);
 
-            }
+            // }
     
             $item = Section::findOrFail($id);
     
@@ -140,15 +125,18 @@ class SectionController extends Controller
                 'section_name' => $request->section_name,
             ]);
     
-            return ResponseFormatter::success(
-                $item,
-                'Data Berhasil Diubah'
-            );
+            return response()->json([
+                'status_code' => 200,
+                'status' => 'success',
+                'message' => 'Seksi berhasil diubah',
+                'data' => $item,
+            ], 200);
         } catch (Exception $error) {
-            return ResponseFormatter::error([
-                        'message' => 'Something went wrong',
-                        'error' => $error,
-            ], 'Error', 500);
+            return response()->json([
+                'status_code' => 500,
+                'status' => 'error',
+                'message' => 'Data tidak ditemukan',
+            ], 500);
         }
         
     }
@@ -166,18 +154,28 @@ class SectionController extends Controller
             //delete post
             $section->delete();
 
-            return ResponseFormatter::success('', 'Data Berhasil Dihapus', 200);
+            return response()->json([
+                'status_code' => 200, 
+                'status' => 'success',
+                'message' => 'Seksi berhasil dihapus',
+                'data' => $section,
+            ], 200);
 
 
         } catch (Exception $error) {
             if ($error->getCode() == '23000') {
-                return ResponseFormatter::error('','Tidak dapat menghapus, Section masih digunakan tabel lain', 500);
+                return response()->json([
+                    'status_code' => 500, 
+                    'status' => 'error',
+                    'message' => 'Tidak dapat menghapus, Seksi masih digunakan tabel lain',
+                ], 500);
             }
 
-            return ResponseFormatter::error([
-                        'message' => 'Something went wrong',
-                        'error' => $error,
-            ], 'Error', 500);
+            return response()->json([
+                'status_code' => 404,
+                'status' => 'error',
+                'message' => 'Data Tidak ditemukan',
+            ], 404);
         }
     }
 }

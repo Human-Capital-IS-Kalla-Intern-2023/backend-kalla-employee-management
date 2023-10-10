@@ -167,6 +167,10 @@ return [
         'attribute-name' => [
             'rule-name' => 'custom-message',
         ],
+
+        'id_additional_position' => [
+            'unique_array' => 'Isi dari :attribute harus unik dan tidak boleh sama dengan posisi utama.'
+        ]
     ],
 
     /*

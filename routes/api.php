@@ -7,8 +7,13 @@ use App\Http\Controllers\API\LocationController;
 use App\Http\Controllers\API\EmployeeController;
 use App\Http\Controllers\API\UserController;
 use App\Http\Controllers\API\DivisionController;
+use App\Http\Controllers\API\EligibleController;
 use App\Http\Controllers\API\PositionController;
+use App\Http\Controllers\API\SalaryComponentController;
+use App\Http\Controllers\API\SalaryCompanyController;
+use App\Http\Controllers\API\SalaryController;
 use App\Http\Controllers\API\SectionController;
+use App\Http\Controllers\API\SalaryDetailController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -65,7 +70,7 @@ Route::middleware('auth:sanctum')->group(function () {
     // Employee
     Route::get('employee', [EmployeeController::class, 'index']);
     Route::post('employee/', [EmployeeController::class, 'store']);
-    Route::get('employee/{id}', [EmployeeController::class, 'store']);
+    Route::get('employee/{id}', [EmployeeController::class, 'show']);
     Route::put('employee/{id}', [EmployeeController::class, 'update']);
     Route::delete('employee/{id}', [EmployeeController::class, 'destroy']);
 
@@ -89,4 +94,28 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('section/{id}', [SectionController::class, 'show']);
     Route::put('section/{id}', [SectionController::class, 'update']);
     Route::delete('section/{id}', [SectionController::class, 'destroy']);
+
+    // Salary Component
+    Route::get('salary-component', [SalaryComponentController::class, 'index']);
+    Route::post('salary-component/', [SalaryComponentController::class, 'store']);
+    Route::get('salary-component/{id}', [SalaryComponentController::class, 'show']);
+    Route::put('salary-component/{id}', [SalaryComponentController::class, 'update']);
+    Route::delete('salary-component/{id}', [SalaryComponentController::class, 'destroy']);
+    Route::put('salary-component/is_active/{id}', [SalaryComponentController::class, 'updateIsActive']);
+
+
+
+    //salary
+    Route::get('salary', [SalaryController::class, 'index']);
+    Route::post('salary/', [SalaryController::class, 'store']);
+    Route::get('salary/{id}', [SalaryController::class, 'show']);
+    Route::put('salary/{id}', [SalaryController::class, 'update']);
+    Route::delete('salary/{id}', [SalaryController::class, 'destroy']);
+    Route::put('salary/is_active/{id}', [SalaryController::class, 'updateIsActive']);
+
+    // Eligible
+    Route::get('eligibles/{employee}/{position}', [EligibleController::class, 'index']);
+    Route::post('eligibles/', [EligibleController::class, 'store']);
+    Route::get('eligibles/get-components/{employee}/{position}', [EligibleController::class, 'show']);
+    Route::put('eligibles/{id}', [EligibleController::class, 'update']);
 });
