@@ -72,9 +72,6 @@ class EligibleController extends Controller
                 "additional_position" => $additionalPosition,
             ];
 
-
-
-
             return response()->json([
                 'status_code' => 200,
                 'status' => 'success',
