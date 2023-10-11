@@ -117,5 +117,6 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('eligibles/{employee}/{position}', [EligibleController::class, 'index']);
     Route::post('eligibles/', [EligibleController::class, 'store']);
     Route::get('eligibles/get-components/{employee}/{position}', [EligibleController::class, 'show']);
+    Route::get('eligibles/edit/{employee}/{position}', [EligibleController::class, 'edit']);
     Route::put('eligibles/{id}', [EligibleController::class, 'update']);
 });
