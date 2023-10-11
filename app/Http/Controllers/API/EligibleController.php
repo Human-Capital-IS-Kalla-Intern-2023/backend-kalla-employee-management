@@ -293,6 +293,8 @@ class EligibleController extends Controller
                     ], 500);
                 }
 
+                
+
                 $querySalaryComponents = Salary::with(['salaryDetail'])->where('company_id', $position->company_id)->where('is_active', 1)->get();
 
                 if ($querySalaryComponents) {
@@ -340,6 +342,14 @@ class EligibleController extends Controller
 
                     // Hasil berupa array dengan data unik berdasarkan 'component_name'
                     $uniqueSalaryDetails = array_values($uniqueSalaryDetails);
+
+                    if(empty($uniqueSalaryDetails)) {
+                        return response()->json([
+                            'status_code' => 500,
+                            'status' => 'error',
+                            'message' => 'Salary Component Belum diatur',
+                        ], 500);
+                    }
 
                     $employee['id_position'] = $dataEmployee->position->id;
                     $employee['position_name'] = $dataEmployee->position->position_name;
@@ -556,6 +566,14 @@ class EligibleController extends Controller
                         ];
 
                         
+                    }
+
+                    if(empty($result)) {
+                        return response()->json([
+                            'status_code' => 500,
+                            'status' => 'error',
+                            'message' => 'Salary Component Belum diatur',
+                        ], 500);
                     }
 
                      // Desructrue Karyawan
