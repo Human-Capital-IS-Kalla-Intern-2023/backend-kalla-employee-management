@@ -446,6 +446,14 @@ class EligibleController extends Controller
                 ->where('position_id', $position->id)
                 ->get()->first();
 
+            if($dataEmployee->eligible == null) {
+                return response()->json([
+                    'status_code' => 500,
+                    'status' => 'error',
+                    'message' => 'Eligble belum dibuat',
+                ], 500);
+            }
+
             $dataEmployeeNotActive = EmployeeDetail::with([
                 'position',
                 'eligible'
