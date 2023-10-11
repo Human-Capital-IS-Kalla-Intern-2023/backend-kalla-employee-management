@@ -18,8 +18,7 @@ class EligibleController extends Controller
 {
     public function index(Employee $employee, Position $position)
     {
-        try {
-
+        // try {
 
             $dataEmployee = EmployeeDetail::with([
                 'position',
@@ -53,7 +52,7 @@ class EligibleController extends Controller
             }
             
 
-            $salaryDetail = (!empty($dataEmployee->eligible->salary_detail)) ?  json_decode($dataEmployee->eligible->salary_detail) : null;
+            $salaryDetailDb = (!empty($dataEmployee->eligible->salary_detail)) ?  json_decode($dataEmployee->eligible->salary_detail) : null;
             
             // Query Dari Salary Detail
             $querySalaryComponents = Salary::with(['salaryDetail'])->where('company_id', $position->company_id)->where('is_active', 1)->get();
@@ -109,12 +108,15 @@ class EligibleController extends Controller
                     // Loop melalui elemen-elemen array1
                     foreach ($uniqueSalaryDetails  as $item1) {
                         $found = 0;
-                        foreach ($salaryDetail as $item2) {
-                            if ($item1['component_name'] === $item2->component_name) {
-                                $found = 1;
-                                break;
+
+                            if(isset($salaryDetailDb)) {
+                                foreach ($salaryDetailDb as $item2) {
+                                    if ($item1['component_name'] === $item2->component_name) {
+                                        $found = 1;
+                                        break;
+                                    }
+                                }
                             }
-                        }
 
                         $result[] = [
                             'salary_component_id' => $item1["component_id"],
@@ -168,13 +170,13 @@ class EligibleController extends Controller
 
             
 
-        } catch (Exception $error) {
-            return response()->json([
-                'status_code' => 404,
-                'status' => 'error',
-                'message' => 'Data tidak ditemukan',
-            ], 404);
-        }
+        // } catch (Exception $error) {
+        //     return response()->json([
+        //         'status_code' => 404,
+        //         'status' => 'error',
+        //         'message' => 'Data tidak ditemukan',
+        //     ], 404);
+        // }
     }
 
     public function store(Request $request)
