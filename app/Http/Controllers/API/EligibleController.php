@@ -40,6 +40,8 @@ class EligibleController extends Controller
                 ->has('eligible')
                 ->get();
 
+            
+
             $additionalPosition = [];
 
             for ($i = 0; $i < $dataEmployeeNotActive->count(); $i++) {
@@ -105,6 +107,14 @@ class EligibleController extends Controller
                     // Hasil berupa array dengan data unik berdasarkan 'component_name'
                     $uniqueSalaryDetails = array_values($uniqueSalaryDetails);
 
+                    if(empty($salaryDetails)) {
+                        return response()->json([
+                            'status_code' => 500,
+                            'status' => 'error',
+                            'message' => 'Salary Component Belum diatur',
+                        ], 500);
+                    }
+
                     $result = [];
 
                     // Loop melalui elemen-elemen array1
@@ -151,7 +161,7 @@ class EligibleController extends Controller
                         "grade_name" => $dataEmployee->position->job_grade[0]->grade_name,
                         "type_bank" => (!empty($dataEmployee->eligible->type_bank)) ? $dataEmployee->eligible->type_bank : null,
                         "account_number" => (!empty($dataEmployee->eligible->account_number)) ? $dataEmployee->eligible->type_bank : null,
-                        "salary_detail" => $result,
+                        "salary_detail" => (!empty($result)) ? $result : "Salary Component belum diatur",
                         "additional_position" => $additionalPosition,
                     ];
 
@@ -185,9 +195,9 @@ class EligibleController extends Controller
                     "division_name" => $dataEmployee->position->division[0]->division_name,
                     "section_name" => $dataEmployee->position->section[0]->section_name,
                     "grade_name" => $dataEmployee->position->job_grade[0]->grade_name,
-                    "type_bank" => (!empty($dataEmployee->eligible->type_bank)) ? $dataEmployee->eligible->type_bank : null,
-                    "account_number" => (!empty($dataEmployee->eligible->account_number)) ? $dataEmployee->eligible->type_bank : null,
-                    "salary_detail" => null,
+                    "type_bank" => "Eligible Belum Dibuat",
+                    "account_number" => "Eligible Belum Dibuat",
+                    "salary_detail" => "Eligible Belum Dibuat",
                     "additional_position" => $additionalPosition,
                 ];
 
