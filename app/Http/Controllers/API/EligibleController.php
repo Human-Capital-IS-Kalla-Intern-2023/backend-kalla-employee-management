@@ -388,7 +388,7 @@ class EligibleController extends Controller
                         return response()->json([
                             'status_code' => 500,
                             'status' => 'error',
-                            'message' => 'Salary Component Posisi '.$dataEmployee->position->position_name. ' Belum diatur',
+                            'message' => 'Salary Component '.$dataEmployee->position->company[0]->company_name. ' Belum diatur',
                         ], 500);
                     }
 
