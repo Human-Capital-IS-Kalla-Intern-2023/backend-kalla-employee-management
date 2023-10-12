@@ -694,4 +694,33 @@ class EligibleController extends Controller
             ], 500);
         }
     }
+
+     // Done
+    public function destroy(string $id)
+    {
+        DB::beginTransaction();
+
+        try {
+            $eligible = Eligible::findOrFail($id);
+            $eligible->delete();
+
+            DB::commit();
+
+            return response()->json([
+                'status_code' => 200,
+                'status' => 'success',
+                'message' => 'Eligbile berhasil dihapus',
+                'data' => $eligible,
+            ], 200);
+        } catch (\Exception $e) {
+
+            DB::rollback();
+
+            return response()->json([
+                'status_code' => 500,
+                'status' => 'error',
+                'message' => 'Gagal Menghapus',
+            ], 500);
+        }
+    }
 }

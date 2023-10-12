@@ -119,4 +119,5 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('eligibles/get-components/{employee}/{position}', [EligibleController::class, 'show']);
     Route::get('eligibles/edit/{employee}/{position}', [EligibleController::class, 'edit']);
     Route::put('eligibles/{id}', [EligibleController::class, 'update']);
+    Route::delete('eligibles/{id}', [EligibleController::class, 'destroy']);
 });
