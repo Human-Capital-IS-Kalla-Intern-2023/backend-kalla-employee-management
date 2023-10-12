@@ -111,7 +111,7 @@ class EligibleController extends Controller
                         return response()->json([
                             'status_code' => 500,
                             'status' => 'error',
-                            'message' => 'Salary Component Belum diatur',
+                            'message' => 'Salary Component '.$dataEmployee->position->position_name. ' Belum diatur',
                         ], 500);
                     }
 
@@ -160,7 +160,7 @@ class EligibleController extends Controller
                         "section_name" => $dataEmployee->position->section[0]->section_name,
                         "grade_name" => $dataEmployee->position->job_grade[0]->grade_name,
                         "type_bank" => (!empty($dataEmployee->eligible->type_bank)) ? $dataEmployee->eligible->type_bank : null,
-                        "account_number" => (!empty($dataEmployee->eligible->account_number)) ? $dataEmployee->eligible->type_bank : null,
+                        "account_number" => (!empty($dataEmployee->eligible->account_number)) ? $dataEmployee->eligible->account_number : null,
                         "salary_detail" => (!empty($result)) ? $result : "Salary Component belum diatur",
                         "additional_position" => $additionalPosition,
                     ];
@@ -196,7 +196,8 @@ class EligibleController extends Controller
                     "section_name" => $dataEmployee->position->section[0]->section_name,
                     "grade_name" => $dataEmployee->position->job_grade[0]->grade_name,
                     "type_bank" => "Eligible Belum Dibuat",
-                    "account_number" => "Eligible Belum Dibuat",
+                    "account_name" => "Eligible Belum Dibuat",            
+                    "account_number" => "Eligible Belum Dibuat",            
                     "salary_detail" => "Eligible Belum Dibuat",
                     "additional_position" => $additionalPosition,
                 ];
@@ -299,7 +300,7 @@ class EligibleController extends Controller
                     return response()->json([
                         'status_code' => 500,
                         'status' => 'error',
-                        'message' => 'Eligble sudah dibuat',
+                        'message' => 'Eligble posisi '.$dataEmployee->position->position_name. ' sudah  dibuat',
                     ], 500);
                 }
 
@@ -357,7 +358,7 @@ class EligibleController extends Controller
                         return response()->json([
                             'status_code' => 500,
                             'status' => 'error',
-                            'message' => 'Salary Component Belum diatur',
+                            'message' => 'Salary Component Posisi '.$dataEmployee->position->position_name. ' Belum diatur',
                         ], 500);
                     }
 
@@ -419,7 +420,7 @@ class EligibleController extends Controller
             foreach ($request->salary_detail as $detail) {
                 if($detail['is_status'] == 1) {
                     $salaryDetails[] = [
-                        'component_id' => $detail['component_id'],
+                        'salary_component_id' => $detail['salary_component_id'],
                         'order' => $detail['order'],
                         'component_name' => $detail['component_name'],
                         'type' => $detail['type'],
@@ -498,7 +499,7 @@ class EligibleController extends Controller
 
             $salaryDetailDb = (!empty($dataEmployee->eligible->salary_detail)) ?  json_decode($dataEmployee->eligible->salary_detail) : null;
 
-            if($salaryDetailDb != null) {
+            // if($salaryDetailDb != null) {
             
             // Query Dari Salary Detail
                 $querySalaryComponents = Salary::with(['salaryDetail'])->where('company_id', $position->company_id)->where('is_active', 1)->get();
@@ -582,7 +583,7 @@ class EligibleController extends Controller
                         return response()->json([
                             'status_code' => 500,
                             'status' => 'error',
-                            'message' => 'Salary Component Belum diatur',
+                            'message' => 'Salary Component '.$dataEmployee->position->position_name. ' Belum diatur',
                         ], 500);
                     }
 
@@ -603,8 +604,9 @@ class EligibleController extends Controller
                         "grade_name" => $dataEmployee->position->job_grade[0]->grade_name,
                         "employee_detail_id" => $dataEmployee->id,
                         "type_bank" => (!empty($dataEmployee->eligible->type_bank)) ? $dataEmployee->eligible->type_bank : null,
-                        "account_number" => (!empty($dataEmployee->eligible->account_number)) ? $dataEmployee->eligible->type_bank : null,
-                        "salary_detail" => $result,
+                        "account_number" => (!empty($dataEmployee->eligible->account_number)) ? $dataEmployee->eligible->account_number : null,
+                        "account_name" => (!empty($dataEmployee->eligible->account_name)) ? $dataEmployee->eligible->account_name : null,
+                        "salary_detail" => (!empty($result)) ? $result : null,
                         "additional_position" => $additionalPosition,
                     ];
 
@@ -622,35 +624,36 @@ class EligibleController extends Controller
                         'message' => 'Data tidak ditemukan',
                     ], 404);
                 }
-            } else {
-                  // Desructrue Karyawan
-                $employeeDestructure = [
-                    "id" => $dataEmployee->id,
-                    "nip" => $dataEmployee->employee->nip,
-                    "fullname" => $dataEmployee->employee->fullname,
-                    "nickname" => $dataEmployee->employee->nickname,
-                    "hire_date" => $dataEmployee->employee->hire_date,
-                    "company_email" => $dataEmployee->employee->company_email,
-                    "id_position" => $dataEmployee->position->id,
-                    "position_name" => $dataEmployee->position->position_name,
-                    "company_name" => $dataEmployee->position->company[0]->company_name,
-                    "directorate_name" => $dataEmployee->position->directorate[0]->directorat_name,
-                    "division_name" => $dataEmployee->position->division[0]->division_name,
-                    "section_name" => $dataEmployee->position->section[0]->section_name,
-                    "grade_name" => $dataEmployee->position->job_grade[0]->grade_name,
-                    "type_bank" => (!empty($dataEmployee->eligible->type_bank)) ? $dataEmployee->eligible->type_bank : null,
-                    "account_number" => (!empty($dataEmployee->eligible->account_number)) ? $dataEmployee->eligible->type_bank : null,
-                    "salary_detail" => null,
-                    "additional_position" => $additionalPosition,
-                ];
+            // } else {
+            //       // Desructrue Karyawan
+            //     $employeeDestructure = [
+            //         "id" => $dataEmployee->id,
+            //         "nip" => $dataEmployee->employee->nip,
+            //         "fullname" => $dataEmployee->employee->fullname,
+            //         "nickname" => $dataEmployee->employee->nickname,
+            //         "hire_date" => $dataEmployee->employee->hire_date,
+            //         "company_email" => $dataEmployee->employee->company_email,
+            //         "id_position" => $dataEmployee->position->id,
+            //         "position_name" => $dataEmployee->position->position_name,
+            //         "company_name" => $dataEmployee->position->company[0]->company_name,
+            //         "directorate_name" => $dataEmployee->position->directorate[0]->directorat_name,
+            //         "division_name" => $dataEmployee->position->division[0]->division_name,
+            //         "section_name" => $dataEmployee->position->section[0]->section_name,
+            //         "grade_name" => $dataEmployee->position->job_grade[0]->grade_name,
+            //         "type_bank" => (!empty($dataEmployee->eligible->type_bank)) ? $dataEmployee->eligible->type_bank : null,
+            //         "account_number" => (!empty($dataEmployee->eligible->account_number)) ? $dataEmployee->eligible->account_number : null,
+            //         "account_number" => (!empty($dataEmployee->eligible->account_name)) ? $dataEmployee->eligible->account_name: null,
+            //         "salary_detail" => null,
+            //         "additional_position" => $additionalPosition,
+            //     ];
 
-                return response()->json([
-                    'status_code' => 200,
-                    'status' => 'success',
-                    'message' => 'Karyawan baru berhasil diambil',
-                    'data' => $employeeDestructure,
-                ], 200);
-            }
+            //     return response()->json([
+            //         'status_code' => 200,
+            //         'status' => 'success',
+            //         'message' => 'Karyawan baru berhasil diambil',
+            //         'data' => $employeeDestructure,
+            //     ], 200);
+            // }
             
 
         } catch (Exception $error) {
