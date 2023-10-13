@@ -92,8 +92,12 @@ class EligibleController extends Controller
 
                 if ($querySalaryComponents) {
                     // Mengakses data salary_detail dari objek Company
+
                     $salaryDetails = $querySalaryComponents->flatMap(function ($salary) {
-                        return $salary->salaryDetail;
+                        return $salary->salaryDetail->map(function ($detail) use ($salary) {
+                            $detail->salary_name = $salary->salary_name;
+                            return $detail;
+                        });
                     });
 
                     $destructureSalaryDetail = [];
@@ -109,11 +113,13 @@ class EligibleController extends Controller
                             $salaryComponent = [
                                 "component_id" => $item->id,
                                 "order" =>  $item->order,
+                                "salary_component_id" => $item->salary_component_id,
                                 "component_name" => $checkData ? $checkData->component_name : $item->component_name,
                                 "type" =>  $item->type,
                                 "is_hide" =>  $item->is_hide,
                                 "is_edit" =>  $item->is_edit,
                                 "is_active" =>  $item->is_active,
+                                "salary" => $item->salary_name,
                             ];
     
                             $destructureSalaryDetail[] = $salaryComponent;
@@ -122,27 +128,29 @@ class EligibleController extends Controller
                     }
                     // Gunakan collect() untuk membuat koleksi dari array
                     $destructuredCollection = collect($destructureSalaryDetail);
-                    $uniqueSalaryDetails = $destructuredCollection->reduce(function ($carry, $item) {
-                        $componentName = $item['component_name'];
 
-                        // Jika $componentName belum ada dalam $carry, tambahkan
-                        if (!isset($carry[$componentName])) {
-                            $carry[$componentName] = $item;
+                    $uniqueSalaryDetails = [];
+
+                    $seen = [];
+
+                    foreach ($destructuredCollection as $item) {
+                        $key = $item['component_name'];
+
+                        // Jika salary_component_id tidak null, maka tambahkan ke hasil jika belum ada
+                        if ($item['salary_component_id'] !== null) {
+                            if (!isset($seen[$key])) {
+                                $uniqueSalaryDetails[] = $item;
+                                $seen[$key] = true;
+                            }
                         }
-
-                        return $carry;
-                    }, []);
-
-                    // Hasil berupa array dengan data unik berdasarkan 'component_name'
-                    $uniqueSalaryDetails = array_values($uniqueSalaryDetails);
-
-                    // if(empty($uniqueSalaryDetails)) {
-                    //     return response()->json([
-                    //         'status_code' => 500,
-                    //         'status' => 'error',
-                    //         'message' => 'Salary Component '.$dataEmployee->position->company[0]->company_name.' Belum diatur',
-                    //     ], 500);
-                    // }
+                        // Jika salary_component_id null, maka tambahkan ke hasil jika sudah ada atau jika salary berbeda
+                        else {
+                            if (!isset($seen[$key]) || $seen[$key] !== $item['salary']) {
+                                $uniqueSalaryDetails[] = $item;
+                                $seen[$key] = $item['salary'];
+                            }
+                        }
+                    }
 
                     $result = [];
 
@@ -160,14 +168,16 @@ class EligibleController extends Controller
                             }
 
                         $result[] = [
-                            'salary_component_id' => $item1["component_id"],
-                            "component_name" => $item1["component_name"],
+                            'component_id' => $item1["component_id"],
+                            'salary_component_id' => $item1["salary_component_id"],
+                            'component_name' => $item1["component_name"],
                             'type' => $item1['type'],
                             'order' => $item1['order'],
                             'is_hide' => $item1['is_hide'],
                             'is_edit' => $item1['is_edit'],
                             'is_active' => $item1['is_active'],
-                            "is_status" => $found ? 1 : 0
+                            "is_status" => $found ? 1 : 0,
+                            "salary" => $item1["salary"],
                         ];
 
                         
@@ -209,36 +219,6 @@ class EligibleController extends Controller
                         'message' => 'Data tidak ditemukan',
                     ], 404);
                 }
-            // } else {
-            //       // Desructrue Karyawan
-            //     $employeeDestructure = [
-            //         "id" => $dataEmployee->id,
-            //         "nip" => $dataEmployee->employee->nip,
-            //         "fullname" => $dataEmployee->employee->fullname,
-            //         "nickname" => $dataEmployee->employee->nickname,
-            //         "hire_date" => $dataEmployee->employee->hire_date,
-            //         "company_email" => $dataEmployee->employee->company_email,
-            //         "id_position" => $dataEmployee->position->id,
-            //         "position_name" => $dataEmployee->position->position_name,
-            //         "company_name" => $dataEmployee->position->company[0]->company_name,
-            //         "directorate_name" => $dataEmployee->position->directorate[0]->directorat_name,
-            //         "division_name" => $dataEmployee->position->division[0]->division_name,
-            //         "section_name" => $dataEmployee->position->section[0]->section_name,
-            //         "grade_name" => $dataEmployee->position->job_grade[0]->grade_name,
-            //         "type_bank" => "Eligible Belum Dibuat",
-            //         "account_name" => "Eligible Belum Dibuat",            
-            //         "account_number" => "Eligible Belum Dibuat",            
-            //         "salary_detail" => "Eligible Belum Dibuat",
-            //         "additional_position" => $additionalPosition,
-            //     ];
-
-            //     return response()->json([
-            //         'status_code' => 200,
-            //         'status' => 'success',
-            //         'message' => 'Karyawan baru berhasil diambil',
-            //         'data' => $employeeDestructure,
-            //     ], 200);
-            // }
             
 
         } catch (Exception $error) {
@@ -537,7 +517,10 @@ class EligibleController extends Controller
                 if ($querySalaryComponents) {
                     // Mengakses data salary_detail dari objek Company
                     $salaryDetails = $querySalaryComponents->flatMap(function ($salary) {
-                        return $salary->salaryDetail;
+                        return $salary->salaryDetail->map(function ($detail) use ($salary) {
+                            $detail->salary_name = $salary->salary_name;
+                            return $detail;
+                        });
                     });
 
                     $destructureSalaryDetail = [];
@@ -552,12 +535,14 @@ class EligibleController extends Controller
                         if($item->is_active) {
                             $salaryComponent = [
                                 "component_id" => $item->id,
-                                "order" =>  $item->order,
+                                "salary_component_id" => $item->salary_component_id,
                                 "component_name" => $checkData ? $checkData->component_name : $item->component_name,
                                 "type" =>  $item->type,
+                                "order" =>  $item->order,
                                 "is_hide" =>  $item->is_hide,
                                 "is_edit" =>  $item->is_edit,
                                 "is_active" =>  $item->is_active,
+                                "salary" => $item->salary_name,
                             ];
     
                             $destructureSalaryDetail[] = $salaryComponent;
@@ -566,19 +551,29 @@ class EligibleController extends Controller
                     }
                     // Gunakan collect() untuk membuat koleksi dari array
                     $destructuredCollection = collect($destructureSalaryDetail);
-                    $uniqueSalaryDetails = $destructuredCollection->reduce(function ($carry, $item) {
-                        $componentName = $item['component_name'];
 
-                        // Jika $componentName belum ada dalam $carry, tambahkan
-                        if (!isset($carry[$componentName])) {
-                            $carry[$componentName] = $item;
+                    $uniqueSalaryDetails = [];
+
+                    $seen = [];
+
+                    foreach ($destructuredCollection as $item) {
+                        $key = $item['component_name'];
+
+                        // Jika salary_component_id tidak null, maka tambahkan ke hasil jika belum ada
+                        if ($item['salary_component_id'] !== null) {
+                            if (!isset($seen[$key])) {
+                                $uniqueSalaryDetails[] = $item;
+                                $seen[$key] = true;
+                            }
                         }
-
-                        return $carry;
-                    }, []);
-
-                    // Hasil berupa array dengan data unik berdasarkan 'component_name'
-                    $uniqueSalaryDetails = array_values($uniqueSalaryDetails);
+                        // Jika salary_component_id null, maka tambahkan ke hasil jika sudah ada atau jika salary berbeda
+                        else {
+                            if (!isset($seen[$key]) || $seen[$key] !== $item['salary']) {
+                                $uniqueSalaryDetails[] = $item;
+                                $seen[$key] = $item['salary'];
+                            }
+                        }
+                    }
 
                     $result = [];
 
@@ -596,14 +591,16 @@ class EligibleController extends Controller
                             }
 
                         $result[] = [
-                            'salary_component_id' => $item1["component_id"],
-                            "component_name" => $item1["component_name"],
+                            'component_id' => $item1["component_id"],
+                            'salary_component_id' => $item1["salary_component_id"],
+                            'component_name' => $item1["component_name"],
                             'type' => $item1['type'],
                             'order' => $item1['order'],
                             'is_hide' => $item1['is_hide'],
                             'is_edit' => $item1['is_edit'],
                             'is_active' => $item1['is_active'],
-                            "is_status" => $found ? 1 : 0
+                            "is_status" => $found ? 1 : 0,
+                            "salary" => $item1["salary"],
                         ];
 
                         
@@ -654,36 +651,6 @@ class EligibleController extends Controller
                         'message' => 'Data tidak ditemukan',
                     ], 404);
                 }
-            // } else {
-            //       // Desructrue Karyawan
-            //     $employeeDestructure = [
-            //         "id" => $dataEmployee->id,
-            //         "nip" => $dataEmployee->employee->nip,
-            //         "fullname" => $dataEmployee->employee->fullname,
-            //         "nickname" => $dataEmployee->employee->nickname,
-            //         "hire_date" => $dataEmployee->employee->hire_date,
-            //         "company_email" => $dataEmployee->employee->company_email,
-            //         "id_position" => $dataEmployee->position->id,
-            //         "position_name" => $dataEmployee->position->position_name,
-            //         "company_name" => $dataEmployee->position->company[0]->company_name,
-            //         "directorate_name" => $dataEmployee->position->directorate[0]->directorat_name,
-            //         "division_name" => $dataEmployee->position->division[0]->division_name,
-            //         "section_name" => $dataEmployee->position->section[0]->section_name,
-            //         "grade_name" => $dataEmployee->position->job_grade[0]->grade_name,
-            //         "type_bank" => (!empty($dataEmployee->eligible->type_bank)) ? $dataEmployee->eligible->type_bank : null,
-            //         "account_number" => (!empty($dataEmployee->eligible->account_number)) ? $dataEmployee->eligible->account_number : null,
-            //         "account_number" => (!empty($dataEmployee->eligible->account_name)) ? $dataEmployee->eligible->account_name: null,
-            //         "salary_detail" => null,
-            //         "additional_position" => $additionalPosition,
-            //     ];
-
-            //     return response()->json([
-            //         'status_code' => 200,
-            //         'status' => 'success',
-            //         'message' => 'Karyawan baru berhasil diambil',
-            //         'data' => $employeeDestructure,
-            //     ], 200);
-            // }
             
 
         } catch (Exception $error) {
