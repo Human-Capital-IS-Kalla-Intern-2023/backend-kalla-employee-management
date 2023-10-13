@@ -160,7 +160,7 @@ class EligibleController extends Controller
 
                             if(isset($salaryDetailDb)) {
                                 foreach ($salaryDetailDb as $item2) {
-                                    if ($item1['component_name'] === $item2->component_name) {
+                                    if ($item1['component_name'] === $item2->component_name && $item1['type'] === $item2->type) {
                                         $found = 1;
                                         break;
                                     }
@@ -599,7 +599,7 @@ class EligibleController extends Controller
 
                             if(isset($salaryDetailDb)) {
                                 foreach ($salaryDetailDb as $item2) {
-                                    if ($item1['component_name'] === $item2->component_name) {
+                                    if ($item1['component_name'] === $item2->component_name && $item1['type'] === $item2->type) {
                                         $found = 1;
                                         break;
                                     }
