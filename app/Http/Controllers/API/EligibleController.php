@@ -319,9 +319,13 @@ class EligibleController extends Controller
                 $querySalaryComponents = Salary::with(['salaryDetail'])->where('company_id', $position->company_id)->where('is_active', 1)->get();
 
                 if ($querySalaryComponents) {
+
                     // Mengakses data salary_detail dari objek Company
                     $salaryDetails = $querySalaryComponents->flatMap(function ($salary) {
-                        return $salary->salaryDetail;
+                        return $salary->salaryDetail->map(function ($detail) use ($salary) {
+                            $detail->salary_name = $salary->salary_name;
+                            return $detail;
+                        });
                     });
 
                     $destructureSalaryDetail = [];
@@ -337,11 +341,13 @@ class EligibleController extends Controller
                             $salaryComponent = [
                                 "component_id" => $item->id,
                                 "order" =>  $item->order,
+                                "salary_component_id" => $item->salary_component_id,
                                 "component_name" => $checkData ? $checkData->component_name : $item->component_name,
                                 "type" =>  $item->type,
                                 "is_hide" =>  $item->is_hide,
                                 "is_edit" =>  $item->is_edit,
                                 "is_active" =>  $item->is_active,
+                                "salary" => $item->salary_name,
                             ];
     
                             $destructureSalaryDetail[] = $salaryComponent;
@@ -350,19 +356,29 @@ class EligibleController extends Controller
                     }
                     // Gunakan collect() untuk membuat koleksi dari array
                     $destructuredCollection = collect($destructureSalaryDetail);
-                    $uniqueSalaryDetails = $destructuredCollection->reduce(function ($carry, $item) {
-                        $componentName = $item['component_name'];
+                    
+                    $uniqueSalaryDetails = [];
 
-                        // Jika $componentName belum ada dalam $carry, tambahkan
-                        if (!isset($carry[$componentName])) {
-                            $carry[$componentName] = $item;
+                    $seen = [];
+
+                    foreach ($destructuredCollection as $item) {
+                        $key = $item['component_name'];
+
+                        // Jika salary_component_id tidak null, maka tambahkan ke hasil jika belum ada
+                        if ($item['salary_component_id'] !== null) {
+                            if (!isset($seen[$key])) {
+                                $uniqueSalaryDetails[] = $item;
+                                $seen[$key] = true;
+                            }
                         }
-
-                        return $carry;
-                    }, []);
-
-                    // Hasil berupa array dengan data unik berdasarkan 'component_name'
-                    $uniqueSalaryDetails = array_values($uniqueSalaryDetails);
+                        // Jika salary_component_id null, maka tambahkan ke hasil jika sudah ada atau jika salary berbeda
+                        else {
+                            if (!isset($seen[$key]) || $seen[$key] !== $item['salary']) {
+                                $uniqueSalaryDetails[] = $item;
+                                $seen[$key] = $item['salary'];
+                            }
+                        }
+                    }
 
                     if(empty($uniqueSalaryDetails)) {
                         return response()->json([
