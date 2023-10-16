@@ -46,6 +46,7 @@ class EligibleController extends Controller
 
             for ($i = 0; $i < $dataEmployeeNotActive->count(); $i++) {
                 $employee = [
+                    "employee_detail_id" => $dataEmployeeNotActive[$i]->id,
                     "id_additional_position" => $dataEmployeeNotActive[$i]->position->id,
                     "position_name" => $dataEmployeeNotActive[$i]->position->position_name,
                 ];
