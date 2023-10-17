@@ -46,6 +46,7 @@ class EligibleController extends Controller
 
             for ($i = 0; $i < $dataEmployeeNotActive->count(); $i++) {
                 $employee = [
+                    "employee_detail_id" => $dataEmployeeNotActive[$i]->id,
                     "id_additional_position" => $dataEmployeeNotActive[$i]->position->id,
                     "position_name" => $dataEmployeeNotActive[$i]->position->position_name,
                 ];
@@ -160,7 +161,7 @@ class EligibleController extends Controller
 
                             if(isset($salaryDetailDb)) {
                                 foreach ($salaryDetailDb as $item2) {
-                                    if ($item1['component_name'] === $item2->component_name && $item1['type'] === $item2->type) {
+                                    if ($item1['component_name'] === $item2->component_name && $item1['type'] === $item2->type && $item1['salary'] === $item2->salary) {
                                         $found = 1;
                                         break;
                                     }
@@ -258,12 +259,14 @@ class EligibleController extends Controller
                 if($detail['is_status'] == 1) {
                     $salaryDetails[] = [
                         'component_id' => $detail['component_id'],
-                        'order' => $detail['order'],
+                        'salary_component_id' => $detail['salary_component_id'],
                         'component_name' => $detail['component_name'],
+                        'order' => $detail['order'],
                         'type' => $detail['type'],
                         'is_hide' => $detail['is_hide'],
                         'is_edit' => $detail['is_edit'],
-                        'is_active' => $detail['is_active']
+                        'is_active' => $detail['is_active'],
+                        'salary' => $detail['salary']
                     ];
                 }
             }
@@ -446,13 +449,15 @@ class EligibleController extends Controller
             foreach ($request->salary_detail as $detail) {
                 if($detail['is_status'] == 1) {
                     $salaryDetails[] = [
+                        "component_id" => $detail['component_id'],
                         'salary_component_id' => $detail['salary_component_id'],
-                        'order' => $detail['order'],
                         'component_name' => $detail['component_name'],
+                        'order' => $detail['order'],
                         'type' => $detail['type'],
                         'is_hide' => $detail['is_hide'],
                         'is_edit' => $detail['is_edit'],
                         'is_active' => $detail['is_active'],
+                        'salary' => $detail['salary'],
                     ];
                 }
             }
@@ -599,7 +604,7 @@ class EligibleController extends Controller
 
                             if(isset($salaryDetailDb)) {
                                 foreach ($salaryDetailDb as $item2) {
-                                    if ($item1['component_name'] === $item2->component_name && $item1['type'] === $item2->type) {
+                                    if ($item1['component_name'] === $item2->component_name && $item1['type'] === $item2->type && $item1['salary'] === $item2->salary) {
                                         $found = 1;
                                         break;
                                     }
