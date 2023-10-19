@@ -11,12 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('compenstations', function (Blueprint $table) {
+        Schema::create('compensation', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('company_id')->constrained();
-            $table->string('salary_name');
-            $table->string('compensation_name');
-            $table->date('period');
             $table->timestamps();
         });
     }
@@ -26,6 +22,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('compenstations');
+        Schema::dropIfExists('compensation');
     }
 };
