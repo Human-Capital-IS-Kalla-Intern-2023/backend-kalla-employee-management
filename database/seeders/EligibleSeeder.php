@@ -71,89 +71,14 @@ class EligibleSeeder extends Seeder
         ];
 
 
-        foreach (range(1, 20) as $eligible) {
+        foreach (range(1, 10) as $eligible) {
             Eligible::create([
-                "employee_detail_id" => 1,
+                "employee_detail_id" => $faker->unique->numberBetween(1, 10),
                 "type_bank" => "BRI",
                 "account_number" => rand(1000, 10000),
                 "account_name" => $faker->name(),
                 "salary_detail" => json_encode($json),
             ]);
         }
-
-        // $eligible = [
-        //     [
-        //         "employee_detail_id" => 1,
-        //         "type_bank" => "BRI",
-        //         "account_number" => rand(1000, 10000),
-        //         "account_name" => $faker->name(),
-        //         "salary_detail" => json_encode($json),
-        //     ],
-        //     [
-        //         "employee_detail_id" => 2,
-        //         "type_bank" => "BRI",
-        //         "account_number" => rand(1000, 10000),
-        //         "account_name" => $faker->name(),
-        //         "salary_detail" => json_encode($json),
-        //     ],
-        //     [
-        //         "employee_detail_id" => 3,
-        //         "type_bank" => "BRI",
-        //         "account_number" => rand(1000, 10000),
-        //         "account_name" => $faker->name(),
-        //         "salary_detail" => json_encode($json),
-        //     ],
-        //     [
-        //         "employee_detail_id" => 4,
-        //         "type_bank" => "BRI",
-        //         "account_number" => rand(1000, 10000),
-        //         "account_name" => $faker->name(),
-        //         "salary_detail" => json_encode($json),
-        //     ],
-        //     [
-        //         "employee_detail_id" => 5,
-        //         "type_bank" => "BRI",
-        //         "account_number" => rand(1000, 10000),
-        //         "account_name" => $faker->name(),
-        //         "salary_detail" => json_encode($json),
-        //     ],
-        //     [
-        //         "employee_detail_id" => 6,
-        //         "type_bank" => "BRI",
-        //         "account_number" => rand(1000, 10000),
-        //         "account_name" => $faker->name(),
-        //         "salary_detail" => json_encode($json),
-        //     ],
-        //     [
-        //         "employee_detail_id" => 7,
-        //         "type_bank" => "BRI",
-        //         "account_number" => rand(1000, 10000),
-        //         "account_name" => $faker->name(),
-        //         "salary_detail" => json_encode($json),
-        //     ],
-        //     [
-        //         "employee_detail_id" => 8,
-        //         "type_bank" => "BRI",
-        //         "account_number" => rand(1000, 10000),
-        //         "account_name" => $faker->name(),
-        //         "salary_detail" => json_encode($json),
-        //     ],
-        //     [
-        //         "employee_detail_id" => 9,
-        //         "type_bank" => "BRI",
-        //         "account_number" => rand(1000, 10000),
-        //         "account_name" => $faker->name(),
-        //         "salary_detail" => json_encode($json),
-        //     ],
-        //     [
-        //         "employee_detail_id" => 10,
-        //         "type_bank" => "BRI",
-        //         "account_number" => rand(1000, 10000),
-        //         "account_name" => $faker->name(),
-        //         "salary_detail" => json_encode($json),
-        //     ],
-        // ];
-
-        // Eligible::insert($eligible);
     }
 }
