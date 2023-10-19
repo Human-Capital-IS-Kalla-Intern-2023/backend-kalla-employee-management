@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 
+use App\Models\EmployeeDetail;
 use App\Models\SalaryCompany;
 use App\Models\SalaryComponent;
 use Illuminate\Database\Seeder;
@@ -31,10 +32,11 @@ class DatabaseSeeder extends Seeder
             DivisionSeeder::class,
             SectionSeeder::class,
             PositionSeeder::class,
-            // EmployeeSeeder::class,
+            EmployeeSeeder::class,
             SalaryComponentSeeder::class,
             SalarySeeder::class,
             SalaryDetailSeeder::class,
+            EligibleSeeder::class,
         ]);
     }
 }

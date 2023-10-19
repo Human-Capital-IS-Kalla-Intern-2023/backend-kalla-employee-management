@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\Employee;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Validation\Rules\Unique;
 
@@ -22,10 +23,10 @@ class EmployeeFactory extends Factory
             'fullname' => $this->faker->name(),
             'nickname' => $this->faker->firstName(),
             'hire_date' => $this->faker->date(),
-            'company_email' => $this->faker->companyEmail(),
+            'company_email' => $this->faker->unique->companyEmail(),
+            // 'id_main_position' => implode(',', rand(1, 10)),
+            // 'id_secondary_position' => [rand(1, 10), rand(1, 10)],
 
         ];
     }
-    
-    
 }
