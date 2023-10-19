@@ -71,9 +71,9 @@ class EligibleSeeder extends Seeder
         ];
 
 
-        foreach (range(1, 10) as $eligible) {
+        foreach (range(1, 50) as $eligible) {
             Eligible::create([
-                "employee_detail_id" => $faker->unique->numberBetween(1, 10),
+                "employee_detail_id" => $faker->numberBetween(1, 10),
                 "type_bank" => "BRI",
                 "account_number" => rand(1000, 10000),
                 "account_name" => $faker->name(),
