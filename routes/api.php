@@ -125,6 +125,5 @@ Route::middleware('auth:sanctum')->group(function () {
     // Compensation
     Route::get('compensations', [CompensationController::class, 'index']);
     Route::post('compensations/', [CompensationController::class, 'store']);
-
-
+    Route::get('compensations/{id}', [CompensationController::class, 'company']);
 });

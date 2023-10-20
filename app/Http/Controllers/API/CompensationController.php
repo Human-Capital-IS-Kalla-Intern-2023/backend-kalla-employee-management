@@ -103,6 +103,16 @@ class CompensationController extends Controller
 
     public function company(string $id)
     {
-        $company = Company::where('company_id')->with('salary')->get();
+        $company = Company::where('id', $id)
+            ->with('salary')
+            ->withTrashed()
+            ->get();
+
+        return response()->json([
+            'status_code' => 200,
+            'status' => 'success',
+            'message' => 'Data Gaji Company berhasil diambil',
+            'data' => $company,
+        ]);
     }
 }
