@@ -24,7 +24,7 @@ class EmployeeSeeder extends Seeder
                 "fullname" => $faker->name(),
                 "nickname" => $faker->firstName(),
                 "hire_date" => $faker->date(),
-                "company_email" => $faker->unique()->email(),
+                "company_email" => $faker->unique()->companyEmail(),
             ]);
 
             // Employee Details database
