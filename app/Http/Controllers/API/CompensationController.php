@@ -16,6 +16,7 @@ class CompensationController extends Controller
     {
         $search = $request->get('search');
 
+
         $compensations = Compensation::query()->when($search, function ($query) use ($search) {
             $query->where('compensation_name', 'like', '%' . $search . '%');
         })->with([
@@ -42,6 +43,7 @@ class CompensationController extends Controller
                 'updated_at' => $compensation->updated_at,
             ];
         });
+
 
         return response()->json([
             'status_code' => 200,
