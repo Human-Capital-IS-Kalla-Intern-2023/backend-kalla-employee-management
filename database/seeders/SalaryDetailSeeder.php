@@ -112,8 +112,8 @@ class SalaryDetailSeeder extends Seeder
 
             SalaryDetail::create([
                 'salary_id' => rand(1, 10),
-                'order' => 2,
-                'component_name' => $faker->sentence(),
+                'order' => $faker->numberBetween(1, 20),
+                'component_name' => 'Tunjangan BPJS',
                 'type' => $value,
                 'is_edit' => 0,
                 'is_hide' => 1,
