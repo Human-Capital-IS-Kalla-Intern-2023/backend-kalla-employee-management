@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\API\CompanyController;
+use App\Http\Controllers\API\CompensationController;
 use App\Http\Controllers\API\DirectoratController;
 use App\Http\Controllers\API\JobGradeController;
 use App\Http\Controllers\API\LocationController;
@@ -120,4 +121,10 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('eligibles/edit/{employee}/{position}', [EligibleController::class, 'edit']);
     Route::put('eligibles/{id}', [EligibleController::class, 'update']);
     Route::delete('eligibles/{id}', [EligibleController::class, 'destroy']);
+
+    // Compensation
+    Route::get('compensations', [CompensationController::class, 'index']);
+    Route::post('compensations/', [CompensationController::class, 'store']);
+
+
 });

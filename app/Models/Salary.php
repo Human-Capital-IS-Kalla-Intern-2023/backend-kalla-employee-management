@@ -26,15 +26,11 @@ class Salary extends Model
         return $this->hasOne(Company::class, 'id', 'company_id');
     }
 
-    //  /**
-    //  * Get the user associated with the Salary
-    //  *
-    //  * @return \Illuminate\Database\Eloquent\Relations\HasOne
-    //  */
-    // public function company(): BelongsTo
-    // {
-    //     return $this->belongsTo(Company::class, 'company_id', 'id');
-    // }
+    public function compensation(): HasOne
+    {
+        return $this->hasOne(Compensation::class, 'id', 'salary_id');
+    }
+
 
     /**
      * Get the user that owns the Salary

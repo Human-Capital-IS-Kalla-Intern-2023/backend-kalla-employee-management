@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('compensations', function (Blueprint $table) {
             $table->id();
             $table->foreignId('company_id')->constrained();
-            $table->string('salary_name');
+            $table->foreignId('salary_id')->constrained();
             $table->string('compensation_name');
             $table->date('period');
             $table->timestamps();
