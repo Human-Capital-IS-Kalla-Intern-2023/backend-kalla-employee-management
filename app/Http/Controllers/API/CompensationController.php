@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
+use App\Models\Company;
 use App\Models\Compensation;
 use Illuminate\Http\Request;
 
@@ -13,10 +14,10 @@ class CompensationController extends Controller
      */
     public function index(Request $request)
     {
-        $search = $request->get('search'); 
+        $search = $request->get('search');
 
-        $compensations = Compensation::query()->when($search, function($query) use($search) {
-            $query->where('compensation_name','like','%'.$search.'%');
+        $compensations = Compensation::query()->when($search, function ($query) use ($search) {
+            $query->where('compensation_name', 'like', '%' . $search . '%');
         })->with(['company' => function ($query) {
             $query->withTrashed(); // Mengambil data yang terhapus secara lembut (soft deleted)
         }])->get();
@@ -75,5 +76,10 @@ class CompensationController extends Controller
     public function destroy(string $id)
     {
         //
+    }
+
+    public function company(string $id)
+    {
+        $company = Company::where('company_id')->with('salary')->get();
     }
 }
