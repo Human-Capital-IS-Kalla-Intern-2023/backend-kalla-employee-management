@@ -17,8 +17,8 @@ class CompensationController extends Controller
         $search = $request->get('search');
 
 
-        $compensations = Compensation::query()->when($search, function($query) use($search) {
-            $query->where('compensation_name','like','%'.$search.'%');
+        $compensations = Compensation::query()->when($search, function ($query) use ($search) {
+            $query->where('compensation_name', 'like', '%' . $search . '%');
         })->with([
             'company' => function ($query) {
                 $query->withTrashed(); // Mengambil data yang terhapus secara lembut (soft deleted)
@@ -66,24 +66,7 @@ class CompensationController extends Controller
      */
     public function store(Request $request)
     {
-        // $validation = $this->validate($request, [
-        //     'company_name' => ['required','string','unique:companies,company_name,NULL,id,deleted_at,NULL','max:255'],
-        //     'locations_id' => ['required','exists:locations,id,deleted_at,NULL'],
-        // ]);
-
-        $data = Compensation::create([  
-            'company_id' => $request->company_id,
-            'salary_id' => $request->salary_id,
-            'compensation_name' =>  $request->compensation_name,
-            'period' => ["month" => $request->month, "year" => $request->year]
-        ]);
-
-        return response()->json([
-            'status_code' => 200,
-            'status' => 'success',
-            'message' => 'Perusahaan baru berhasil ditambahkan',
-            'data' => $data,
-        ], 200);
+        //
     }
 
     /**
