@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
+use App\Models\Company;
 use App\Models\Compensation;
 use App\Models\EmployeeCompensation;
 use App\Models\Position;
@@ -18,10 +19,11 @@ class CompensationController extends Controller
      */
     public function index(Request $request)
     {
-        $search = $request->get('search'); 
+        $search = $request->get('search');
 
-        $compensations = Compensation::query()->when($search, function($query) use($search) {
-            $query->where('compensation_name','like','%'.$search.'%');
+
+        $compensations = Compensation::query()->when($search, function ($query) use ($search) {
+            $query->where('compensation_name', 'like', '%' . $search . '%');
         })->with([
             'company' => function ($query) {
                 $query->withTrashed(); // Mengambil data yang terhapus secara lembut (soft deleted)
@@ -47,6 +49,7 @@ class CompensationController extends Controller
             ];
         });
 
+
         return response()->json([
             'status_code' => 200,
             'status' => 'success',
@@ -68,6 +71,7 @@ class CompensationController extends Controller
      */
     public function store(Request $request)
     {
+
         // $validation = $this->validate($request, [
         //     'company_name' => ['required','string','unique:companies,company_name,NULL,id,deleted_at,NULL','max:255'],
         //     'locations_id' => ['required','exists:locations,id,deleted_at,NULL'],
@@ -111,7 +115,6 @@ class CompensationController extends Controller
             'data' => $data,
         ], 200);
     }
-
     /**
      * Display the specified resource.
      */
@@ -197,5 +200,20 @@ class CompensationController extends Controller
             ], 500);
         }
 
+    }
+
+    public function company(string $id)
+    {
+        $company = Company::where('id', $id)
+            ->with('salary')
+            ->withTrashed()
+            ->get();
+
+        return response()->json([
+            'status_code' => 200,
+            'status' => 'success',
+            'message' => 'Data Gaji Company berhasil diambil',
+            'data' => $company,
+        ]);
     }
 }
