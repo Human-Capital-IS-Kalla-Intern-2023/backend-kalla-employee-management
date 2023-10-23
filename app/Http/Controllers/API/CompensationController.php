@@ -168,7 +168,42 @@ class CompensationController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $validation = $request->validate([
+            'company_id' => ['required'],
+            'salary_id' => ['required'],
+            'compensation_name' => ['required'],
+            'period' => ['required'],
+        ]);
+
+        try {
+            $month = $request->input('month');
+            $year = $request->input('year');
+
+
+            $compensation = Compensation::where('id', $id)->first();
+
+            $compensation->update([
+                'company_id' => $request->input('company_id'),
+                'salary_id' => $request->input('salary_id'),
+                'compensation_name' => $request->input('compensation_name'),
+                'period' => "$year-$month-01",
+            ]);
+
+            return response()->json([
+                'status_code' => 200,
+                'status' => 'success',
+                'message' => 'Data Compensation berhasil diubah',
+                'data' => $compensation,
+            ], 200);
+        } catch (\Exception $e) {
+
+            return response()->json([
+                'status_code' => 500,
+                'status' => 'error',
+                'message' => 'Terjadi kesalahan saat menyimpan data.',
+                'error' => $e->getMessage(),
+            ], 500);
+        }
     }
 
     /**
