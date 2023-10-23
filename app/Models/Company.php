@@ -31,4 +31,14 @@ class Company extends Model
     {
         return $this->hasMany(Salary::class,  'company_id', 'id');
     }
+
+    /**
+     * Get all of the comments for the Company
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function compensation(): HasMany
+    {
+        return $this->hasMany(Compensation::class, 'id', 'company_id');
+    }
 }

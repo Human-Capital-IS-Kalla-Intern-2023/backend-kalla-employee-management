@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use App\Models\SalaryDetail;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Faker\Factory as FakerFactory;
 
 class SalaryDetailSeeder extends Seeder
 {
@@ -13,10 +14,13 @@ class SalaryDetailSeeder extends Seeder
      */
     public function run(): void
     {
+
+        $faker = FakerFactory::create();
+
         $components = [
             [
-                'salary_id' => 1,
-                'order' => 1,
+                'salary_id' => rand(1, 10),
+                'order' => $faker->numberBetween(1, 10),
                 'component_name' => 'Gaji Pokok',
                 'type' => 'fixed pay',
                 'is_edit' => 0,
@@ -26,7 +30,7 @@ class SalaryDetailSeeder extends Seeder
                 'updated_at' => date('Y-m-d H:i:s', time()),
             ],
             [
-                'salary_id' => 1,
+                'salary_id' => rand(1, 10),
                 'order' => 2,
                 'component_name' => 'Tunjangan Komunikasi',
                 'type' => 'fixed pay',
@@ -37,7 +41,7 @@ class SalaryDetailSeeder extends Seeder
                 'updated_at' => date('Y-m-d H:i:s', time()),
             ],
             [
-                'salary_id' => 1,
+                'salary_id' => rand(1, 10),
                 'order' => 3,
                 'component_name' => 'Tunjangan Transportasi',
                 'type' => 'fixed pay',
@@ -48,7 +52,7 @@ class SalaryDetailSeeder extends Seeder
                 'updated_at' => date('Y-m-d H:i:s', time()),
             ],
             [
-                'salary_id' => 1,
+                'salary_id' => rand(1, 10),
                 'order' => 1,
                 'component_name' => 'Tunjangan BPJS',
                 'type' => 'deductions',
@@ -59,7 +63,7 @@ class SalaryDetailSeeder extends Seeder
                 'updated_at' => date('Y-m-d H:i:s', time()),
             ],
             [
-                'salary_id' => 3,
+                'salary_id' => rand(1, 10),
                 'order' => 1,
                 'component_name' => 'Tunjangan BPJS',
                 'type' => 'deductions',
@@ -70,7 +74,7 @@ class SalaryDetailSeeder extends Seeder
                 'updated_at' => date('Y-m-d H:i:s', time()),
             ],
             [
-                'salary_id' => 2,
+                'salary_id' => rand(1, 10),
                 'order' => 1,
                 'component_name' => 'Gaji Pokok',
                 'type' => 'fixed pay',
@@ -81,7 +85,7 @@ class SalaryDetailSeeder extends Seeder
                 'updated_at' => date('Y-m-d H:i:s', time()),
             ],
             [
-                'salary_id' => 2,
+                'salary_id' => rand(1, 10),
                 'order' => 2,
                 'component_name' => 'Tunjangan Komunikasi',
                 'type' => 'fixed pay',
@@ -94,5 +98,29 @@ class SalaryDetailSeeder extends Seeder
         ];
 
         SalaryDetail::insert($components);
+
+
+
+        foreach (range(1, 20) as $salaryDetail) {
+            $type = $faker->boolean();
+
+            if ($type) {
+                $value = 'fixed pay';
+            } else {
+                $value = 'deductions';
+            }
+
+            SalaryDetail::create([
+                'salary_id' => rand(1, 10),
+                'order' => $faker->numberBetween(1, 20),
+                'component_name' => 'Tunjangan BPJS',
+                'type' => $value,
+                'is_edit' => 0,
+                'is_hide' => 1,
+                'is_active' => 1,
+                'created_at' => date('Y-m-d H:i:s', time()),
+                'updated_at' => date('Y-m-d H:i:s', time()),
+            ]);
+        }
     }
 }

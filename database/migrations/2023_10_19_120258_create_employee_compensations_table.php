@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('employee_compensations', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('compensation_id')->constrained();
+            $table->foreignId('compensations_id')->constrained();
             $table->json('employee');
             $table->json('position');
             $table->json('eligble');
