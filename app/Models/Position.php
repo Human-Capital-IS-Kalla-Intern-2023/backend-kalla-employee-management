@@ -47,4 +47,11 @@ class Position extends Model
     {
         return $this->belongsToMany(Employee::class, 'employee_details');
     }
+
+    // isal
+    public function employeeDetails()
+    {
+        return $this->hasMany(EmployeeDetail::class);
+    }
+
 }
