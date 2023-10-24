@@ -16,8 +16,8 @@ return new class extends Migration
             $table->foreignId('company_id')->constrained();
             $table->foreignId('salary_id')->constrained();
             $table->string('compensation_name');
-            $table->integer('year');
-            $table->integer('month');
+            // $table->integer('year');
+            // $table->integer('month');
             $table->date('period');
             $table->timestamps();
         });

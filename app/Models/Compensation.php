@@ -18,13 +18,15 @@ class Compensation extends Model
     public function setPeriodAttribute($value)
     {
         // $value adalah array yang berisi bulan dan tahun dari form
-        $month = $value['month'];
-        $year = $value['year'];
+        // $month = $value['month'];
+        // $year = $value['year'];
 
         // Menggabungkan bulan dan tahun menjadi format yang sesuai, misalnya '2023-10-01'
-        $combinedPeriod = "$year-$month-01";
+        // $combinedPeriod = $year - $month - "-01";
 
-        $this->attributes['period'] = $combinedPeriod;
+        if (is_string($value)) {
+            $this->attributes['period'] = $value;
+        }
     }
 
     /**
@@ -51,5 +53,4 @@ class Compensation extends Model
     {
         return $this->hasMany(EmployeeCompensation::class, 'compensations_id',  'id');
     }
-
 }
