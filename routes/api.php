@@ -125,5 +125,11 @@ Route::middleware('auth:sanctum')->group(function () {
     // Compensation
     Route::get('compensations', [CompensationController::class, 'index']);
     Route::post('compensations/', [CompensationController::class, 'store']);
-    Route::get('compensations/{id}', [CompensationController::class, 'company']);
+    Route::put('compensations/{id}', [CompensationController::class, 'update']);
+    Route::get('compensations/{id}', [CompensationController::class, 'show']);
+    Route::delete('compensations/{id}', [CompensationController::class, 'destroy']);
+
+    // Route::get('compensations/{id}', [CompensationController::class, 'company']);
+
+
 });

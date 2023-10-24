@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Compensation extends Model
 {
@@ -39,6 +40,16 @@ class Compensation extends Model
     public function salary(): BelongsTo
     {
         return $this->belongsTo(Salary::class, 'salary_id', 'id');
+    }
+
+    /**
+     * Get all of the comments for the Compensation
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function employeeCompensations(): HasMany
+    {
+        return $this->hasMany(EmployeeCompensation::class, 'compensations_id',  'id');
     }
 
 }

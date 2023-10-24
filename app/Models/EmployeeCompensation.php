@@ -9,5 +9,7 @@ class EmployeeCompensation extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['compensation_id', 'employee', 'position', 'eligible'];
+    protected $table = 'employee_compensations';
+
+    protected $fillable = ['compensations_id', 'employee', 'position', 'eligble'];
 }
