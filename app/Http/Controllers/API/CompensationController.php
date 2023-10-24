@@ -171,9 +171,9 @@ class CompensationController extends Controller
             'company_id' => ['required'],
             'salary_id' => ['required'],
             'compensation_name' => ['required'],
-            'year' => ['required'],
-            'month' => ['required'],
-            // 'period' => ['required'],
+            // 'year' => ['required'],
+            // 'month' => ['required'],
+            'period' => ['required'],
         ]);
 
         try {
@@ -192,10 +192,9 @@ class CompensationController extends Controller
             $compensation->company_id = $request->input('company_id');
             $compensation->salary_id = $request->input('salary_id');
             $compensation->compensation_name = $request->input('compensation_name');
-            $compensation->year = $year;
-            $compensation->month = $month;
+            $compensation->period = $request->input('period');
 
-            // $compensation->period = "$year-$month-01";
+            // $compensation->period = $year - $month - "-01";
 
             $compensation->save();
 
