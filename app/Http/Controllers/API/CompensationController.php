@@ -37,12 +37,14 @@ class CompensationController extends Controller
 
         // Transformasi data sesuai format yang Anda inginkan
         $transformedCompensations = $compensations->map(function ($compensation) {
+
+            $salary = json_decode($compensation->salary);
             return [
                 'id' => $compensation->id,
                 'company_id' => $compensation->company->id,
                 'company_name' => $compensation->company->company_name,
-                'salary_id' => $compensation->salary_id,
-                'salary_name' => $compensation->salary->salary_name,
+                'salary_id' => $salary->id,
+                'salary_name' => $salary->salary_name,
                 'compensation_name' => $compensation->compensation_name,
                 'month' => date('m', strtotime($compensation->period)), // Ambil bulan dari kolom "period"
                 'year' => date('Y', strtotime($compensation->period)),   // Ambil tahun dari kolom "period"
@@ -59,6 +61,7 @@ class CompensationController extends Controller
             'data' => $transformedCompensations,
         ]);
     }
+
 
     /**
      * Show the form for creating a new resource.
@@ -246,43 +249,36 @@ class CompensationController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        $validation = $request->validate([
-            'company_id' => ['required'],
-            'salary_id' => ['required'],
-            'compensation_name' => ['required'],
-            // 'year' => ['required'],
-            // 'month' => ['required'],
-            'period' => ['required'],
+        $validation = $this->validate($request, [
+            'compensation_name' =>  ['required','string','unique:compensations,compensation_name,'.$id.''],
+            'month' => ['required','integer','min:1','max:12'],
+            'year' => ['required','integer','min:1900','max:'.date('Y')],
         ]);
 
         try {
-            $year = $request->input('year');
-            $month = $request->input('month');
 
             $compensation = Compensation::where('id', $id)->first();
 
-            // $compensation->update([
-            //     'company_id' => $request->input('company_id'),
-            //     'salary_id' => $request->input('salary_id'),
-            //     'compensation_name' => $request->input('compensation_name'),
-            //     'period' => "$year-$month-01",
-            // ]);
+            if($compensation->count() <= 0 ) {
+                return response()->json([
+                    'status_code' => 404,
+                    'status' => 'error',
+                    'message' => 'Data tidak ditemukan',
+                ], 404);
+            } else {
+           // Create Compensation
+                $compensation->update([  
+                    'compensation_name' =>  $request->compensation_name,
+                    'period' => ["month" => $request->month, "year" => $request->year]
+                ]);
 
-            $compensation->company_id = $request->input('company_id');
-            $compensation->salary_id = $request->input('salary_id');
-            $compensation->compensation_name = $request->input('compensation_name');
-            $compensation->period = $request->input('period');
-
-            // $compensation->period = $year - $month - "-01";
-
-            $compensation->save();
-
-            return response()->json([
-                'status_code' => 200,
-                'status' => 'success',
-                'message' => 'Data Compensation berhasil diubah',
-                'data' => $compensation,
-            ], 200);
+                return response()->json([
+                    'status_code' => 200,
+                    'status' => 'success',
+                    'message' => 'Data Compensation berhasil diubah',
+                    'data' => $compensation,
+                ], 200);
+            }
         } catch (\Exception $e) {
 
             return response()->json([
