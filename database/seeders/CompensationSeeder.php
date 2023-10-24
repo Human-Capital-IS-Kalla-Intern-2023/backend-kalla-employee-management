@@ -28,6 +28,8 @@ class CompensationSeeder extends Seeder
             $compensation->company_id = rand(1, 10);
             $compensation->salary_id = rand(1, 10);
             $compensation->compensation_name = $faker->date('m_Y');
+            $compensation->year = $year;
+            $compensation->month = $month;
             $compensation->period = $period;
 
             $compensation->save();
