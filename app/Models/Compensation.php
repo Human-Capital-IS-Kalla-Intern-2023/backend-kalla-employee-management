@@ -13,7 +13,7 @@ class Compensation extends Model
 
     protected $table = 'compensations';
 
-    protected $fillable = ['company_id', 'salary_id', 'compensation_name', 'period'];
+    protected $fillable = ['company_id', 'salary', 'compensation_name', 'period'];
 
     public function setPeriodAttribute($value)
     {

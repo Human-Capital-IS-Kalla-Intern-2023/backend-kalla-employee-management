@@ -12,6 +12,8 @@ use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
+use function Ramsey\Uuid\v1;
+
 class CompensationController extends Controller
 {
     /**
@@ -72,48 +74,87 @@ class CompensationController extends Controller
     public function store(Request $request)
     {
 
-        // $validation = $this->validate($request, [
-        //     'company_name' => ['required','string','unique:companies,company_name,NULL,id,deleted_at,NULL','max:255'],
-        //     'locations_id' => ['required','exists:locations,id,deleted_at,NULL'],
-        // ]);
-
-        // Create Compensation
-        $compensation = Compensation::create([  
-            'company_id' => $request->company_id,
-            'salary_id' => $request->salary_id,
-            'compensation_name' =>  $request->compensation_name,
-            'period' => ["month" => $request->month, "year" => $request->year]
+        $validation = $this->validate($request, [
+            'company_id' => ['required','exists:companies,id'],
+            'salary_id' => ['required','exists:salaries,id'],
+            'compensation_name' =>  ['required','string','unique:compensations,compensation_name','max:255'],
+            'month' => ['required','integer','min:1','max:12'],
+            'year' => ['required','integer','min:1900','max:'.date('Y')],
         ]);
 
-        // GetData Position
-        $data = Position::with(
-                'employeeDetails',
-                'employeeDetails.position',
-                'employeeDetails.employee',
-                'employeeDetails.eligible'
-            )->where('company_id', 5)->get();
+        try {
+            $salary = Salary::findOrFail($request->salary_id);
+
+            // Create Compensation
+            $compensation = Compensation::create([  
+                'company_id' => $request->company_id,
+                'salary' => json_encode($salary),
+                'compensation_name' =>  $request->compensation_name,
+                'period' => ["month" => $request->month, "year" => $request->year]
+            ]);
+
+            // GetData Position
+            $data = Position::with(
+                    'employeeDetails',
+                    'employeeDetails.position',
+                    'employeeDetails.position.company',
+                    'employeeDetails.position.directorate',
+                    'employeeDetails.position.division',
+                    'employeeDetails.position.section',
+                    'employeeDetails.position.job_grade',
+                    'employeeDetails.employee',
+                    'employeeDetails.eligible'
+                )->where('company_id', $request->company_id)->get();
 
             
             for ($i=0; $i < $data->count() ; $i++) { 
                 for ($j=0; $j < $data[$i]->employeeDetails->count(); $j++) { 
-                    $employee_compensation = EmployeeCompensation::create([
-                            'compensations_id' => $compensation->id,
-                            'employee' => json_encode($data[$i]->employeeDetails[$j]->employee),
-                            'position' => json_encode($data[$i]->employeeDetails[$j]->position),
-                            'eligble' => json_encode($data[$i]->employeeDetails[$j]->eligible)
-        
-                        ]);
+                    if($data[$i]->employeeDetails[$j]->eligible != null) {
+                        //  Transformasi data sesuai format yang Anda inginkan
+                            $descPosition =  [
+                                "id" => $data[$i]->employeeDetails[$j]->position->id,
+                                "position_name" => $data[$i]->employeeDetails[$j]->position->position_name,
+                                "company_id" => $data[$i]->employeeDetails[$j]->position->company_id,
+                                "company_name" => $data[$i]->employeeDetails[$j]->position->company[0]->company_name,
+                                "directorat_id" => $data[$i]->employeeDetails[$j]->position->directorat_id,
+                                "directorat_name" => $data[$i]->employeeDetails[$j]->position->directorate[0]->directorat_name,
+                                "division_id" => $data[$i]->employeeDetails[$j]->position->division_id,
+                                "division_name" => $data[$i]->employeeDetails[$j]->position->division[0]->division_name,
+                                "section_id" => $data[$i]->employeeDetails[$j]->position->section_id,
+                                "section_name" => $data[$i]->employeeDetails[$j]->position->section[0]->section_name,
+                                "job_grade_id" => $data[$i]->employeeDetails[$j]->position->job_grade_id,
+                                "grade_name" => $data[$i]->employeeDetails[$j]->position->job_grade[0]->grade_name,
+                                "created_at" => $data[$i]->employeeDetails[$j]->position->created_at,
+                                "updated_at" => $data[$i]->employeeDetails[$j]->position->updated_at,
+
+                            ];
+                            $employee_compensation = EmployeeCompensation::create([
+                                'compensations_id' => $compensation->id,
+                                'employee' => json_encode($data[$i]->employeeDetails[$j]->employee),
+                                'position' => json_encode($descPosition),
+                                'eligible' => json_encode($data[$i]->employeeDetails[$j]->eligible)
+                            ]);
+
+                    }
                 }
 
             }
         
-        return response()->json([
-            'status_code' => 200,
-            'status' => 'success',
-            'message' => 'Compensation baru berhasil ditambahkan',
-            // 'data' => $employeeDetails,
-            'data' => $data,
-        ], 200);
+            return response()->json([
+                'status_code' => 200,
+                'status' => 'success',
+                'message' => 'Compensation baru berhasil ditambahkan',
+                'data' => $compensation,
+            ], 200);
+        } catch(Exception $error) {
+            return response()->json([
+                'status_code' => 500,
+                'status' => 'error',
+                'message' => 'Terjadi kesalahan',
+            ], 500);
+        }
+
+        
     }
     /**
      * Display the specified resource.
@@ -177,37 +218,38 @@ class CompensationController extends Controller
     public function destroy(string $id)
     {
         try {
-            DB::transaction(function () use ($id)  {
-                // Hapus data dari tabel 'compensation'
-                Compensation::where('id', $id)->delete();
 
-                // Hapus data dari tabel 'employe_compensation' terlebih dahulu
-                // EmployeCompensation::where('compensation_id', 1)->delete();
-            }, 5);
+            $data = Compensation::findOrFail($id);
+            $data->delete();
+
+            return response()->json([
+                'status_code' => 200,
+                'status' => 'success',
+                'message' => 'Data compensation berhasil dihapus',
+                'data' => $data,
+            ]);
+
         } catch (\Exception $error) {
-            // if ($error->getCode() == '23000') {
-            //     return response()->json([
-            //         'status_code' => 500,
-            //         'status' => 'error',
-            //         'message' => 'Tidak dapat menghapus, Perusahaan masih digunakan tabel lain',
-            //     ]);
-            // }
+            if ($error->getCode() == '23000') {
+                return response()->json([
+                    'status_code' => 500,
+                    'status' => 'error',
+                    'message' => 'Tidak dapat menghapus, Perusahaan masih digunakan tabel lain',
+                ]);
+            }
 
             return response()->json([
                 'status_code' => 500,
                 'status' => 'error',
-                'message' => 'Terjadi kesalahan' . $error->getMessage(),
+                'message' => 'Terjadi kesalahan',
             ], 500);
         }
 
     }
 
-    public function company(string $id)
+    public function salary(string $id)
     {
-        $company = Company::where('id', $id)
-            ->with('salary')
-            ->withTrashed()
-            ->get();
+        $company = Salary::where('company_id', $id)->where('is_active', 1)->get();
 
         return response()->json([
             'status_code' => 200,
