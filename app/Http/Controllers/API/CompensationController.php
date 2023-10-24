@@ -250,22 +250,32 @@ class CompensationController extends Controller
             'company_id' => ['required'],
             'salary_id' => ['required'],
             'compensation_name' => ['required'],
+            // 'year' => ['required'],
+            // 'month' => ['required'],
             'period' => ['required'],
         ]);
 
         try {
-            $month = $request->input('month');
             $year = $request->input('year');
-
+            $month = $request->input('month');
 
             $compensation = Compensation::where('id', $id)->first();
 
-            $compensation->update([
-                'company_id' => $request->input('company_id'),
-                'salary_id' => $request->input('salary_id'),
-                'compensation_name' => $request->input('compensation_name'),
-                'period' => "$year-$month-01",
-            ]);
+            // $compensation->update([
+            //     'company_id' => $request->input('company_id'),
+            //     'salary_id' => $request->input('salary_id'),
+            //     'compensation_name' => $request->input('compensation_name'),
+            //     'period' => "$year-$month-01",
+            // ]);
+
+            $compensation->company_id = $request->input('company_id');
+            $compensation->salary_id = $request->input('salary_id');
+            $compensation->compensation_name = $request->input('compensation_name');
+            $compensation->period = $request->input('period');
+
+            // $compensation->period = $year - $month - "-01";
+
+            $compensation->save();
 
             return response()->json([
                 'status_code' => 200,
@@ -316,7 +326,6 @@ class CompensationController extends Controller
                 'message' => 'Terjadi kesalahan',
             ], 500);
         }
-
     }
 
     public function salary(string $id)
