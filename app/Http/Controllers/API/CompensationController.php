@@ -12,6 +12,8 @@ use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
+use function Ramsey\Uuid\v1;
+
 class CompensationController extends Controller
 {
     /**
@@ -35,12 +37,14 @@ class CompensationController extends Controller
 
         // Transformasi data sesuai format yang Anda inginkan
         $transformedCompensations = $compensations->map(function ($compensation) {
+
+            $salary = json_decode($compensation->salary);
             return [
                 'id' => $compensation->id,
                 'company_id' => $compensation->company->id,
                 'company_name' => $compensation->company->company_name,
-                'salary_id' => $compensation->salary_id,
-                'salary_name' => $compensation->salary->salary_name,
+                'salary_id' => $salary->id,
+                'salary_name' => $salary->salary_name,
                 'compensation_name' => $compensation->compensation_name,
                 'month' => date('m', strtotime($compensation->period)), // Ambil bulan dari kolom "period"
                 'year' => date('Y', strtotime($compensation->period)),   // Ambil tahun dari kolom "period"
@@ -58,6 +62,7 @@ class CompensationController extends Controller
         ]);
     }
 
+
     /**
      * Show the form for creating a new resource.
      */
@@ -72,87 +77,163 @@ class CompensationController extends Controller
     public function store(Request $request)
     {
 
-        // $validation = $this->validate($request, [
-        //     'company_name' => ['required','string','unique:companies,company_name,NULL,id,deleted_at,NULL','max:255'],
-        //     'locations_id' => ['required','exists:locations,id,deleted_at,NULL'],
-        // ]);
-
-        // Create Compensation
-        $compensation = Compensation::create([  
-            'company_id' => $request->company_id,
-            'salary_id' => $request->salary_id,
-            'compensation_name' =>  $request->compensation_name,
-            'period' => ["month" => $request->month, "year" => $request->year]
+        $validation = $this->validate($request, [
+            'company_id' => ['required','exists:companies,id'],
+            'salary_id' => ['required','exists:salaries,id'],
+            'compensation_name' =>  ['required','string','unique:compensations,compensation_name','max:255'],
+            'month' => ['required','integer','min:1','max:12'],
+            'year' => ['required','integer','min:1900','max:'.date('Y')],
         ]);
 
-        // GetData Position
-        $data = Position::with(
-                'employeeDetails',
-                'employeeDetails.position',
-                'employeeDetails.employee',
-                'employeeDetails.eligible'
-            )->where('company_id', 5)->get();
+        try {
+            $salary = Salary::findOrFail($request->salary_id);
+
+            // Create Compensation
+            $compensation = Compensation::create([  
+                'company_id' => $request->company_id,
+                'salary' => json_encode($salary),
+                'compensation_name' =>  $request->compensation_name,
+                'period' => ["month" => $request->month, "year" => $request->year]
+            ]);
+
+            // GetData Position
+            $data = Position::with(
+                    'employeeDetails',
+                    'employeeDetails.position',
+                    'employeeDetails.position.company',
+                    'employeeDetails.position.directorate',
+                    'employeeDetails.position.division',
+                    'employeeDetails.position.section',
+                    'employeeDetails.position.job_grade',
+                    'employeeDetails.employee',
+                    'employeeDetails.eligible'
+                )->where('company_id', $request->company_id)->get();
 
             
             for ($i=0; $i < $data->count() ; $i++) { 
                 for ($j=0; $j < $data[$i]->employeeDetails->count(); $j++) { 
-                    $employee_compensation = EmployeeCompensation::create([
-                            'compensations_id' => $compensation->id,
-                            'employee' => json_encode($data[$i]->employeeDetails[$j]->employee),
-                            'position' => json_encode($data[$i]->employeeDetails[$j]->position),
-                            'eligble' => json_encode($data[$i]->employeeDetails[$j]->eligible)
-        
-                        ]);
+                    if($data[$i]->employeeDetails[$j]->eligible != null) {
+                        //  Transformasi data sesuai format yang Anda inginkan
+                            $descPosition =  [
+                                "id" => $data[$i]->employeeDetails[$j]->position->id,
+                                "position_name" => $data[$i]->employeeDetails[$j]->position->position_name,
+                                "company_id" => $data[$i]->employeeDetails[$j]->position->company_id,
+                                "company_name" => $data[$i]->employeeDetails[$j]->position->company[0]->company_name,
+                                "directorat_id" => $data[$i]->employeeDetails[$j]->position->directorat_id,
+                                "directorat_name" => $data[$i]->employeeDetails[$j]->position->directorate[0]->directorat_name,
+                                "division_id" => $data[$i]->employeeDetails[$j]->position->division_id,
+                                "division_name" => $data[$i]->employeeDetails[$j]->position->division[0]->division_name,
+                                "section_id" => $data[$i]->employeeDetails[$j]->position->section_id,
+                                "section_name" => $data[$i]->employeeDetails[$j]->position->section[0]->section_name,
+                                "job_grade_id" => $data[$i]->employeeDetails[$j]->position->job_grade_id,
+                                "grade_name" => $data[$i]->employeeDetails[$j]->position->job_grade[0]->grade_name,
+                                "created_at" => $data[$i]->employeeDetails[$j]->position->created_at,
+                                "updated_at" => $data[$i]->employeeDetails[$j]->position->updated_at,
+
+                            ];
+                            $employee_compensation = EmployeeCompensation::create([
+                                'compensations_id' => $compensation->id,
+                                'employee' => json_encode($data[$i]->employeeDetails[$j]->employee),
+                                'position' => json_encode($descPosition),
+                                'eligible' => json_encode($data[$i]->employeeDetails[$j]->eligible)
+                            ]);
+
+                    }
                 }
 
             }
         
-        return response()->json([
-            'status_code' => 200,
-            'status' => 'success',
-            'message' => 'Compensation baru berhasil ditambahkan',
-            // 'data' => $employeeDetails,
-            'data' => $data,
-        ], 200);
+            return response()->json([
+                'status_code' => 200,
+                'status' => 'success',
+                'message' => 'Compensation baru berhasil ditambahkan',
+                'data' => $compensation,
+            ], 200);
+        } catch(Exception $error) {
+            return response()->json([
+                'status_code' => 500,
+                'status' => 'error',
+                'message' => 'Terjadi kesalahan',
+            ], 500);
+        }
+
+        
     }
     /**
      * Display the specified resource.
      */
     public function show(string $id)
     {
-        // try {
-            $compensations = Compensation::with('salary', 'company','employeeCompensations')->where('id',$id)->get();
 
-            // Transformasi data sesuai format yang Anda inginkan
-            $transformedCompensations = $compensations->map(function ($compensation) {
-                return [
-                    'id' => $compensation->id,
-                    'company_id' => $compensation->company->id,
-                    'company_name' => $compensation->company->company_name,
-                    'salary_id' => $compensation->salary_id,
-                    'salary_name' => $compensation->salary->salary_name,
-                    'compensation_name' => $compensation->compensation_name,
-                    'month' => date('m', strtotime($compensation->period)), // Ambil bulan dari kolom "period"
-                    'year' => date('Y', strtotime($compensation->period)),   // Ambil tahun dari kolom "period"
-                    'employee_compensations' => $compensation->employeeCompensations,
-                    'created_at' => $compensation->created_at,
-                    'updated_at' => $compensation->updated_at,
-                ];
-            });
+            $compensations = Compensation::with('company','employeeCompensations')->where('id',$id)->get();
 
-            return response()->json([
-                'status_code' => 200,
-                'status' => 'success',
-                'message' => 'Data Compensation berhasil diambil',
-                'data' => $transformedCompensations,
-            ]);
-        // } catch (Exception $error) {
-        //     return response()->json([
-        //         'status_code' => 404,
-        //         'status' => 'error',
-        //         'message' => 'Data tidak ditemukan',
-        //     ], 404);
-        // }
+            if($compensations->count() <= 0 ) {
+                return response()->json([
+                    'status_code' => 404,
+                    'status' => 'error',
+                    'message' => 'Data tidak ditemukan',
+                ], 404);
+            } else {
+                // Transformasi data sesuai format yang Anda inginkan
+            
+                $transformedCompensations = $compensations->map(function ($compensation) {
+                    // Inisialisasi array untuk menyimpan data yang diperlukan
+                    $employeeData = [];
+
+                    // Loop melalui data karyawan
+                    foreach ($compensation->employeeCompensations as $employee) {
+                        $employeeInfo = json_decode($employee['employee'], true);
+                        $positionInfo = json_decode($employee['position'], true);
+
+                        // Mengambil data yang diperlukan
+                        $idEmployeeCompensation = $employee->id;
+                        $idCompensations =  $employee->compensations_id;
+                        $idEmployee = $employeeInfo['id'];
+                        $nip = $employeeInfo['nip'];
+                        $fullname = $employeeInfo['fullname'];
+                        $idPosition = $positionInfo['id'];
+                        $positionName = $positionInfo['position_name'];
+
+                        // Menambahkan data ke array employeeData
+                        $employeeData[] = [
+                            'employee_compensation_id' => $idEmployeeCompensation,
+                            'compensations_id' => $idCompensations,
+                            'employee_id' => $idEmployee,
+                            'nip' => $nip,
+                            'fullname' => $fullname,
+                            'id_position' => $idPosition,
+                            'position_name' => $positionName,
+                        ];
+                    }
+
+                    $salary = json_decode($compensation->salary);
+        
+                    return [
+                        'employee_compensation_id' => $compensation->id,
+                        'company_id' => $compensation->company->id,
+                        'company_name' => $compensation->company->company_name,
+                        'salary_id' => $salary->id,
+                        'salary_name' => $salary->salary_name,
+                        'compensation_name' => $compensation->compensation_name,
+                        'month' => date('m', strtotime($compensation->period)), // Ambil bulan dari kolom "period"
+                        'year' => date('Y', strtotime($compensation->period)),   // Ambil tahun dari kolom "period"
+                        'employee_compensations' => $employeeData,
+                        'created_at' => $compensation->created_at,
+                        'updated_at' => $compensation->updated_at,
+                        
+                    ];
+                });
+
+                return response()->json([
+                    'status_code' => 200,
+                    'status' => 'success',
+                    'message' => 'Data Compensation berhasil diambil',
+                    'data' =>  $transformedCompensations,
+                ]);
+            }
+
+            
+
     }
 
     /**
@@ -168,33 +249,36 @@ class CompensationController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        $validation = $request->validate([
-            'company_id' => ['required'],
-            'salary_id' => ['required'],
-            'compensation_name' => ['required'],
-            'period' => ['required'],
+        $validation = $this->validate($request, [
+            'compensation_name' =>  ['required','string','unique:compensations,compensation_name,'.$id.''],
+            'month' => ['required','integer','min:1','max:12'],
+            'year' => ['required','integer','min:1900','max:'.date('Y')],
         ]);
 
         try {
-            $month = $request->input('month');
-            $year = $request->input('year');
-
 
             $compensation = Compensation::where('id', $id)->first();
 
-            $compensation->update([
-                'company_id' => $request->input('company_id'),
-                'salary_id' => $request->input('salary_id'),
-                'compensation_name' => $request->input('compensation_name'),
-                'period' => "$year-$month-01",
-            ]);
+            if($compensation->count() <= 0 ) {
+                return response()->json([
+                    'status_code' => 404,
+                    'status' => 'error',
+                    'message' => 'Data tidak ditemukan',
+                ], 404);
+            } else {
+           // Create Compensation
+                $compensation->update([  
+                    'compensation_name' =>  $request->compensation_name,
+                    'period' => ["month" => $request->month, "year" => $request->year]
+                ]);
 
-            return response()->json([
-                'status_code' => 200,
-                'status' => 'success',
-                'message' => 'Data Compensation berhasil diubah',
-                'data' => $compensation,
-            ], 200);
+                return response()->json([
+                    'status_code' => 200,
+                    'status' => 'success',
+                    'message' => 'Data Compensation berhasil diubah',
+                    'data' => $compensation,
+                ], 200);
+            }
         } catch (\Exception $e) {
 
             return response()->json([
@@ -212,37 +296,37 @@ class CompensationController extends Controller
     public function destroy(string $id)
     {
         try {
-            DB::transaction(function () use ($id)  {
-                // Hapus data dari tabel 'compensation'
-                Compensation::where('id', $id)->delete();
 
-                // Hapus data dari tabel 'employe_compensation' terlebih dahulu
-                // EmployeCompensation::where('compensation_id', 1)->delete();
-            }, 5);
+            $data = Compensation::findOrFail($id);
+            $data->delete();
+
+            return response()->json([
+                'status_code' => 200,
+                'status' => 'success',
+                'message' => 'Data compensation berhasil dihapus',
+                'data' => $data,
+            ]);
+
         } catch (\Exception $error) {
-            // if ($error->getCode() == '23000') {
-            //     return response()->json([
-            //         'status_code' => 500,
-            //         'status' => 'error',
-            //         'message' => 'Tidak dapat menghapus, Perusahaan masih digunakan tabel lain',
-            //     ]);
-            // }
+            if ($error->getCode() == '23000') {
+                return response()->json([
+                    'status_code' => 500,
+                    'status' => 'error',
+                    'message' => 'Tidak dapat menghapus, Perusahaan masih digunakan tabel lain',
+                ]);
+            }
 
             return response()->json([
                 'status_code' => 500,
                 'status' => 'error',
-                'message' => 'Terjadi kesalahan' . $error->getMessage(),
+                'message' => 'Terjadi kesalahan',
             ], 500);
         }
-
     }
 
-    public function company(string $id)
+    public function salary(string $id)
     {
-        $company = Company::where('id', $id)
-            ->with('salary')
-            ->withTrashed()
-            ->get();
+        $company = Salary::where('company_id', $id)->where('is_active', 1)->get();
 
         return response()->json([
             'status_code' => 200,

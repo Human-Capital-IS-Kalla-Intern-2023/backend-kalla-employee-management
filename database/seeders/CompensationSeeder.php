@@ -21,14 +21,16 @@ class CompensationSeeder extends Seeder
             $year = $faker->numberBetween(2000, 2023); // Tahun antara 2000 dan 2023
 
             // Buat array yang berisi bulan dan tahun
-            $period = ['month' => $month, 'year' => $year];
+            // $period = ['month' => $month, 'year' => $year];
 
             // Buat instance Compensation dengan data acak
             $compensation = new Compensation();
             $compensation->company_id = rand(1, 10);
             $compensation->salary_id = rand(1, 10);
             $compensation->compensation_name = $faker->date('m_Y');
-            $compensation->period = $period;
+            // $compensation->year = $year;
+            // $compensation->month = $month;
+            $compensation->period = "$year-$month-01";
 
             $compensation->save();
         }

@@ -11,5 +11,5 @@ class EmployeeCompensation extends Model
 
     protected $table = 'employee_compensations';
 
-    protected $fillable = ['compensations_id', 'employee', 'position', 'eligble'];
+    protected $fillable = ['compensations_id', 'employee', 'position', 'eligible'];
 }

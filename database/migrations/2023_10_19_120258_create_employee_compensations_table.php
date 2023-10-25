@@ -16,7 +16,7 @@ return new class extends Migration
             $table->foreignId('compensations_id')->constrained()->onDelete('cascade');;
             $table->json('employee');
             $table->json('position');
-            $table->json('eligble');
+            $table->json('eligible');
             $table->timestamps();
         });
     }

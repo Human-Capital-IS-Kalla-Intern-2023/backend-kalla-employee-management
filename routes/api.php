@@ -129,7 +129,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('compensations/{id}', [CompensationController::class, 'show']);
     Route::delete('compensations/{id}', [CompensationController::class, 'destroy']);
 
-    // Route::get('compensations/{id}', [CompensationController::class, 'company']);
+    Route::get('compensations/salary/{id}', [CompensationController::class, 'salary']);
 
 
 });

@@ -13,7 +13,7 @@ class Compensation extends Model
 
     protected $table = 'compensations';
 
-    protected $fillable = ['company_id', 'salary_id', 'compensation_name', 'period'];
+    protected $fillable = ['company_id', 'salary', 'compensation_name', 'period'];
 
     public function setPeriodAttribute($value)
     {
@@ -22,9 +22,14 @@ class Compensation extends Model
         $year = $value['year'];
 
         // Menggabungkan bulan dan tahun menjadi format yang sesuai, misalnya '2023-10-01'
-        $combinedPeriod = "$year-$month-01";
+       // Menggabungkan bulan dan tahun menjadi format yang sesuai, misalnya '2023-10-01'
+       $combinedPeriod = "$year-$month-01";
 
-        $this->attributes['period'] = $combinedPeriod;
+       $this->attributes['period'] = $combinedPeriod;
+
+        // if (is_string($value)) {
+        //     $this->attributes['period'] = $value;
+        // }
     }
 
     /**
@@ -51,5 +56,4 @@ class Compensation extends Model
     {
         return $this->hasMany(EmployeeCompensation::class, 'compensations_id',  'id');
     }
-
 }
