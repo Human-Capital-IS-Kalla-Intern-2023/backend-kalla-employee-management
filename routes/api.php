@@ -130,6 +130,11 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::delete('compensations/{id}', [CompensationController::class, 'destroy']);
 
     Route::get('compensations/salary/{id}', [CompensationController::class, 'salary']);
+    Route::get('compensations/detail-employee/{id}', [CompensationController::class, 'detailEmployee']);
+    Route::get('compensations/edit-employee/{id}', [CompensationController::class, 'editEmployee']);
+    Route::put('compensations/update-employee/{id}', [CompensationController::class, 'updateEmployee']);
+    Route::get('compensations/print-employee/{id}', [CompensationController::class, 'printEmployee']);
+
 
 
 });

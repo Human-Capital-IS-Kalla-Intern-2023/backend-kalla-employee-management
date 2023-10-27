@@ -17,36 +17,239 @@ class DivisionSeeder extends Seeder
 
         // Division::factory(10)->create();
         $division = [
+            // [
+            //     'division_name' => 'CICT',
+            // ],
+            // [
+            //     'division_name' => 'Produksi',
+            // ],
+            // [
+            //     'division_name' => 'Database',
+            // ],
+            // [
+            //     'division_name' => 'Marketing',
+            // ],
+            // [
+            //     'division_name' => 'HCBP',
+            // ],
+            // [
+            //     'division_name' => 'Umum',
+            // ],
+            // [
+            //     'division_name' => 'Personalia',
+            // ],
+            // [
+            //     'division_name' => 'Keuangan',
+            // ],
+            // [
+            //     'division_name' => 'Pabrik',
+            // ],
+            // [
+            //     'division_name' => 'Perencanaan',
+            // ],
+
+
             [
-                'division_name' => 'CICT',
+                "division_name" => "Accounting", 'created_at' => date('Y-m-d H:i:s', time()),
+                'updated_at' => date('Y-m-d H:i:s', time())
             ],
             [
-                'division_name' => 'Produksi',
+                "division_name" => "Human Resources", 'created_at' => date('Y-m-d H:i:s', time()),
+                'updated_at' => date('Y-m-d H:i:s', time())
             ],
             [
-                'division_name' => 'Database',
+                "division_name" => "Support", 'created_at' => date('Y-m-d H:i:s', time()),
+                'updated_at' => date('Y-m-d H:i:s', time())
             ],
             [
-                'division_name' => 'Marketing',
+                "division_name" => "Marketing", 'created_at' => date('Y-m-d H:i:s', time()),
+                'updated_at' => date('Y-m-d H:i:s', time())
             ],
             [
-                'division_name' => 'HCBP',
+                "division_name" => "Legal", 'created_at' => date('Y-m-d H:i:s', time()),
+                'updated_at' => date('Y-m-d H:i:s', time())
             ],
             [
-                'division_name' => 'Umum',
+                "division_name" => "Product Management", 'created_at' => date('Y-m-d H:i:s', time()),
+                'updated_at' => date('Y-m-d H:i:s', time())
             ],
             [
-                'division_name' => 'Personalia',
+                "division_name" => "Human Resources", 'created_at' => date('Y-m-d H:i:s', time()),
+                'updated_at' => date('Y-m-d H:i:s', time())
             ],
             [
-                'division_name' => 'Keuangan',
+                "division_name" => "Engineering", 'created_at' => date('Y-m-d H:i:s', time()),
+                'updated_at' => date('Y-m-d H:i:s', time())
             ],
             [
-                'division_name' => 'Pabrik',
+                "division_name" => "Engineering", 'created_at' => date('Y-m-d H:i:s', time()),
+                'updated_at' => date('Y-m-d H:i:s', time())
             ],
             [
-                'division_name' => 'Perencanaan',
+                "division_name" => "Human Resources", 'created_at' => date('Y-m-d H:i:s', time()),
+                'updated_at' => date('Y-m-d H:i:s', time())
             ],
+            [
+                "division_name" => "Services", 'created_at' => date('Y-m-d H:i:s', time()),
+                'updated_at' => date('Y-m-d H:i:s', time())
+            ],
+            [
+                "division_name" => "Services", 'created_at' => date('Y-m-d H:i:s', time()),
+                'updated_at' => date('Y-m-d H:i:s', time())
+            ],
+            [
+                "division_name" => "Legal", 'created_at' => date('Y-m-d H:i:s', time()),
+                'updated_at' => date('Y-m-d H:i:s', time())
+            ],
+            [
+                "division_name" => "Training", 'created_at' => date('Y-m-d H:i:s', time()),
+                'updated_at' => date('Y-m-d H:i:s', time())
+            ],
+            [
+                "division_name" => "Accounting", 'created_at' => date('Y-m-d H:i:s', time()),
+                'updated_at' => date('Y-m-d H:i:s', time())
+            ],
+            [
+                "division_name" => "Marketing", 'created_at' => date('Y-m-d H:i:s', time()),
+                'updated_at' => date('Y-m-d H:i:s', time())
+            ],
+            [
+                "division_name" => "Training", 'created_at' => date('Y-m-d H:i:s', time()),
+                'updated_at' => date('Y-m-d H:i:s', time())
+            ],
+            [
+                "division_name" => "Sales", 'created_at' => date('Y-m-d H:i:s', time()),
+                'updated_at' => date('Y-m-d H:i:s', time())
+            ],
+            [
+                "division_name" => "Research and Development", 'created_at' => date('Y-m-d H:i:s', time()),
+                'updated_at' => date('Y-m-d H:i:s', time())
+            ],
+            [
+                "division_name" => "Services", 'created_at' => date('Y-m-d H:i:s', time()),
+                'updated_at' => date('Y-m-d H:i:s', time())
+            ],
+            [
+                "division_name" => "Services", 'created_at' => date('Y-m-d H:i:s', time()),
+                'updated_at' => date('Y-m-d H:i:s', time())
+            ],
+            [
+                "division_name" => "Business Development", 'created_at' => date('Y-m-d H:i:s', time()),
+                'updated_at' => date('Y-m-d H:i:s', time())
+            ],
+            [
+                "division_name" => "Engineering", 'created_at' => date('Y-m-d H:i:s', time()),
+                'updated_at' => date('Y-m-d H:i:s', time())
+            ],
+            [
+                "division_name" => "Product Management", 'created_at' => date('Y-m-d H:i:s', time()),
+                'updated_at' => date('Y-m-d H:i:s', time())
+            ],
+            [
+                "division_name" => "Product Management", 'created_at' => date('Y-m-d H:i:s', time()),
+                'updated_at' => date('Y-m-d H:i:s', time())
+            ],
+            [
+                "division_name" => "Business Development", 'created_at' => date('Y-m-d H:i:s', time()),
+                'updated_at' => date('Y-m-d H:i:s', time())
+            ],
+            [
+                "division_name" => "Training", 'created_at' => date('Y-m-d H:i:s', time()),
+                'updated_at' => date('Y-m-d H:i:s', time())
+            ],
+            [
+                "division_name" => "Engineering", 'created_at' => date('Y-m-d H:i:s', time()),
+                'updated_at' => date('Y-m-d H:i:s', time())
+            ],
+            [
+                "division_name" => "Services", 'created_at' => date('Y-m-d H:i:s', time()),
+                'updated_at' => date('Y-m-d H:i:s', time())
+            ],
+            [
+                "division_name" => "Sales", 'created_at' => date('Y-m-d H:i:s', time()),
+                'updated_at' => date('Y-m-d H:i:s', time())
+            ],
+            [
+                "division_name" => "Research and Development", 'created_at' => date('Y-m-d H:i:s', time()),
+                'updated_at' => date('Y-m-d H:i:s', time())
+            ],
+            [
+                "division_name" => "Legal", 'created_at' => date('Y-m-d H:i:s', time()),
+                'updated_at' => date('Y-m-d H:i:s', time())
+            ],
+            [
+                "division_name" => "Product Management", 'created_at' => date('Y-m-d H:i:s', time()),
+                'updated_at' => date('Y-m-d H:i:s', time())
+            ],
+            [
+                "division_name" => "Human Resources", 'created_at' => date('Y-m-d H:i:s', time()),
+                'updated_at' => date('Y-m-d H:i:s', time())
+            ],
+            [
+                "division_name" => "Engineering", 'created_at' => date('Y-m-d H:i:s', time()),
+                'updated_at' => date('Y-m-d H:i:s', time())
+            ],
+            [
+                "division_name" => "Support", 'created_at' => date('Y-m-d H:i:s', time()),
+                'updated_at' => date('Y-m-d H:i:s', time())
+            ],
+            [
+                "division_name" => "Research and Development", 'created_at' => date('Y-m-d H:i:s', time()),
+                'updated_at' => date('Y-m-d H:i:s', time())
+            ],
+            [
+                "division_name" => "Support", 'created_at' => date('Y-m-d H:i:s', time()),
+                'updated_at' => date('Y-m-d H:i:s', time())
+            ],
+            [
+                "division_name" => "Research and Development", 'created_at' => date('Y-m-d H:i:s', time()),
+                'updated_at' => date('Y-m-d H:i:s', time())
+            ],
+            [
+                "division_name" => "Sales", 'created_at' => date('Y-m-d H:i:s', time()),
+                'updated_at' => date('Y-m-d H:i:s', time())
+            ],
+            [
+                "division_name" => "Human Resources", 'created_at' => date('Y-m-d H:i:s', time()),
+                'updated_at' => date('Y-m-d H:i:s', time())
+            ],
+            [
+                "division_name" => "Services", 'created_at' => date('Y-m-d H:i:s', time()),
+                'updated_at' => date('Y-m-d H:i:s', time())
+            ],
+            [
+                "division_name" => "Sales", 'created_at' => date('Y-m-d H:i:s', time()),
+                'updated_at' => date('Y-m-d H:i:s', time())
+            ],
+            [
+                "division_name" => "Training", 'created_at' => date('Y-m-d H:i:s', time()),
+                'updated_at' => date('Y-m-d H:i:s', time())
+            ],
+            [
+                "division_name" => "Support", 'created_at' => date('Y-m-d H:i:s', time()),
+                'updated_at' => date('Y-m-d H:i:s', time())
+            ],
+            [
+                "division_name" => "Business Development", 'created_at' => date('Y-m-d H:i:s', time()),
+                'updated_at' => date('Y-m-d H:i:s', time())
+            ],
+            [
+                "division_name" => "Services", 'created_at' => date('Y-m-d H:i:s', time()),
+                'updated_at' => date('Y-m-d H:i:s', time())
+            ],
+            [
+                "division_name" => "Services", 'created_at' => date('Y-m-d H:i:s', time()),
+                'updated_at' => date('Y-m-d H:i:s', time())
+            ],
+            [
+                "division_name" => "Product Management", 'created_at' => date('Y-m-d H:i:s', time()),
+                'updated_at' => date('Y-m-d H:i:s', time())
+            ],
+            [
+                "division_name" => "Research and Development", 'created_at' => date('Y-m-d H:i:s', time()),
+                'updated_at' => date('Y-m-d H:i:s', time())
+            ]
+
         ];
 
         Division::insert($division);
