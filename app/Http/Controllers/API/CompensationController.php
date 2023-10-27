@@ -81,18 +81,18 @@ class CompensationController extends Controller
     {
 
         $validation = $this->validate($request, [
-            'company_id' => ['required','exists:companies,id'],
-            'salary_id' => ['required','exists:salaries,id'],
-            'compensation_name' =>  ['required','string','unique:compensations,compensation_name','max:255'],
-            'month' => ['required','integer','min:1','max:12'],
-            'year' => ['required','integer','min:1900','max:'.date('Y')],
+            'company_id' => ['required', 'exists:companies,id'],
+            'salary_id' => ['required', 'exists:salaries,id'],
+            'compensation_name' =>  ['required', 'string', 'unique:compensations,compensation_name', 'max:255'],
+            'month' => ['required', 'integer', 'min:1', 'max:12'],
+            'year' => ['required', 'integer', 'min:1900', 'max:' . date('Y')],
         ]);
 
         try {
             $salary = Salary::findOrFail($request->salary_id);
 
             // Create Compensation
-            $compensation = Compensation::create([  
+            $compensation = Compensation::create([
                 'company_id' => $request->company_id,
                 'salary' => json_encode($salary),
                 'compensation_name' =>  $request->compensation_name,
@@ -101,21 +101,21 @@ class CompensationController extends Controller
 
             // GetData Position
             $data = Position::with(
-                    'employeeDetails',
-                    'employeeDetails.position',
-                    'employeeDetails.position.company',
-                    'employeeDetails.position.directorate',
-                    'employeeDetails.position.division',
-                    'employeeDetails.position.section',
-                    'employeeDetails.position.job_grade',
-                    'employeeDetails.employee',
-                    'employeeDetails.eligible'
-                )->where('company_id', $request->company_id)->get();
+                'employeeDetails',
+                'employeeDetails.position',
+                'employeeDetails.position.company',
+                'employeeDetails.position.directorate',
+                'employeeDetails.position.division',
+                'employeeDetails.position.section',
+                'employeeDetails.position.job_grade',
+                'employeeDetails.employee',
+                'employeeDetails.eligible'
+            )->where('company_id', $request->company_id)->get();
 
-            
-            for ($i=0; $i < $data->count() ; $i++) { 
-                for ($j=0; $j < $data[$i]->employeeDetails->count(); $j++) { 
-                    if($data[$i]->employeeDetails[$j]->eligible != null) {
+
+            for ($i = 0; $i < $data->count(); $i++) {
+                for ($j = 0; $j < $data[$i]->employeeDetails->count(); $j++) {
+                    if ($data[$i]->employeeDetails[$j]->eligible != null) {
                         //  Transformasi data sesuai format yang Anda inginkan
                             $descPosition =  [
                                 "id" => $data[$i]->employeeDetails[$j]->position->id,
@@ -135,34 +135,30 @@ class CompensationController extends Controller
                                 "created_at" => $data[$i]->employeeDetails[$j]->position->created_at,
                                 "updated_at" => $data[$i]->employeeDetails[$j]->position->updated_at,
 
-                            ];
-                            $employee_compensation = EmployeeCompensation::create([
-                                'compensations_id' => $compensation->id,
-                                'employee' => json_encode($data[$i]->employeeDetails[$j]->employee),
-                                'position' => json_encode($descPosition),
-                                'eligible' => json_encode($data[$i]->employeeDetails[$j]->eligible)
-                            ]);
-
+                        ];
+                        $employee_compensation = EmployeeCompensation::create([
+                            'compensations_id' => $compensation->id,
+                            'employee' => json_encode($data[$i]->employeeDetails[$j]->employee),
+                            'position' => json_encode($descPosition),
+                            'eligible' => json_encode($data[$i]->employeeDetails[$j]->eligible)
+                        ]);
                     }
                 }
-
             }
-        
+
             return response()->json([
                 'status_code' => 200,
                 'status' => 'success',
                 'message' => 'Compensation baru berhasil ditambahkan',
                 'data' => $compensation,
             ], 200);
-        } catch(Exception $error) {
+        } catch (Exception $error) {
             return response()->json([
                 'status_code' => 500,
                 'status' => 'error',
                 'message' => 'Terjadi kesalahan',
             ], 500);
         }
-
-        
     }
     /**
      * Display the specified resource.
@@ -170,75 +166,72 @@ class CompensationController extends Controller
     public function show(string $id)
     {
 
-            $compensations = Compensation::with('company','employeeCompensations')->where('id',$id)->get();
+        $compensations = Compensation::with('company', 'employeeCompensations')->where('id', $id)->get();
 
-            if($compensations->count() <= 0 ) {
-                return response()->json([
-                    'status_code' => 404,
-                    'status' => 'error',
-                    'message' => 'Data tidak ditemukan',
-                ], 404);
-            } else {
-                // Transformasi data sesuai format yang Anda inginkan
-            
-                $transformedCompensations = $compensations->map(function ($compensation) {
-                    // Inisialisasi array untuk menyimpan data yang diperlukan
-                    $employeeData = [];
+        if ($compensations->count() <= 0) {
+            return response()->json([
+                'status_code' => 404,
+                'status' => 'error',
+                'message' => 'Data tidak ditemukan',
+            ], 404);
+        } else {
+            // Transformasi data sesuai format yang Anda inginkan
 
-                    // Loop melalui data karyawan
-                    foreach ($compensation->employeeCompensations as $employee) {
-                        $employeeInfo = json_decode($employee['employee'], true);
-                        $positionInfo = json_decode($employee['position'], true);
+            $transformedCompensations = $compensations->map(function ($compensation) {
+                // Inisialisasi array untuk menyimpan data yang diperlukan
+                $employeeData = [];
 
-                        // Mengambil data yang diperlukan
-                        $idEmployeeCompensation = $employee->id;
-                        $idCompensations =  $employee->compensations_id;
-                        $idEmployee = $employeeInfo['id'];
-                        $nip = $employeeInfo['nip'];
-                        $fullname = $employeeInfo['fullname'];
-                        $idPosition = $positionInfo['id'];
-                        $positionName = $positionInfo['position_name'];
+                // Loop melalui data karyawan
+                foreach ($compensation->employeeCompensations as $employee) {
+                    $employeeInfo = json_decode($employee['employee'], true);
+                    $positionInfo = json_decode($employee['position'], true);
 
-                        // Menambahkan data ke array employeeData
-                        $employeeData[] = [
-                            'employee_compensation_id' => $idEmployeeCompensation,
-                            'compensations_id' => $idCompensations,
-                            'employee_id' => $idEmployee,
-                            'nip' => $nip,
-                            'fullname' => $fullname,
-                            'id_position' => $idPosition,
-                            'position_name' => $positionName,
-                        ];
-                    }
+                    // Mengambil data yang diperlukan
+                    $idEmployeeCompensation = $employee->id;
+                    $idCompensations =  $employee->compensations_id;
+                    $idEmployee = $employeeInfo['id'];
+                    $nip = $employeeInfo['nip'];
+                    $fullname = $employeeInfo['fullname'];
+                    $idPosition = $positionInfo['id'];
+                    $positionName = $positionInfo['position_name'];
 
-                    $salary = json_decode($compensation->salary);
-        
-                    return [
-                        'employee_compensation_id' => $compensation->id,
-                        'company_id' => $compensation->company->id,
-                        'company_name' => $compensation->company->company_name,
-                        'salary_id' => $salary->id,
-                        'salary_name' => $salary->salary_name,
-                        'compensation_name' => $compensation->compensation_name,
-                        'month' => date('m', strtotime($compensation->period)), // Ambil bulan dari kolom "period"
-                        'year' => date('Y', strtotime($compensation->period)),   // Ambil tahun dari kolom "period"
-                        'employee_compensations' => $employeeData,
-                        'created_at' => $compensation->created_at,
-                        'updated_at' => $compensation->updated_at,
-                        
+                    // Menambahkan data ke array employeeData
+                    $employeeData[] = [
+                        'employee_compensation_id' => $idEmployeeCompensation,
+                        'compensations_id' => $idCompensations,
+                        'employee_id' => $idEmployee,
+                        'nip' => $nip,
+                        'fullname' => $fullname,
+                        'id_position' => $idPosition,
+                        'position_name' => $positionName,
                     ];
-                });
+                }
 
-                return response()->json([
-                    'status_code' => 200,
-                    'status' => 'success',
-                    'message' => 'Data Compensation berhasil diambil',
-                    'data' =>  $transformedCompensations,
-                ]);
-            }
+                $salary = json_decode($compensation->salary);
 
-            
+                return [
+                    'employee_compensation_id' => $compensation->id,
+                    'company_id' => $compensation->company->id,
+                    'company_name' => $compensation->company->company_name,
+                    'salary_id' => $salary->id,
+                    'salary_name' => $salary->salary_name,
+                    'compensation_name' => $compensation->compensation_name,
+                    'month' => date('m', strtotime($compensation->period)), // Ambil bulan dari kolom "period"
+                    'year' => date('Y', strtotime($compensation->period)),   // Ambil tahun dari kolom "period"
+                    'employee_compensations' => $employeeData,
+                    'created_at' => $compensation->created_at,
+                    'updated_at' => $compensation->updated_at,
 
+                ];
+            });
+
+            return response()->json([
+                'status_code' => 200,
+                'status' => 'success',
+                'message' => 'Data Compensation berhasil diambil',
+                'data' =>  $transformedCompensations,
+            ]);
+        }
     }
 
     /**
@@ -255,24 +248,24 @@ class CompensationController extends Controller
     public function update(Request $request, string $id)
     {
         $validation = $this->validate($request, [
-            'compensation_name' =>  ['required','string','unique:compensations,compensation_name,'.$id.''],
-            'month' => ['required','integer','min:1','max:12'],
-            'year' => ['required','integer','min:1900','max:'.date('Y')],
+            'compensation_name' =>  ['required', 'string', 'unique:compensations,compensation_name,' . $id . ''],
+            'month' => ['required', 'integer', 'min:1', 'max:12'],
+            'year' => ['required', 'integer', 'min:1900', 'max:' . date('Y')],
         ]);
 
         try {
 
             $compensation = Compensation::where('id', $id)->first();
 
-            if($compensation->count() <= 0 ) {
+            if ($compensation->count() <= 0) {
                 return response()->json([
                     'status_code' => 404,
                     'status' => 'error',
                     'message' => 'Data tidak ditemukan',
                 ], 404);
             } else {
-           // Create Compensation
-                $compensation->update([  
+                // Create Compensation
+                $compensation->update([
                     'compensation_name' =>  $request->compensation_name,
                     'period' => ["month" => $request->month, "year" => $request->year]
                 ]);
@@ -311,7 +304,6 @@ class CompensationController extends Controller
                 'message' => 'Data compensation berhasil dihapus',
                 'data' => $data,
             ]);
-
         } catch (\Exception $error) {
             if ($error->getCode() == '23000') {
                 return response()->json([
@@ -341,160 +333,161 @@ class CompensationController extends Controller
         ]);
     }
 
-    public function detailEmployee(String $id) {
+    public function detailEmployee(String $id)
+    {
         // try {
-            $compensations = EmployeeCompensation::where('id',$id)->limit(1)->get();
+        $compensations = EmployeeCompensation::where('id', $id)->limit(1)->get();
 
-            if($compensations->count() <= 0 ) {
-                return response()->json([
-                    'status_code' => 404,
-                    'status' => 'error',
-                    'message' => 'Data tidak ditemukan',
-                ], 404);
-            } else {
-                
-                // Transformasi data sesuai format yang Anda inginkan
+        if ($compensations->count() <= 0) {
+            return response()->json([
+                'status_code' => 404,
+                'status' => 'error',
+                'message' => 'Data tidak ditemukan',
+            ], 404);
+        } else {
 
-            
-                $transformedCompensations = $compensations->map(function ($compensation) {
-
-                    $employeeInfo = json_decode($compensation['employee']);
-                    $positionInfo = json_decode($compensation['position']);
-                    $eligibleInfo = json_decode($compensation['eligible']);
+            // Transformasi data sesuai format yang Anda inginkan
 
 
+            $transformedCompensations = $compensations->map(function ($compensation) {
 
-                    // ambil data dari tabel salary, salarydetail
-                    $querySalaryComponents = Salary::with(['salaryDetail'])->where('company_id', $positionInfo ->company_id)->where('is_active', 1)->get();
+                $employeeInfo = json_decode($compensation['employee']);
+                $positionInfo = json_decode($compensation['position']);
+                $eligibleInfo = json_decode($compensation['eligible']);
 
-                    // format data querySalaryComponents
-                    $salaryDetails = $querySalaryComponents->flatMap(function ($salary) {
-                        return $salary->salaryDetail->map(function ($detail) use ($salary) {
-                            $detail->salary_name = $salary->salary_name;
-                            return $detail;
-                        });
+
+
+                // ambil data dari tabel salary, salarydetail
+                $querySalaryComponents = Salary::with(['salaryDetail'])->where('company_id', $positionInfo->company_id)->where('is_active', 1)->get();
+
+                // format data querySalaryComponents
+                $salaryDetails = $querySalaryComponents->flatMap(function ($salary) {
+                    return $salary->salaryDetail->map(function ($detail) use ($salary) {
+                        $detail->salary_name = $salary->salary_name;
+                        return $detail;
                     });
-
-
-                    // Destruktur Data
-                    $destructureSalaryDetail = [];
-                    foreach ($salaryDetails as $item) {
-                        $checkData = null;
-    
-                        if (is_null($item->component_name)) {
-                            $checkData = SalaryComponent::where('id', $item->salary_component_id)->get()->first();
-                        }
-    
-                        if ($item->is_active) {
-                            $salaryComponent = [
-                                "component_id" => $item->id,
-                                "order" =>  $item->order,
-                                "salary_component_id" => $item->salary_component_id,
-                                "component_name" => $checkData ? $checkData->component_name : $item->component_name,
-                                "type" =>  $item->type,
-                                "is_hide" =>  $item->is_hide,
-                                "is_edit" =>  $item->is_edit,
-                                "is_active" =>  $item->is_active,
-                                "salary" => $item->salary_name,
-                            ];
-    
-                            $destructureSalaryDetail[] = $salaryComponent;
-                        }
-                    }
-
-                    // Mengambil Hanya unik data
-                    $uniqueSalaryDetails = [];
-
-                    $seen = [];
-    
-                    foreach ($destructureSalaryDetail as $item) {
-                        $key = $item['component_name'];
-    
-                        // Jika salary_component_id tidak null, maka tambahkan ke hasil jika belum ada
-                        if ($item['salary_component_id'] !== null) {
-                            if (!isset($seen[$key])) {
-                                $uniqueSalaryDetails[] = $item;
-                                $seen[$key] = true;
-                            }
-                        }
-                        // Jika salary_component_id null, maka tambahkan ke hasil jika sudah ada atau jika salary berbeda
-                        else {
-                            if (!isset($seen[$key]) || $seen[$key] !== $item['salary']) {
-                                $uniqueSalaryDetails[] = $item;
-                                $seen[$key] = $item['salary'];
-                            }
-                        }
-                    }
-                    $fixed_pay = 0;
-                    $deductions = 0;
-                    // Array Untuk Set Status
-                    $result = [];
-                    // Loop melalui elemen-elemen array1
-                    foreach ( $uniqueSalaryDetails  as $item1) {
-                        $nominal = 0;
-
-
-                        foreach (json_decode($eligibleInfo->salary_detail) as $item2) {
-                            if ($item1['component_name'] === $item2->component_name && $item1['type'] === $item2->type)  {
-                                // && $item1['salary'] === $item2->salary)
-                                if($item2->nominal != 0) {
-                                    $nominal = $item2->nominal;
-                                    if($item2->type == "deductions") {
-                                        $deductions+= $nominal;
-                                    } else {
-                                        $fixed_pay += $nominal;
-                                    }
-                                }
-                                break;
-                            }
-                        }
-        
-
-                        $result[] = [
-                            'component_id' => $item1["component_id"],
-                            'salary_component_id' => $item1["salary_component_id"],
-                            'component_name' => $item1["component_name"],
-                            'type' => $item1['type'],
-                            'order' => $item1['order'],
-                            'is_hide' => $item1['is_hide'],
-                            'is_edit' => $item1['is_edit'],
-                            'is_active' => $item1['is_active'],
-                            "nominal" => $nominal,
-                            "salary" => $item1["salary"],
-                        ];
-                    }
-
-                    return [
-                        'employee_compensation_id' =>  $compensation->id,
-                        'employee_id' =>  $employeeInfo->id,
-                        'fullname' => $employeeInfo->fullname,
-                        'nip' => $employeeInfo->nip,
-                        'position_id' => $positionInfo->id,
-                        'position_name' => $positionInfo->position_name,
-                        'salary_components' => $result,
-                        'fixed_pay' => $fixed_pay,
-                        'deductions' => $deductions,
-                        'created_at' => $compensation->created_at,
-                        'updated_at' => $compensation->updated_at,
-                        
-                    ];
                 });
 
-                return response()->json([
-                    'status_code' => 200,
-                    'status' => 'success',
-                    'message' => 'Data Compensation berhasil diambil',
-                    'data' =>  $transformedCompensations,
-                ]);
-            }
 
-            // return response()->json([
-            //     'status_code' => 200,
-            //     'status' => 'success',
-            //     'message' => 'Data Gaji Company berhasil diambil',
-            //     'data' => $employeeCompensation,
-            // ]);
-            
+                // Destruktur Data
+                $destructureSalaryDetail = [];
+                foreach ($salaryDetails as $item) {
+                    $checkData = null;
+
+                    if (is_null($item->component_name)) {
+                        $checkData = SalaryComponent::where('id', $item->salary_component_id)->get()->first();
+                    }
+
+                    if ($item->is_active) {
+                        $salaryComponent = [
+                            "component_id" => $item->id,
+                            "order" =>  $item->order,
+                            "salary_component_id" => $item->salary_component_id,
+                            "component_name" => $checkData ? $checkData->component_name : $item->component_name,
+                            "type" =>  $item->type,
+                            "is_hide" =>  $item->is_hide,
+                            "is_edit" =>  $item->is_edit,
+                            "is_active" =>  $item->is_active,
+                            "salary" => $item->salary_name,
+                        ];
+
+                        $destructureSalaryDetail[] = $salaryComponent;
+                    }
+                }
+
+                // Mengambil Hanya unik data
+                $uniqueSalaryDetails = [];
+
+                $seen = [];
+
+                foreach ($destructureSalaryDetail as $item) {
+                    $key = $item['component_name'];
+
+                    // Jika salary_component_id tidak null, maka tambahkan ke hasil jika belum ada
+                    if ($item['salary_component_id'] !== null) {
+                        if (!isset($seen[$key])) {
+                            $uniqueSalaryDetails[] = $item;
+                            $seen[$key] = true;
+                        }
+                    }
+                    // Jika salary_component_id null, maka tambahkan ke hasil jika sudah ada atau jika salary berbeda
+                    else {
+                        if (!isset($seen[$key]) || $seen[$key] !== $item['salary']) {
+                            $uniqueSalaryDetails[] = $item;
+                            $seen[$key] = $item['salary'];
+                        }
+                    }
+                }
+                $fixed_pay = 0;
+                $deductions = 0;
+                // Array Untuk Set Status
+                $result = [];
+                // Loop melalui elemen-elemen array1
+                foreach ($uniqueSalaryDetails  as $item1) {
+                    $nominal = 0;
+
+
+                    foreach (json_decode($eligibleInfo->salary_detail) as $item2) {
+                        if ($item1['component_name'] === $item2->component_name && $item1['type'] === $item2->type) {
+                            // && $item1['salary'] === $item2->salary)
+                            if ($item2->nominal != 0) {
+                                $nominal = $item2->nominal;
+                                if ($item2->type == "deductions") {
+                                    $deductions += $nominal;
+                                } else {
+                                    $fixed_pay += $nominal;
+                                }
+                            }
+                            break;
+                        }
+                    }
+
+
+                    $result[] = [
+                        'component_id' => $item1["component_id"],
+                        'salary_component_id' => $item1["salary_component_id"],
+                        'component_name' => $item1["component_name"],
+                        'type' => $item1['type'],
+                        'order' => $item1['order'],
+                        'is_hide' => $item1['is_hide'],
+                        'is_edit' => $item1['is_edit'],
+                        'is_active' => $item1['is_active'],
+                        "nominal" => $nominal,
+                        "salary" => $item1["salary"],
+                    ];
+                }
+
+                return [
+                    'employee_compensation_id' =>  $compensation->id,
+                    'employee_id' =>  $employeeInfo->id,
+                    'fullname' => $employeeInfo->fullname,
+                    'nip' => $employeeInfo->nip,
+                    'position_id' => $positionInfo->id,
+                    'position_name' => $positionInfo->position_name,
+                    'salary_components' => $result,
+                    'fixed_pay' => $fixed_pay,
+                    'deductions' => $deductions,
+                    'created_at' => $compensation->created_at,
+                    'updated_at' => $compensation->updated_at,
+
+                ];
+            });
+
+            return response()->json([
+                'status_code' => 200,
+                'status' => 'success',
+                'message' => 'Data Compensation berhasil diambil',
+                'data' =>  $transformedCompensations,
+            ]);
+        }
+
+        // return response()->json([
+        //     'status_code' => 200,
+        //     'status' => 'success',
+        //     'message' => 'Data Gaji Company berhasil diambil',
+        //     'data' => $employeeCompensation,
+        // ]);
+
         // } catch (Exception $error) {
         //     return response()->json([
         //         'status_code' => 500,
@@ -504,179 +497,315 @@ class CompensationController extends Controller
         // }
     }
 
-    public function editEmployee(String $id) {
-        return 'ok';
-    }
+    public function editEmployee(Request $request, String $id)
+    {
+        // return 'ok';
+        $request->validate([
+            'nominal' => 'numeric',
+        ]);
 
-    public function updateEmployee(Request $request, String $id) {
-        return 'ok';
-    }
+        $compensations = EmployeeCompensation::where('id', $id)->limit(1)->get();
 
-    public function printEmployee(String $id) {
-        // try {
-            $compensations = EmployeeCompensation::where('id',$id)->limit(1)->get();
+        if (!$compensations) {
+            return response()->json([
+                'status_code' => 404,
+                'status' => 'error',
+                'message' => 'Data tidak ditemukan',
+            ], 404);
+        }
+        $compensations->nominal = $request->input('nominal');
 
-            if($compensations->count() <= 0 ) {
-                return response()->json([
-                    'status_code' => 404,
-                    'status' => 'error',
-                    'message' => 'Data tidak ditemukan',
-                ], 404);
-            } else {
-                
-                // Transformasi data sesuai format yang Anda inginkan
+        // simpan perubahan
+        $compensations->save();
 
-            
-                $transformedCompensations = $compensations->map(function ($compensation) {
+        $transformedCompensations = $compensations->map(function ($compensation) {
 
-                    $employeeInfo = json_decode($compensation['employee']);
-                    $positionInfo = json_decode($compensation['position']);
-                    $eligibleInfo = json_decode($compensation['eligible']);
+            $employeeInfo = json_decode($compensation['employee']);
+            $positionInfo = json_decode($compensation['position']);
+            $eligibleInfo = json_decode($compensation['eligible']);
 
 
 
-                    // ambil data dari tabel salary, salarydetail
-                    $querySalaryComponents = Salary::with(['salaryDetail'])->where('company_id', $positionInfo ->company_id)->where('is_active', 1)->get();
+            // ambil data dari tabel salary, salarydetail
+            $querySalaryComponents = Salary::with(['salaryDetail'])->where('company_id', $positionInfo->company_id)->where('is_active', 1)->get();
 
-                    // format data querySalaryComponents
-                    $salaryDetails = $querySalaryComponents->flatMap(function ($salary) {
-                        return $salary->salaryDetail->map(function ($detail) use ($salary) {
-                            $detail->salary_name = $salary->salary_name;
-                            return $detail;
-                        });
-                    });
-
-
-                    // Destruktur Data
-                    $destructureSalaryDetail = [];
-                    foreach ($salaryDetails as $item) {
-                        $checkData = null;
-    
-                        if (is_null($item->component_name)) {
-                            $checkData = SalaryComponent::where('id', $item->salary_component_id)->get()->first();
-                        }
-    
-                        if ($item->is_active) {
-                            $salaryComponent = [
-                                "component_id" => $item->id,
-                                "order" =>  $item->order,
-                                "salary_component_id" => $item->salary_component_id,
-                                "component_name" => $checkData ? $checkData->component_name : $item->component_name,
-                                "type" =>  $item->type,
-                                "is_hide" =>  $item->is_hide,
-                                "is_edit" =>  $item->is_edit,
-                                "is_active" =>  $item->is_active,
-                                "salary" => $item->salary_name,
-                            ];
-    
-                            $destructureSalaryDetail[] = $salaryComponent;
-                        }
-                    }
-
-                    // Mengambil Hanya unik data
-                    $uniqueSalaryDetails = [];
-
-                    $seen = [];
-    
-                    foreach ($destructureSalaryDetail as $item) {
-                        $key = $item['component_name'];
-    
-                        // Jika salary_component_id tidak null, maka tambahkan ke hasil jika belum ada
-                        if ($item['salary_component_id'] !== null) {
-                            if (!isset($seen[$key])) {
-                                $uniqueSalaryDetails[] = $item;
-                                $seen[$key] = true;
-                            }
-                        }
-                        // Jika salary_component_id null, maka tambahkan ke hasil jika sudah ada atau jika salary berbeda
-                        else {
-                            if (!isset($seen[$key]) || $seen[$key] !== $item['salary']) {
-                                $uniqueSalaryDetails[] = $item;
-                                $seen[$key] = $item['salary'];
-                            }
-                        }
-                    }
-                    $fixed_pay = 0;
-                    $deductions = 0;
-                    // Array Untuk Set Status
-                    $result = [];
-                    // Loop melalui elemen-elemen array1
-                    foreach ( $uniqueSalaryDetails  as $item1) {
-                        $nominal = 0;
-                        $found = 0;
-
-
-
-                        foreach (json_decode($eligibleInfo->salary_detail) as $item2) {
-                            if ($item1['component_name'] === $item2->component_name && $item1['type'] === $item2->type)  {
-                                $found = 1;
-
-                                // && $item1['salary'] === $item2->salary)
-                                if($item2->nominal != 0) {
-                                    $nominal = $item2->nominal;
-                                    if($item2->type == "deductions") {
-                                        $deductions+= $nominal;
-                                    } else {
-                                        $fixed_pay += $nominal;
-                                    }
-                                }
-                                break;
-                            }
-                        }
-        
-
-                        $result[] = [
-                            'component_id' => $item1["component_id"],
-                            'salary_component_id' => $item1["salary_component_id"],
-                            'component_name' => $item1["component_name"],
-                            'type' => $item1['type'],
-                            'order' => $item1['order'],
-                            'is_hide' => $item1['is_hide'],
-                            'is_edit' => $item1['is_edit'],
-                            'is_active' => $item1['is_active'],
-                            "is_status" => $found ? 1 : 0,
-                            "nominal" => $nominal,
-                            "salary" => $item1["salary"],
-                        ];
-                    }
-
-                    return [
-                        'employee_compensation_id' =>  $compensation->id,
-                        'employee_id' =>  $employeeInfo->id,
-                        'fullname' => $employeeInfo->fullname,
-                        'nip' => $employeeInfo->nip,
-                        'position_id' => $positionInfo->id,
-                        'position_name' => $positionInfo->position_name,
-                        'salary_components' => $result,
-                        'fixed_pay' => $fixed_pay,
-                        'deductions' => $deductions,
-                        'created_at' => $compensation->created_at,
-                        'updated_at' => $compensation->updated_at,
-                        
-                    ];
+            // format data querySalaryComponents
+            $salaryDetails = $querySalaryComponents->flatMap(function ($salary) {
+                return $salary->salaryDetail->map(function ($detail) use ($salary) {
+                    $detail->salary_name = $salary->salary_name;
+                    return $detail;
                 });
+            });
 
-                return response()->json([
-                    'status_code' => 200,
-                    'status' => 'success',
-                    'message' => 'Data Compensation berhasil diambil',
-                    'data' =>  $transformedCompensations,
-                ]);
+
+            // Destruktur Data
+            $destructureSalaryDetail = [];
+            foreach ($salaryDetails as $item) {
+                $checkData = null;
+
+                if (is_null($item->component_name)) {
+                    $checkData = SalaryComponent::where('id', $item->salary_component_id)->get()->first();
+                }
+
+                if ($item->is_active) {
+                    $salaryComponent = [
+                        "component_id" => $item->id,
+                        "order" =>  $item->order,
+                        "salary_component_id" => $item->salary_component_id,
+                        "component_name" => $checkData ? $checkData->component_name : $item->component_name,
+                        "type" =>  $item->type,
+                        "is_hide" =>  $item->is_hide,
+                        "is_edit" =>  $item->is_edit,
+                        "is_active" =>  $item->is_active,
+                        "salary" => $item->salary_name,
+                    ];
+
+                    $destructureSalaryDetail[] = $salaryComponent;
+                }
             }
 
-            // return response()->json([
-            //     'status_code' => 200,
-            //     'status' => 'success',
-            //     'message' => 'Data Gaji Company berhasil diambil',
-            //     'data' => $employeeCompensation,
-            // ]);
-            
-        // } catch (Exception $error) {
-        //     return response()->json([
-        //         'status_code' => 500,
-        //         'status' => 'error',
-        //         'message' => 'Terjadi Kesalahan',
-        //     ], 500);
-        // }
+            // Mengambil Hanya unik data
+            $uniqueSalaryDetails = [];
+
+            $seen = [];
+
+            foreach ($destructureSalaryDetail as $item) {
+                $key = $item['component_name'];
+
+                // Jika salary_component_id tidak null, maka tambahkan ke hasil jika belum ada
+                if ($item['salary_component_id'] !== null) {
+                    if (!isset($seen[$key])) {
+                        $uniqueSalaryDetails[] = $item;
+                        $seen[$key] = true;
+                    }
+                }
+                // Jika salary_component_id null, maka tambahkan ke hasil jika sudah ada atau jika salary berbeda
+                else {
+                    if (!isset($seen[$key]) || $seen[$key] !== $item['salary']) {
+                        $uniqueSalaryDetails[] = $item;
+                        $seen[$key] = $item['salary'];
+                    }
+                }
+            }
+            $fixed_pay = 0;
+            $deductions = 0;
+            // Array Untuk Set Status
+            $result = [];
+            // Loop melalui elemen-elemen array1
+            foreach ($uniqueSalaryDetails  as $item1) {
+                $nominal = 0;
+
+
+                foreach (json_decode($eligibleInfo->salary_detail) as $item2) {
+                    if ($item1['component_name'] === $item2->component_name && $item1['type'] === $item2->type) {
+                        // && $item1['salary'] === $item2->salary)
+                        if ($item2->nominal != 0) {
+                            $nominal = $item2->nominal;
+                            if ($item2->type == "deductions") {
+                                $deductions += $nominal;
+                            } else {
+                                $fixed_pay += $nominal;
+                            }
+                        }
+                        break;
+                    }
+                }
+
+
+                $result[] = [
+                    'component_id' => $item1["component_id"],
+                    'salary_component_id' => $item1["salary_component_id"],
+                    'component_name' => $item1["component_name"],
+                    'type' => $item1['type'],
+                    'order' => $item1['order'],
+                    'is_hide' => $item1['is_hide'],
+                    'is_edit' => $item1['is_edit'],
+                    'is_active' => $item1['is_active'],
+                    "nominal" => $nominal,
+                    "salary" => $item1["salary"],
+                ];
+            }
+
+            return [
+                'employee_compensation_id' =>  $compensation->id,
+                'employee_id' =>  $employeeInfo->id,
+                'fullname' => $employeeInfo->fullname,
+                'nip' => $employeeInfo->nip,
+                'position_id' => $positionInfo->id,
+                'position_name' => $positionInfo->position_name,
+                'salary_components' => $result,
+                'fixed_pay' => $fixed_pay,
+                'deductions' => $deductions,
+                'created_at' => $compensation->created_at,
+                'updated_at' => $compensation->updated_at,
+
+            ];
+        });
+
+        return response()->json([
+            'status_code' => 200,
+            'status' => 'success',
+            'message' => 'Data Compensation berhasil update',
+            'data' =>  $transformedCompensations,
+        ]);
+    }
+
+    public function updateEmployee(Request $request, String $id)
+    {
+        return 'ok';
+        $request->validate([
+            'nominal' => 'numeric',
+        ]);
+
+        $compensations = EmployeeCompensation::where('id', $id)->limit(1)->get();
+
+        if (!$compensations) {
+            return response()->json([
+                'status_code' => 404,
+                'status' => 'error',
+                'message' => 'Data tidak ditemukan',
+            ], 404);
+        }
+
+        $compensations = new EmployeeCompensation();
+        $compensations->nominal = $request->input('nominal');
+
+        // simpan perubahan
+        $compensations->save();
+
+        $transformedCompensations = $compensations->map(function ($compensation) {
+
+            $employeeInfo = json_decode($compensation['employee']);
+            $positionInfo = json_decode($compensation['position']);
+            $eligibleInfo = json_decode($compensation['eligible']);
+
+
+
+            // ambil data dari tabel salary, salarydetail
+            $querySalaryComponents = Salary::with(['salaryDetail'])->where('company_id', $positionInfo->company_id)->where('is_active', 1)->get();
+
+            // format data querySalaryComponents
+            $salaryDetails = $querySalaryComponents->flatMap(function ($salary) {
+                return $salary->salaryDetail->map(function ($detail) use ($salary) {
+                    $detail->salary_name = $salary->salary_name;
+                    return $detail;
+                });
+            });
+
+
+            // Destruktur Data
+            $destructureSalaryDetail = [];
+            foreach ($salaryDetails as $item) {
+                $checkData = null;
+
+                if (is_null($item->component_name)) {
+                    $checkData = SalaryComponent::where('id', $item->salary_component_id)->get()->first();
+                }
+
+                if ($item->is_active) {
+                    $salaryComponent = [
+                        "component_id" => $item->id,
+                        "order" =>  $item->order,
+                        "salary_component_id" => $item->salary_component_id,
+                        "component_name" => $checkData ? $checkData->component_name : $item->component_name,
+                        "type" =>  $item->type,
+                        "is_hide" =>  $item->is_hide,
+                        "is_edit" =>  $item->is_edit,
+                        "is_active" =>  $item->is_active,
+                        "salary" => $item->salary_name,
+                    ];
+
+                    $destructureSalaryDetail[] = $salaryComponent;
+                }
+            }
+
+            // Mengambil Hanya unik data
+            $uniqueSalaryDetails = [];
+
+            $seen = [];
+
+            foreach ($destructureSalaryDetail as $item) {
+                $key = $item['component_name'];
+
+                // Jika salary_component_id tidak null, maka tambahkan ke hasil jika belum ada
+                if ($item['salary_component_id'] !== null) {
+                    if (!isset($seen[$key])) {
+                        $uniqueSalaryDetails[] = $item;
+                        $seen[$key] = true;
+                    }
+                }
+                // Jika salary_component_id null, maka tambahkan ke hasil jika sudah ada atau jika salary berbeda
+                else {
+                    if (!isset($seen[$key]) || $seen[$key] !== $item['salary']) {
+                        $uniqueSalaryDetails[] = $item;
+                        $seen[$key] = $item['salary'];
+                    }
+                }
+            }
+            $fixed_pay = 0;
+            $deductions = 0;
+            // Array Untuk Set Status
+            $result = [];
+            // Loop melalui elemen-elemen array1
+            foreach ($uniqueSalaryDetails  as $item1) {
+                $nominal = 0;
+
+
+                foreach (json_decode($eligibleInfo->salary_detail) as $item2) {
+                    if ($item1['component_name'] === $item2->component_name && $item1['type'] === $item2->type) {
+                        // && $item1['salary'] === $item2->salary)
+                        if ($item2->nominal != 0) {
+                            $nominal = $item2->nominal;
+                            if ($item2->type == "deductions") {
+                                $deductions += $nominal;
+                            } else {
+                                $fixed_pay += $nominal;
+                            }
+                        }
+                        break;
+                    }
+                }
+
+
+                $result[] = [
+                    'component_id' => $item1["component_id"],
+                    'salary_component_id' => $item1["salary_component_id"],
+                    'component_name' => $item1["component_name"],
+                    'type' => $item1['type'],
+                    'order' => $item1['order'],
+                    'is_hide' => $item1['is_hide'],
+                    'is_edit' => $item1['is_edit'],
+                    'is_active' => $item1['is_active'],
+                    "nominal" => $nominal,
+                    "salary" => $item1["salary"],
+                ];
+            }
+
+            return [
+                'employee_compensation_id' =>  $compensation->id,
+                'employee_id' =>  $employeeInfo->id,
+                'fullname' => $employeeInfo->fullname,
+                'nip' => $employeeInfo->nip,
+                'position_id' => $positionInfo->id,
+                'position_name' => $positionInfo->position_name,
+                'salary_components' => $result,
+                'fixed_pay' => $fixed_pay,
+                'deductions' => $deductions,
+                'created_at' => $compensation->created_at,
+                'updated_at' => $compensation->updated_at,
+
+            ];
+        });
+
+        return response()->json([
+            'status_code' => 200,
+            'status' => 'success',
+            'message' => 'Data Compensation berhasil disimpan',
+            'data' =>  $transformedCompensations,
+        ]);
+    }
+
+    public function printEmployee() {
+        return 'ok';
     }
 }

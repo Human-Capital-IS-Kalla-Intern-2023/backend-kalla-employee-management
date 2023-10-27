@@ -101,50 +101,50 @@ class EmployeeCompensationSeeder extends Seeder
                         "order" => 1,
                         "component_name" => "Gaji Pokok",
                         "type" => "fixed pay",
-                        "is_hide" => rand(0, 1),
-                        "is_edit" => rand(0, 1),
-                        "is_active" => rand(0, 1),
-                        "is_status" => rand(0, 1)
+                        "is_hide" => 0,
+                        "is_edit" => 1,
+                        "is_active" => 1,
+                        "is_status" => 1
                     ],
                     [
                         "component_id" => 1,
                         "order" => 2,
                         "component_name" => "Tunjangan Transportasi",
                         "type" => "fixed pay",
-                        "is_hide" => rand(0, 1),
-                        "is_edit" => rand(0, 1),
-                        "is_active" => rand(0, 1),
-                        "is_status" => rand(0, 1),
+                        "is_hide" => 0,
+                        "is_edit" => 1,
+                        "is_active" => 1,
+                        "is_status" => 1,
                     ],
                     [
                         "component_id" => 1,
                         "order" => 3,
                         "component_name" => "Tunjangan Komunikasi",
                         "type" => "fixed pay",
-                        "is_hide" => rand(0, 1),
-                        "is_edit" => rand(0, 1),
-                        "is_active" => rand(0, 1),
-                        "is_status" => rand(0, 1)
+                        "is_hide" => 0,
+                        "is_edit" => 1,
+                        "is_active" => 1,
+                        "is_status" => 1
                     ],
                     [
                         "component_id" => 1,
                         "order" => 1,
                         "component_name" => "Tunjangan BPJS",
                         "type" => "deductions",
-                        "is_hide" => rand(0, 1),
-                        "is_edit" => rand(0, 1),
-                        "is_active" => rand(0, 1),
-                        "is_status" => rand(0, 1)
+                        "is_hide" => 0,
+                        "is_edit" => 1,
+                        "is_active" => 1,
+                        "is_status" => 1
                     ],
                     [
                         "component_id" => 1,
                         "order" => 2,
                         "component_name" => "Gaji Makan",
                         "type" => "fixed pay",
-                        "is_hide" => rand(0, 1),
-                        "is_edit" => rand(0, 1),
-                        "is_active" => rand(0, 1),
-                        "is_status" => rand(0, 1)
+                        "is_hide" => 0,
+                        "is_edit" => 1,
+                        "is_active" => 1,
+                        "is_status" => 1
                     ]
                 ],
             ],
