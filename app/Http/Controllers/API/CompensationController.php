@@ -498,11 +498,11 @@ class CompensationController extends Controller
     public function editEmployee(Request $request, String $id)
     {
         // return 'ok';
-        $request->validate([
-            'nominal' => 'numeric',
-        ]);
+        // $request->validate([
+        //     'nominal' => 'numeric',
+        // ]);
 
-        $compensations = EmployeeCompensation::where('id', $id)->limit(1)->get();
+        $compensations = EmployeeCompensation::find($id);
 
         if (!$compensations) {
             return response()->json([
@@ -650,12 +650,12 @@ class CompensationController extends Controller
 
     public function updateEmployee(Request $request, String $id)
     {
-        return 'ok';
+        // return 'ok';
         $request->validate([
             'nominal' => 'numeric',
         ]);
 
-        $compensations = EmployeeCompensation::where('id', $id)->limit(1)->get();
+        $compensations = EmployeeCompensation::find($id);
 
         if (!$compensations) {
             return response()->json([
