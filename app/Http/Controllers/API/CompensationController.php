@@ -39,9 +39,9 @@ class CompensationController extends Controller
             },
         ])->get();
 
-       
 
-         
+
+
         // Transformasi data sesuai format yang Anda inginkan
         $transformedCompensations = $compensations->map(function ($compensation) {
             $bulanIndonesia = [
@@ -102,7 +102,7 @@ class CompensationController extends Controller
             'JULI', 'AGUSTUS', 'SEPTEMBER', 'OKTOBER', 'NOVEMBER', 'DESEMBER'
         ];
 
-        
+
         $validation = $this->validate($request, [
             'company_id' => ['required', 'exists:companies,id'],
             'salary_id' => ['required', 'exists:salaries,id'],
@@ -126,7 +126,7 @@ class CompensationController extends Controller
             } else {
                 // Tangani jika nama bulan tidak cocok dengan daftar bulan Indonesia
                 // Anda dapat memberikan pesan kesalahan atau tindakan lain sesuai kebutuhan.
-                    return response()->json([
+                return response()->json([
                     'status_code' => 422,
                     'status' => 'error',
                     'message' => 'Inputan bulan tidak sesuai',
@@ -160,23 +160,23 @@ class CompensationController extends Controller
                 for ($j = 0; $j < $data[$i]->employeeDetails->count(); $j++) {
                     if ($data[$i]->employeeDetails[$j]->eligible != null) {
                         //  Transformasi data sesuai format yang Anda inginkan
-                            $descPosition =  [
-                                "id" => $data[$i]->employeeDetails[$j]->position->id,
-                                "position_name" => $data[$i]->employeeDetails[$j]->position->position_name,
-                                "company_id" => $data[$i]->employeeDetails[$j]->position->company_id,
-                                "company_name" => $data[$i]->employeeDetails[$j]->position->company[0]->company_name,
-                                "location_id" => $data[$i]->employeeDetails[$j]->position->company[0]->location_id,
-                                "location_name" => $data[$i]->employeeDetails[$j]->position->company[0]->location[0]->location_name,
-                                "directorat_id" => $data[$i]->employeeDetails[$j]->position->directorat_id,
-                                "directorat_name" => $data[$i]->employeeDetails[$j]->position->directorate[0]->directorat_name,
-                                "division_id" => $data[$i]->employeeDetails[$j]->position->division_id,
-                                "division_name" => $data[$i]->employeeDetails[$j]->position->division[0]->division_name,
-                                "section_id" => $data[$i]->employeeDetails[$j]->position->section_id,
-                                "section_name" => $data[$i]->employeeDetails[$j]->position->section[0]->section_name,
-                                "job_grade_id" => $data[$i]->employeeDetails[$j]->position->job_grade_id,
-                                "grade_name" => $data[$i]->employeeDetails[$j]->position->job_grade[0]->grade_name,
-                                "created_at" => $data[$i]->employeeDetails[$j]->position->created_at,
-                                "updated_at" => $data[$i]->employeeDetails[$j]->position->updated_at,
+                        $descPosition =  [
+                            "id" => $data[$i]->employeeDetails[$j]->position->id,
+                            "position_name" => $data[$i]->employeeDetails[$j]->position->position_name,
+                            "company_id" => $data[$i]->employeeDetails[$j]->position->company_id,
+                            "company_name" => $data[$i]->employeeDetails[$j]->position->company[0]->company_name,
+                            "location_id" => $data[$i]->employeeDetails[$j]->position->company[0]->location_id,
+                            "location_name" => $data[$i]->employeeDetails[$j]->position->company[0]->location[0]->location_name,
+                            "directorat_id" => $data[$i]->employeeDetails[$j]->position->directorat_id,
+                            "directorat_name" => $data[$i]->employeeDetails[$j]->position->directorate[0]->directorat_name,
+                            "division_id" => $data[$i]->employeeDetails[$j]->position->division_id,
+                            "division_name" => $data[$i]->employeeDetails[$j]->position->division[0]->division_name,
+                            "section_id" => $data[$i]->employeeDetails[$j]->position->section_id,
+                            "section_name" => $data[$i]->employeeDetails[$j]->position->section[0]->section_name,
+                            "job_grade_id" => $data[$i]->employeeDetails[$j]->position->job_grade_id,
+                            "grade_name" => $data[$i]->employeeDetails[$j]->position->job_grade[0]->grade_name,
+                            "created_at" => $data[$i]->employeeDetails[$j]->position->created_at,
+                            "updated_at" => $data[$i]->employeeDetails[$j]->position->updated_at,
 
                         ];
 
@@ -227,7 +227,7 @@ class CompensationController extends Controller
                     'JANUARI', 'FEBRUARI', 'MARET', 'APRIL', 'MEI', 'JUNI',
                     'JULI', 'AGUSTUS', 'SEPTEMBER', 'OKTOBER', 'NOVEMBER', 'DESEMBER'
                 ];
-                
+
                 $carbonDate = Carbon::parse($compensation->period);
 
                 // Ambil bulan dalam bentuk angka (1-12)
@@ -328,25 +328,25 @@ class CompensationController extends Controller
                 ], 404);
             } else {
                 // Create Compensation
-                
-            // Pisahkan string bulan menjadi kata-kata
-            $bulanArray = explode(' ', strtoupper($request->month));
 
-            // Cari indeks bulan dalam array bulan Indonesia
-            $bulanIndex = array_search($bulanArray[0], $bulanIndonesia);
+                // Pisahkan string bulan menjadi kata-kata
+                $bulanArray = explode(' ', strtoupper($request->month));
 
-            if ($bulanIndex !== false) {
-                // Jika bulan ditemukan dalam daftar bulan Indonesia
-                $bulan = str_pad($bulanIndex + 1, 2, '0', STR_PAD_LEFT); // Konversi indeks bulan ke format MM
-            } else {
-                // Tangani jika nama bulan tidak cocok dengan daftar bulan Indonesia
-                // Anda dapat memberikan pesan kesalahan atau tindakan lain sesuai kebutuhan.
+                // Cari indeks bulan dalam array bulan Indonesia
+                $bulanIndex = array_search($bulanArray[0], $bulanIndonesia);
+
+                if ($bulanIndex !== false) {
+                    // Jika bulan ditemukan dalam daftar bulan Indonesia
+                    $bulan = str_pad($bulanIndex + 1, 2, '0', STR_PAD_LEFT); // Konversi indeks bulan ke format MM
+                } else {
+                    // Tangani jika nama bulan tidak cocok dengan daftar bulan Indonesia
+                    // Anda dapat memberikan pesan kesalahan atau tindakan lain sesuai kebutuhan.
                     return response()->json([
-                    'status_code' => 422,
-                    'status' => 'error',
-                    'message' => 'Inputan bulan tidak sesuai',
-                ], 500);
-            }
+                        'status_code' => 422,
+                        'status' => 'error',
+                        'message' => 'Inputan bulan tidak sesuai',
+                    ], 500);
+                }
 
                 $compensation->update([
                     'compensation_name' =>  $request->compensation_name,
@@ -511,8 +511,19 @@ class CompensationController extends Controller
 
 
                     foreach (json_decode($eligibleInfo->salary_detail) as $item2) {
-                        if ($item1['component_name'] === $item2->component_name && $item1['type'] === $item2->type) {
-                            // && $item1['salary'] === $item2->salary)
+                        // if ($item1['component_name'] === $item2->component_name && $item1['type'] === $item2->type) {
+                        //     // && $item1['salary'] === $item2->salary)
+                        //     if ($item2->nominal != 0) {
+                        //         $nominal = $item2->nominal;
+                        //         if ($item2->type == "deductions") {
+                        //             $deductions += $nominal;
+                        //         } else {
+                        //             $fixed_pay += $nominal;
+                        //         }
+                        //     }
+                        //     break;
+                        // }
+                        if (isset($item2->nominal) && $item1['component_name'] === $item2->component_name && $item1['type'] === $item2->type) {
                             if ($item2->nominal != 0) {
                                 $nominal = $item2->nominal;
                                 if ($item2->type == "deductions") {
@@ -521,8 +532,8 @@ class CompensationController extends Controller
                                     $fixed_pay += $nominal;
                                 }
                             }
-                            break;
                         }
+                        break;
                     }
 
 
@@ -888,7 +899,8 @@ class CompensationController extends Controller
         ]);
     }
 
-    public function printEmployee() {
+    public function printEmployee()
+    {
         return 'ok';
     }
 }
