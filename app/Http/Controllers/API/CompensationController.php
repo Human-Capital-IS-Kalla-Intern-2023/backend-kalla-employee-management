@@ -11,6 +11,7 @@ use App\Models\EmployeeDetail;
 use App\Models\Position;
 use App\Models\Salary;
 use App\Models\SalaryComponent;
+use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -38,10 +39,26 @@ class CompensationController extends Controller
             },
         ])->get();
 
+       
+
+         
         // Transformasi data sesuai format yang Anda inginkan
         $transformedCompensations = $compensations->map(function ($compensation) {
+            $bulanIndonesia = [
+                'JANUARI', 'FEBRUARI', 'MARET', 'APRIL', 'MEI', 'JUNI',
+                'JULI', 'AGUSTUS', 'SEPTEMBER', 'OKTOBER', 'NOVEMBER', 'DESEMBER'
+            ];
 
             $salary = json_decode($compensation->salary);
+            // Konversi data tanggal ke objek Carbon
+            // $dbBulan = date('m', strtotime($compensation->period));
+            $carbonDate = Carbon::parse($compensation->period);
+
+            // Ambil bulan dalam bentuk angka (1-12)
+            $bulanAngka = $carbonDate->month;
+
+            // Konversi angka bulan menjadi nama bulan dalam bahasa Indonesia
+            $bulanIndo = $bulanIndonesia[$bulanAngka - 1]; // -1 karena array dimulai dari 0
             return [
                 'id' => $compensation->id,
                 'company_id' => $compensation->company->id,
@@ -49,7 +66,7 @@ class CompensationController extends Controller
                 'salary_id' => $salary->id,
                 'salary_name' => $salary->salary_name,
                 'compensation_name' => $compensation->compensation_name,
-                'month' => date('m', strtotime($compensation->period)), // Ambil bulan dari kolom "period"
+                'month' => $bulanIndo, // Ambil bulan dari kolom "period"
                 'year' => date('Y', strtotime($compensation->period)),   // Ambil tahun dari kolom "period"
                 'created_at' => $compensation->created_at,
                 'updated_at' => $compensation->updated_at,
@@ -80,23 +97,48 @@ class CompensationController extends Controller
     public function store(Request $request)
     {
 
+        $bulanIndonesia = [
+            'JANUARI', 'FEBRUARI', 'MARET', 'APRIL', 'MEI', 'JUNI',
+            'JULI', 'AGUSTUS', 'SEPTEMBER', 'OKTOBER', 'NOVEMBER', 'DESEMBER'
+        ];
+
+        
         $validation = $this->validate($request, [
             'company_id' => ['required', 'exists:companies,id'],
             'salary_id' => ['required', 'exists:salaries,id'],
             'compensation_name' =>  ['required', 'string', 'unique:compensations,compensation_name', 'max:255'],
-            'month' => ['required', 'integer', 'min:1', 'max:12'],
+            'month' => ['required', 'string'],
             'year' => ['required', 'integer', 'min:1900', 'max:' . date('Y')],
         ]);
 
         try {
             $salary = Salary::findOrFail($request->salary_id);
 
+            // Pisahkan string bulan menjadi kata-kata
+            $bulanArray = explode(' ', strtoupper($request->month));
+
+            // Cari indeks bulan dalam array bulan Indonesia
+            $bulanIndex = array_search($bulanArray[0], $bulanIndonesia);
+
+            if ($bulanIndex !== false) {
+                // Jika bulan ditemukan dalam daftar bulan Indonesia
+                $bulan = str_pad($bulanIndex + 1, 2, '0', STR_PAD_LEFT); // Konversi indeks bulan ke format MM
+            } else {
+                // Tangani jika nama bulan tidak cocok dengan daftar bulan Indonesia
+                // Anda dapat memberikan pesan kesalahan atau tindakan lain sesuai kebutuhan.
+                    return response()->json([
+                    'status_code' => 422,
+                    'status' => 'error',
+                    'message' => 'Inputan bulan tidak sesuai',
+                ], 422);
+            }
+
             // Create Compensation
             $compensation = Compensation::create([
                 'company_id' => $request->company_id,
                 'salary' => json_encode($salary),
                 'compensation_name' =>  $request->compensation_name,
-                'period' => ["month" => $request->month, "year" => $request->year]
+                'period' => ["month" => $bulan, "year" => $request->year]
             ]);
 
             // GetData Position
@@ -104,6 +146,7 @@ class CompensationController extends Controller
                 'employeeDetails',
                 'employeeDetails.position',
                 'employeeDetails.position.company',
+                'employeeDetails.position.company.location',
                 'employeeDetails.position.directorate',
                 'employeeDetails.position.division',
                 'employeeDetails.position.section',
@@ -123,7 +166,7 @@ class CompensationController extends Controller
                                 "company_id" => $data[$i]->employeeDetails[$j]->position->company_id,
                                 "company_name" => $data[$i]->employeeDetails[$j]->position->company[0]->company_name,
                                 "location_id" => $data[$i]->employeeDetails[$j]->position->company[0]->location_id,
-                                "location_name" => $data[$i]->employeeDetails[$j]->position->company[0]->location->location_name,
+                                "location_name" => $data[$i]->employeeDetails[$j]->position->company[0]->location[0]->location_name,
                                 "directorat_id" => $data[$i]->employeeDetails[$j]->position->directorat_id,
                                 "directorat_name" => $data[$i]->employeeDetails[$j]->position->directorate[0]->directorat_name,
                                 "division_id" => $data[$i]->employeeDetails[$j]->position->division_id,
@@ -136,6 +179,7 @@ class CompensationController extends Controller
                                 "updated_at" => $data[$i]->employeeDetails[$j]->position->updated_at,
 
                         ];
+
                         $employee_compensation = EmployeeCompensation::create([
                             'compensations_id' => $compensation->id,
                             'employee' => json_encode($data[$i]->employeeDetails[$j]->employee),
@@ -178,6 +222,19 @@ class CompensationController extends Controller
             // Transformasi data sesuai format yang Anda inginkan
 
             $transformedCompensations = $compensations->map(function ($compensation) {
+
+                $bulanIndonesia = [
+                    'JANUARI', 'FEBRUARI', 'MARET', 'APRIL', 'MEI', 'JUNI',
+                    'JULI', 'AGUSTUS', 'SEPTEMBER', 'OKTOBER', 'NOVEMBER', 'DESEMBER'
+                ];
+                
+                $carbonDate = Carbon::parse($compensation->period);
+
+                // Ambil bulan dalam bentuk angka (1-12)
+                $bulanAngka = $carbonDate->month;
+
+                // Konversi angka bulan menjadi nama bulan dalam bahasa Indonesia
+                $bulanIndo = $bulanIndonesia[$bulanAngka - 1]; // -1 karena array dimulai dari 0
                 // Inisialisasi array untuk menyimpan data yang diperlukan
                 $employeeData = [];
 
@@ -216,7 +273,7 @@ class CompensationController extends Controller
                     'salary_id' => $salary->id,
                     'salary_name' => $salary->salary_name,
                     'compensation_name' => $compensation->compensation_name,
-                    'month' => date('m', strtotime($compensation->period)), // Ambil bulan dari kolom "period"
+                    'month' => $bulanIndo, // Ambil bulan dari kolom "period"
                     'year' => date('Y', strtotime($compensation->period)),   // Ambil tahun dari kolom "period"
                     'employee_compensations' => $employeeData,
                     'created_at' => $compensation->created_at,
@@ -247,9 +304,15 @@ class CompensationController extends Controller
      */
     public function update(Request $request, string $id)
     {
+
+        $bulanIndonesia = [
+            'JANUARI', 'FEBRUARI', 'MARET', 'APRIL', 'MEI', 'JUNI',
+            'JULI', 'AGUSTUS', 'SEPTEMBER', 'OKTOBER', 'NOVEMBER', 'DESEMBER'
+        ];
+
         $validation = $this->validate($request, [
             'compensation_name' =>  ['required', 'string', 'unique:compensations,compensation_name,' . $id . ''],
-            'month' => ['required', 'integer', 'min:1', 'max:12'],
+            'month' => ['required', 'string'],
             'year' => ['required', 'integer', 'min:1900', 'max:' . date('Y')],
         ]);
 
@@ -265,9 +328,29 @@ class CompensationController extends Controller
                 ], 404);
             } else {
                 // Create Compensation
+                
+            // Pisahkan string bulan menjadi kata-kata
+            $bulanArray = explode(' ', strtoupper($request->month));
+
+            // Cari indeks bulan dalam array bulan Indonesia
+            $bulanIndex = array_search($bulanArray[0], $bulanIndonesia);
+
+            if ($bulanIndex !== false) {
+                // Jika bulan ditemukan dalam daftar bulan Indonesia
+                $bulan = str_pad($bulanIndex + 1, 2, '0', STR_PAD_LEFT); // Konversi indeks bulan ke format MM
+            } else {
+                // Tangani jika nama bulan tidak cocok dengan daftar bulan Indonesia
+                // Anda dapat memberikan pesan kesalahan atau tindakan lain sesuai kebutuhan.
+                    return response()->json([
+                    'status_code' => 422,
+                    'status' => 'error',
+                    'message' => 'Inputan bulan tidak sesuai',
+                ], 500);
+            }
+
                 $compensation->update([
                     'compensation_name' =>  $request->compensation_name,
-                    'period' => ["month" => $request->month, "year" => $request->year]
+                    'period' => ["month" => $bulan, "year" => $request->year]
                 ]);
 
                 return response()->json([
