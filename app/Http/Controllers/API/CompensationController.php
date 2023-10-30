@@ -267,7 +267,7 @@ class CompensationController extends Controller
                 $salary = json_decode($compensation->salary);
 
                 return [
-                    'employee_compensation_id' => $compensation->id,
+                    'compensation_id' => $compensation->id,
                     'company_id' => $compensation->company->id,
                     'company_name' => $compensation->company->company_name,
                     'salary_id' => $salary->id,
@@ -438,7 +438,7 @@ class CompensationController extends Controller
                 $positionInfo = json_decode($compensation['position']);
                 $eligibleInfo = json_decode($compensation['eligible']);
 
-
+                $compensationName = $compensation->compensation->compensation_name;
 
                 // ambil data dari tabel salary, salarydetail
                 $querySalaryComponents = Salary::with(['salaryDetail'])->where('company_id', $positionInfo->company_id)->where('is_active', 1)->get();
@@ -553,6 +553,7 @@ class CompensationController extends Controller
 
                 return [
                     'employee_compensation_id' =>  $compensation->id,
+                    'employee_compensation_name' => $compensationName,
                     'employee_id' =>  $employeeInfo->id,
                     'fullname' => $employeeInfo->fullname,
                     'nip' => $employeeInfo->nip,
