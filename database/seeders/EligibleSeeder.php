@@ -17,68 +17,91 @@ class EligibleSeeder extends Seeder
         $faker = FakerFactory::create();
 
 
-        $json = [
-            [
-                "component_id" => 1,
-                "order" => 1,
-                "component_name" => "Gaji Pokok",
-                "type" => "fixed pay",
-                "is_hide" => rand(0, 1),
-                "is_edit" => rand(0, 1),
-                "is_active" => rand(0, 1),
-                "is_status" => rand(0, 1)
-            ],
-            [
-                "component_id" => 1,
-                "order" => 2,
-                "component_name" => "Tunjangan Transportasi",
-                "type" => "fixed pay",
-                "is_hide" => rand(0, 1),
-                "is_edit" => rand(0, 1),
-                "is_active" => rand(0, 1),
-                "is_status" => rand(0, 1),
-            ],
-            [
-                "component_id" => 1,
-                "order" => 3,
-                "component_name" => "Tunjangan Komunikasi",
-                "type" => "fixed pay",
-                "is_hide" => rand(0, 1),
-                "is_edit" => rand(0, 1),
-                "is_active" => rand(0, 1),
-                "is_status" => rand(0, 1)
-            ],
-            [
-                "component_id" => 1,
-                "order" => 1,
-                "component_name" => "Tunjangan BPJS",
-                "type" => "deductions",
-                "is_hide" => rand(0, 1),
-                "is_edit" => rand(0, 1),
-                "is_active" => rand(0, 1),
-                "is_status" => rand(0, 1)
-            ],
-            [
-                "component_id" => 1,
-                "order" => 2,
-                "component_name" => "Gaji Makan",
-                "type" => "fixed pay",
-                "is_hide" => rand(0, 1),
-                "is_edit" => rand(0, 1),
-                "is_active" => rand(0, 1),
-                "is_status" => rand(0, 1)
-            ]
+        // $json = [
+        //     [
+        //         "component_id" => 1,
+        //         "order" => 1,
+        //         "component_name" => "Gaji Pokok",
+        //         "type" => "fixed pay",
+        //         "is_hide" => rand(0, 1),
+        //         "is_edit" => rand(0, 1),
+        //         "is_active" => rand(0, 1),
+        //         "is_status" => rand(0, 1)
+        //     ],
+        //     [
+        //         "component_id" => 1,
+        //         "order" => 2,
+        //         "component_name" => "Tunjangan Transportasi",
+        //         "type" => "fixed pay",
+        //         "is_hide" => rand(0, 1),
+        //         "is_edit" => rand(0, 1),
+        //         "is_active" => rand(0, 1),
+        //         "is_status" => rand(0, 1),
+        //     ],
+        //     [
+        //         "component_id" => 1,
+        //         "order" => 3,
+        //         "component_name" => "Tunjangan Komunikasi",
+        //         "type" => "fixed pay",
+        //         "is_hide" => rand(0, 1),
+        //         "is_edit" => rand(0, 1),
+        //         "is_active" => rand(0, 1),
+        //         "is_status" => rand(0, 1)
+        //     ],
+        //     [
+        //         "component_id" => 1,
+        //         "order" => 1,
+        //         "component_name" => "Tunjangan BPJS",
+        //         "type" => "deductions",
+        //         "is_hide" => rand(0, 1),
+        //         "is_edit" => rand(0, 1),
+        //         "is_active" => rand(0, 1),
+        //         "is_status" => rand(0, 1)
+        //     ],
+        //     [
+        //         "component_id" => 1,
+        //         "order" => 2,
+        //         "component_name" => "Gaji Makan",
+        //         "type" => "fixed pay",
+        //         "is_hide" => rand(0, 1),
+        //         "is_edit" => rand(0, 1),
+        //         "is_active" => rand(0, 1),
+        //         "is_status" => rand(0, 1)
+        //     ]
+        // ];
+
+
+        // foreach (range(1, 50) as $eligible) {
+        //     Eligible::create([
+        //         "employee_detail_id" => $faker->numberBetween(1, 10),
+        //         "type_bank" => "Mandiri",
+        //         "account_number" => rand(1000, 10000),
+        //         "account_name" => $faker->name(),
+        //         "salary_detail" => json_encode($json),
+        //     ]);
+        // }
+
+        $eligible = [
+            ["employee_detail_id" => "1", "salary_detail" => json_encode([["type" => "fixed pay", "order" => 1, "salary" => "Gaji Tetap", "is_edit" => 1, "is_hide" => 0, "is_active" => 1, "component_id" => 1, "component_name" => "Gaji Pokok", "salary_component_id" => 1], ["type" => "fixed pay", "order" => 2, "salary" => "Gaji Tetap", "is_edit" => 1, "is_hide" => 0, "is_active" => 1, "component_id" => 2, "component_name" => "Tunjangan Transportasi", "salary_component_id" => 2], ["type" => "fixed pay", "order" => 3, "salary" => "Gaji Tetap", "is_edit" => 1, "is_hide" => 0, "is_active" => 1, "component_id" => 3, "component_name" => "Tunjangan Komunikasi", "salary_component_id" => 3], ["type" => "deductions", "order" => 1, "salary" => "Gaji Tetap", "is_edit" => 1, "is_hide" => 0, "is_active" => 1, "component_id" => 4, "component_name" => "Tunjangan BPJS", "salary_component_id" => 4], ["type" => "fixed pay", "order" => 4, "salary" => "Gaji Tetap", "is_edit" => 1, "is_hide" => 0, "is_active" => 1, "component_id" => 5, "component_name" => "Tunjangan Makan", "salary_component_id" => 1]]), "type_bank" => "Mandiri", "account_number" => "4024628851392", "account_name" => "Willa Camm", "created_at" => "2023-10-27 14=>41=>56", "updated_at" => "2023-10-27 14=>41=>56"],
+            ["employee_detail_id" => "2", "salary_detail" => json_encode([["type" => "fixed pay", "order" => 1, "salary" => "Gaji Tetap", "is_edit" => 1, "is_hide" => 0, "is_active" => 1, "component_id" => 1, "component_name" => "Gaji Pokok", "salary_component_id" => 1], ["type" => "fixed pay", "order" => 2, "salary" => "Gaji Tetap", "is_edit" => 1, "is_hide" => 0, "is_active" => 1, "component_id" => 2, "component_name" => "Tunjangan Transportasi", "salary_component_id" => 2], ["type" => "fixed pay", "order" => 3, "salary" => "Gaji Tetap", "is_edit" => 1, "is_hide" => 0, "is_active" => 1, "component_id" => 3, "component_name" => "Tunjangan Komunikasi", "salary_component_id" => 3], ["type" => "deductions", "order" => 1, "salary" => "Gaji Tetap", "is_edit" => 1, "is_hide" => 0, "is_active" => 1, "component_id" => 4, "component_name" => "Tunjangan BPJS", "salary_component_id" => 4], ["type" => "fixed pay", "order" => 4, "salary" => "Gaji Tetap", "is_edit" => 1, "is_hide" => 0, "is_active" => 1, "component_id" => 5, "component_name" => "Tunjangan Makan", "salary_component_id" => 1]]), "type_bank" => "Mandiri", "account_number" => "4017951967313187", "account_name" => "Willa Camm", "created_at" => "2023-10-27 14=>42=>39", "updated_at" => "2023-10-27 14=>42=>39"],
+            ["employee_detail_id" => "3", "salary_detail" => json_encode([["type" => "fixed pay", "order" => 1, "salary" => "Gaji Tetap", "is_edit" => 1, "is_hide" => 0, "is_active" => 1, "component_id" => 1, "component_name" => "Gaji Pokok", "salary_component_id" => 1], ["type" => "fixed pay", "order" => 2, "salary" => "Gaji Tetap", "is_edit" => 1, "is_hide" => 0, "is_active" => 1, "component_id" => 2, "component_name" => "Tunjangan Transportasi", "salary_component_id" => 2], ["type" => "fixed pay", "order" => 3, "salary" => "Gaji Tetap", "is_edit" => 1, "is_hide" => 0, "is_active" => 1, "component_id" => 3, "component_name" => "Tunjangan Komunikasi", "salary_component_id" => 3], ["type" => "deductions", "order" => 1, "salary" => "Gaji Tetap", "is_edit" => 1, "is_hide" => 0, "is_active" => 1, "component_id" => 4, "component_name" => "Tunjangan BPJS", "salary_component_id" => 4], ["type" => "fixed pay", "order" => 4, "salary" => "Gaji Tetap", "is_edit" => 1, "is_hide" => 0, "is_active" => 1, "component_id" => 5, "component_name" => "Tunjangan Makan", "salary_component_id" => 1]]), "type_bank" => "Mandiri", "account_number" => "4000766412064", "account_name" => "Willa Camm", "created_at" => "2023-10-27 14=>43=>10", "updated_at" => "2023-10-27 14=>43=>10"],
+            ["employee_detail_id" => "4", "salary_detail" => json_encode([["type" => "fixed pay", "order" => 1, "salary" => "Gaji Tetap", "is_edit" => 1, "is_hide" => 0, "is_active" => 1, "component_id" => 1, "component_name" => "Gaji Pokok", "salary_component_id" => 1], ["type" => "fixed pay", "order" => 2, "salary" => "Gaji Tetap", "is_edit" => 1, "is_hide" => 0, "is_active" => 1, "component_id" => 2, "component_name" => "Tunjangan Transportasi", "salary_component_id" => 2], ["type" => "fixed pay", "order" => 3, "salary" => "Gaji Tetap", "is_edit" => 1, "is_hide" => 0, "is_active" => 1, "component_id" => 3, "component_name" => "Tunjangan Komunikasi", "salary_component_id" => 3], ["type" => "deductions", "order" => 1, "salary" => "Gaji Tetap", "is_edit" => 1, "is_hide" => 0, "is_active" => 1, "component_id" => 4, "component_name" => "Tunjangan BPJS", "salary_component_id" => 4], ["type" => "fixed pay", "order" => 4, "salary" => "Gaji Tetap", "is_edit" => 1, "is_hide" => 0, "is_active" => 1, "component_id" => 5, "component_name" => "Tunjangan Makan", "salary_component_id" => 1]]), "type_bank" => "Mandiri", "account_number" => "4041379837453", "account_name" => "Dennis Peret", "created_at" => "2023-10-27 14=>44=>02", "updated_at" => "2023-10-27 14=>44=>02"],
+            ["employee_detail_id" => "5", "salary_detail" => json_encode([["type" => "fixed pay", "order" => 1, "salary" => "Gaji Tetap", "is_edit" => 1, "is_hide" => 0, "is_active" => 1, "component_id" => 1, "component_name" => "Gaji Pokok", "salary_component_id" => 1], ["type" => "fixed pay", "order" => 2, "salary" => "Gaji Tetap", "is_edit" => 1, "is_hide" => 0, "is_active" => 1, "component_id" => 2, "component_name" => "Tunjangan Transportasi", "salary_component_id" => 2], ["type" => "fixed pay", "order" => 3, "salary" => "Gaji Tetap", "is_edit" => 1, "is_hide" => 0, "is_active" => 1, "component_id" => 3, "component_name" => "Tunjangan Komunikasi", "salary_component_id" => 3], ["type" => "deductions", "order" => 1, "salary" => "Gaji Tetap", "is_edit" => 1, "is_hide" => 0, "is_active" => 1, "component_id" => 4, "component_name" => "Tunjangan BPJS", "salary_component_id" => 4], ["type" => "fixed pay", "order" => 4, "salary" => "Gaji Tetap", "is_edit" => 1, "is_hide" => 0, "is_active" => 1, "component_id" => 5, "component_name" => "Tunjangan Makan", "salary_component_id" => 1]]), "type_bank" => "Mandiri", "account_number" => "4017957248420", "account_name" => "Dennis Peret", "created_at" => "2023-10-27 14=>44=>27", "updated_at" => "2023-10-27 14=>44=>27"],
+            ["employee_detail_id" => "6", "salary_detail" => json_encode([["type" => "fixed pay", "order" => 1, "salary" => "Gaji Tetap", "is_edit" => 1, "is_hide" => 0, "is_active" => 1, "component_id" => 1, "component_name" => "Gaji Pokok", "salary_component_id" => 1], ["type" => "fixed pay", "order" => 2, "salary" => "Gaji Tetap", "is_edit" => 1, "is_hide" => 0, "is_active" => 1, "component_id" => 2, "component_name" => "Tunjangan Transportasi", "salary_component_id" => 2], ["type" => "fixed pay", "order" => 3, "salary" => "Gaji Tetap", "is_edit" => 1, "is_hide" => 0, "is_active" => 1, "component_id" => 3, "component_name" => "Tunjangan Komunikasi", "salary_component_id" => 3], ["type" => "deductions", "order" => 1, "salary" => "Gaji Tetap", "is_edit" => 1, "is_hide" => 0, "is_active" => 1, "component_id" => 4, "component_name" => "Tunjangan BPJS", "salary_component_id" => 4], ["type" => "fixed pay", "order" => 4, "salary" => "Gaji Tetap", "is_edit" => 1, "is_hide" => 0, "is_active" => 1, "component_id" => 5, "component_name" => "Tunjangan Makan", "salary_component_id" => 1]]), "type_bank" => "Mandiri", "account_number" => "4041374058884307", "account_name" => "Dennis Peret", "created_at" => "2023-10-27 14=>44=>57", "updated_at" => "2023-10-27 14=>44=>57"],
+            ["employee_detail_id" => "7", "salary_detail" => json_encode([["type" => "fixed pay", "order" => 1, "salary" => "Gaji Tetap", "is_edit" => 1, "is_hide" => 0, "is_active" => 1, "component_id" => 1, "component_name" => "Gaji Pokok", "salary_component_id" => 1], ["type" => "fixed pay", "order" => 2, "salary" => "Gaji Tetap", "is_edit" => 1, "is_hide" => 0, "is_active" => 1, "component_id" => 2, "component_name" => "Tunjangan Transportasi", "salary_component_id" => 2], ["type" => "fixed pay", "order" => 3, "salary" => "Gaji Tetap", "is_edit" => 1, "is_hide" => 0, "is_active" => 1, "component_id" => 3, "component_name" => "Tunjangan Komunikasi", "salary_component_id" => 3], ["type" => "deductions", "order" => 1, "salary" => "Gaji Tetap", "is_edit" => 1, "is_hide" => 0, "is_active" => 1, "component_id" => 4, "component_name" => "Tunjangan BPJS", "salary_component_id" => 4], ["type" => "fixed pay", "order" => 4, "salary" => "Gaji Tetap", "is_edit" => 1, "is_hide" => 0, "is_active" => 1, "component_id" => 5, "component_name" => "Tunjangan Makan", "salary_component_id" => 1]]), "type_bank" => "Mandiri", "account_number" => "4041374546588", "account_name" => "Tybalt Camacke", "created_at" => "2023-10-27 14=>45=>37", "updated_at" => "2023-10-27 14=>45=>37"],
+            ["employee_detail_id" => "8", "salary_detail" => json_encode([["type" => "fixed pay", "order" => 1, "salary" => "Gaji Tetap", "is_edit" => 1, "is_hide" => 0, "is_active" => 1, "component_id" => 1, "component_name" => "Gaji Pokok", "salary_component_id" => 1], ["type" => "fixed pay", "order" => 2, "salary" => "Gaji Tetap", "is_edit" => 1, "is_hide" => 0, "is_active" => 1, "component_id" => 2, "component_name" => "Tunjangan Transportasi", "salary_component_id" => 2], ["type" => "fixed pay", "order" => 3, "salary" => "Gaji Tetap", "is_edit" => 1, "is_hide" => 0, "is_active" => 1, "component_id" => 3, "component_name" => "Tunjangan Komunikasi", "salary_component_id" => 3], ["type" => "deductions", "order" => 1, "salary" => "Gaji Tetap", "is_edit" => 1, "is_hide" => 0, "is_active" => 1, "component_id" => 4, "component_name" => "Tunjangan BPJS", "salary_component_id" => 4], ["type" => "fixed pay", "order" => 4, "salary" => "Gaji Tetap", "is_edit" => 1, "is_hide" => 0, "is_active" => 1, "component_id" => 5, "component_name" => "Tunjangan Makan", "salary_component_id" => 1]]), "type_bank" => "Mandiri", "account_number" => "4189241344168989", "account_name" => "Tybalt Camacke", "created_at" => "2023-10-27 14=>45=>59", "updated_at" => "2023-10-27 14=>45=>59"],
+            ["employee_detail_id" => "9", "salary_detail" => json_encode([["type" => "fixed pay", "order" => 1, "salary" => "Gaji Per Jam", "is_edit" => 1, "is_hide" => 0, "is_active" => 1, "component_id" => 6, "component_name" => "Gaji Pokok", "salary_component_id" => 1], ["type" => "fixed pay", "order" => 2, "salary" => "Gaji Per Jam", "is_edit" => 1, "is_hide" => 0, "is_active" => 1, "component_id" => 7, "component_name" => "Tunjangan Transportasi", "salary_component_id" => 2], ["type" => "fixed pay", "order" => 3, "salary" => "Gaji Per Jam", "is_edit" => 1, "is_hide" => 0, "is_active" => 1, "component_id" => 8, "component_name" => "Tunjangan Komunikasi", "salary_component_id" => 3], ["type" => "fixed pay", "order" => 4, "salary" => "Gaji Per Jam", "is_edit" => 1, "is_hide" => 0, "is_active" => 1, "component_id" => 9, "component_name" => "Tunjangan Makan", "salary_component_id" => null], ["type" => "deductions", "order" => 1, "salary" => "Gaji Per Jam", "is_edit" => 1, "is_hide" => 0, "is_active" => 1, "component_id" => 10, "component_name" => "Tunjangan BPJS", "salary_component_id" => 4], ["type" => "deductions", "order" => 2, "salary" => "Gaji Per Jam", "is_edit" => 1, "is_hide" => 0, "is_active" => 1, "component_id" => 11, "component_name" => "Tunjangan Kesehatan", "salary_component_id" => null]]), "type_bank" => "Mandiri", "account_number" => "4189241344168989", "account_name" => "Tybalt Camacke", "created_at" => "2023-10-27 14=>46=>24", "updated_at" => "2023-10-27 14=>46=>24"],
+            ["employee_detail_id" => "10", "salary_detail" => json_encode([["type" => "fixed pay", "order" => 1, "salary" => "Gaji Tetap", "is_edit" => 1, "is_hide" => 0, "is_active" => 1, "component_id" => 1, "component_name" => "Gaji Pokok", "salary_component_id" => 1], ["type" => "fixed pay", "order" => 2, "salary" => "Gaji Tetap", "is_edit" => 1, "is_hide" => 0, "is_active" => 1, "component_id" => 2, "component_name" => "Tunjangan Transportasi", "salary_component_id" => 2], ["type" => "fixed pay", "order" => 3, "salary" => "Gaji Tetap", "is_edit" => 1, "is_hide" => 0, "is_active" => 1, "component_id" => 3, "component_name" => "Tunjangan Komunikasi", "salary_component_id" => 3], ["type" => "deductions", "order" => 1, "salary" => "Gaji Tetap", "is_edit" => 1, "is_hide" => 0, "is_active" => 1, "component_id" => 4, "component_name" => "Tunjangan BPJS", "salary_component_id" => 4], ["type" => "fixed pay", "order" => 4, "salary" => "Gaji Tetap", "is_edit" => 1, "is_hide" => 0, "is_active" => 1, "component_id" => 5, "component_name" => "Tunjangan Makan", "salary_component_id" => 1]]), "type_bank" => "Mandiri", "account_number" => "4456855152709216", "account_name" => "Darnell Vedyashkin", "created_at" => "2023-10-27 14=>48=>11", "updated_at" => "2023-10-27 14=>48=>11"],
+            ["employee_detail_id" => "11", "salary_detail" => json_encode([["type" => "fixed pay", "order" => 1, "salary" => "Gaji Tetap", "is_edit" => 1, "is_hide" => 0, "is_active" => 1, "component_id" => 1, "component_name" => "Gaji Pokok", "salary_component_id" => 1], ["type" => "fixed pay", "order" => 2, "salary" => "Gaji Tetap", "is_edit" => 1, "is_hide" => 0, "is_active" => 1, "component_id" => 2, "component_name" => "Tunjangan Transportasi", "salary_component_id" => 2], ["type" => "fixed pay", "order" => 3, "salary" => "Gaji Tetap", "is_edit" => 1, "is_hide" => 0, "is_active" => 1, "component_id" => 3, "component_name" => "Tunjangan Komunikasi", "salary_component_id" => 3], ["type" => "deductions", "order" => 1, "salary" => "Gaji Tetap", "is_edit" => 1, "is_hide" => 0, "is_active" => 1, "component_id" => 4, "component_name" => "Tunjangan BPJS", "salary_component_id" => 4], ["type" => "fixed pay", "order" => 4, "salary" => "Gaji Tetap", "is_edit" => 1, "is_hide" => 0, "is_active" => 1, "component_id" => 5, "component_name" => "Tunjangan Makan", "salary_component_id" => 1]]), "type_bank" => "Mandiri", "account_number" => "4450458618973462", "account_name" => "Darnell Vedyashkin", "created_at" => "2023-10-27 14=>48=>36", "updated_at" => "2023-10-27 14=>48=>36"],
+            ["employee_detail_id" => "12", "salary_detail" => json_encode([["type" => "fixed pay", "order" => 1, "salary" => "Gaji Per Jam", "is_edit" => 1, "is_hide" => 0, "is_active" => 1, "component_id" => 6, "component_name" => "Gaji Pokok", "salary_component_id" => 1], ["type" => "fixed pay", "order" => 2, "salary" => "Gaji Per Jam", "is_edit" => 1, "is_hide" => 0, "is_active" => 1, "component_id" => 7, "component_name" => "Tunjangan Transportasi", "salary_component_id" => 2], ["type" => "fixed pay", "order" => 3, "salary" => "Gaji Per Jam", "is_edit" => 1, "is_hide" => 0, "is_active" => 1, "component_id" => 8, "component_name" => "Tunjangan Komunikasi", "salary_component_id" => 3], ["type" => "fixed pay", "order" => 4, "salary" => "Gaji Per Jam", "is_edit" => 1, "is_hide" => 0, "is_active" => 1, "component_id" => 9, "component_name" => "Tunjangan Makan", "salary_component_id" => null], ["type" => "deductions", "order" => 1, "salary" => "Gaji Per Jam", "is_edit" => 1, "is_hide" => 0, "is_active" => 1, "component_id" => 10, "component_name" => "Tunjangan BPJS", "salary_component_id" => 4], ["type" => "deductions", "order" => 2, "salary" => "Gaji Per Jam", "is_edit" => 1, "is_hide" => 0, "is_active" => 1, "component_id" => 11, "component_name" => "Tunjangan Kesehatan", "salary_component_id" => null]]), "type_bank" => "Mandiri", "account_number" => "4017957768508107", "account_name" => "Darnell Vedyashkin", "created_at" => "2023-10-27 14=>49=>18", "updated_at" => "2023-10-27 14=>49=>18"],
+            ["employee_detail_id" => "13", "salary_detail" => json_encode([["type" => "fixed pay", "order" => 1, "salary" => "Gaji Tetap", "is_edit" => 1, "is_hide" => 0, "is_active" => 1, "component_id" => 1, "component_name" => "Gaji Pokok", "salary_component_id" => 1], ["type" => "fixed pay", "order" => 2, "salary" => "Gaji Tetap", "is_edit" => 1, "is_hide" => 0, "is_active" => 1, "component_id" => 2, "component_name" => "Tunjangan Transportasi", "salary_component_id" => 2], ["type" => "fixed pay", "order" => 3, "salary" => "Gaji Tetap", "is_edit" => 1, "is_hide" => 0, "is_active" => 1, "component_id" => 3, "component_name" => "Tunjangan Komunikasi", "salary_component_id" => 3], ["type" => "deductions", "order" => 1, "salary" => "Gaji Tetap", "is_edit" => 1, "is_hide" => 0, "is_active" => 1, "component_id" => 4, "component_name" => "Tunjangan BPJS", "salary_component_id" => 4], ["type" => "fixed pay", "order" => 4, "salary" => "Gaji Tetap", "is_edit" => 1, "is_hide" => 0, "is_active" => 1, "component_id" => 5, "component_name" => "Tunjangan Makan", "salary_component_id" => 1]]), "type_bank" => "Mandiri", "account_number" => "4041370045908", "account_name" => "Lizzie Del Dello", "created_at" => "2023-10-27 14=>49=>51", "updated_at" => "2023-10-27 14=>49=>51"],
+            ["employee_detail_id" => "14", "salary_detail" => json_encode([["type" => "fixed pay", "order" => 1, "salary" => "Gaji Tetap", "is_edit" => 1, "is_hide" => 0, "is_active" => 1, "component_id" => 1, "component_name" => "Gaji Pokok", "salary_component_id" => 1], ["type" => "fixed pay", "order" => 2, "salary" => "Gaji Tetap", "is_edit" => 1, "is_hide" => 0, "is_active" => 1, "component_id" => 2, "component_name" => "Tunjangan Transportasi", "salary_component_id" => 2], ["type" => "fixed pay", "order" => 3, "salary" => "Gaji Tetap", "is_edit" => 1, "is_hide" => 0, "is_active" => 1, "component_id" => 3, "component_name" => "Tunjangan Komunikasi", "salary_component_id" => 3], ["type" => "deductions", "order" => 1, "salary" => "Gaji Tetap", "is_edit" => 1, "is_hide" => 0, "is_active" => 1, "component_id" => 4, "component_name" => "Tunjangan BPJS", "salary_component_id" => 4], ["type" => "fixed pay", "order" => 4, "salary" => "Gaji Tetap", "is_edit" => 1, "is_hide" => 0, "is_active" => 1, "component_id" => 5, "component_name" => "Tunjangan Makan", "salary_component_id" => 1]]), "type_bank" => "Mandiri", "account_number" => "4017957931227296", "account_name" => "Lizzie Del Dello", "created_at" => "2023-10-27 14=>50=>16", "updated_at" => "2023-10-27 14=>50=>16"],
+            ["employee_detail_id" => "15", "salary_detail" => json_encode([["type" => "fixed pay", "order" => 1, "salary" => "Gaji Per Jam", "is_edit" => 1, "is_hide" => 0, "is_active" => 1, "component_id" => 6, "component_name" => "Gaji Pokok", "salary_component_id" => 1], ["type" => "fixed pay", "order" => 2, "salary" => "Gaji Per Jam", "is_edit" => 1, "is_hide" => 0, "is_active" => 1, "component_id" => 7, "component_name" => "Tunjangan Transportasi", "salary_component_id" => 2], ["type" => "fixed pay", "order" => 3, "salary" => "Gaji Per Jam", "is_edit" => 1, "is_hide" => 0, "is_active" => 1, "component_id" => 8, "component_name" => "Tunjangan Komunikasi", "salary_component_id" => 3], ["type" => "fixed pay", "order" => 4, "salary" => "Gaji Per Jam", "is_edit" => 1, "is_hide" => 0, "is_active" => 1, "component_id" => 9, "component_name" => "Tunjangan Makan", "salary_component_id" => null], ["type" => "deductions", "order" => 1, "salary" => "Gaji Per Jam", "is_edit" => 1, "is_hide" => 0, "is_active" => 1, "component_id" => 10, "component_name" => "Tunjangan BPJS", "salary_component_id" => 4], ["type" => "deductions", "order" => 2, "salary" => "Gaji Per Jam", "is_edit" => 1, "is_hide" => 0, "is_active" => 1, "component_id" => 11, "component_name" => "Tunjangan Kesehatan", "salary_component_id" => null]]), "type_bank" => "Mandiri", "account_number" => "4041373148329", "account_name" => "Lizzie Del Dello", "created_at" => "2023-10-27 14=>50=>40", "updated_at" => "2023-10-27 14=>50=>40"],
+            ["employee_detail_id" => "16", "salary_detail" => json_encode([["type" => "fixed pay", "order" => 1, "salary" => "Gaji Tetap", "is_edit" => 1, "is_hide" => 0, "is_active" => 1, "component_id" => 1, "component_name" => "Gaji Pokok", "salary_component_id" => 1], ["type" => "fixed pay", "order" => 2, "salary" => "Gaji Tetap", "is_edit" => 1, "is_hide" => 0, "is_active" => 1, "component_id" => 2, "component_name" => "Tunjangan Transportasi", "salary_component_id" => 2], ["type" => "fixed pay", "order" => 3, "salary" => "Gaji Tetap", "is_edit" => 1, "is_hide" => 0, "is_active" => 1, "component_id" => 3, "component_name" => "Tunjangan Komunikasi", "salary_component_id" => 3], ["type" => "deductions", "order" => 1, "salary" => "Gaji Tetap", "is_edit" => 1, "is_hide" => 0, "is_active" => 1, "component_id" => 4, "component_name" => "Tunjangan BPJS", "salary_component_id" => 4], ["type" => "fixed pay", "order" => 4, "salary" => "Gaji Tetap", "is_edit" => 1, "is_hide" => 0, "is_active" => 1, "component_id" => 5, "component_name" => "Tunjangan Makan", "salary_component_id" => 1]]), "type_bank" => "Mandiri", "account_number" => "4630357684158", "account_name" => "Paula Gorgen", "created_at" => "2023-10-27 14=>51=>42", "updated_at" => "2023-10-27 14=>51=>42"],
+            ["employee_detail_id" => "17", "salary_detail" => json_encode([["type" => "fixed pay", "order" => 1, "salary" => "Gaji Variabel", "is_edit" => 1, "is_hide" => 0, "is_active" => 1, "component_id" => 20, "component_name" => "Gaji Pokok", "salary_component_id" => 1], ["type" => "fixed pay", "order" => 2, "salary" => "Gaji Variabel", "is_edit" => 1, "is_hide" => 0, "is_active" => 1, "component_id" => 21, "component_name" => "Tunjangan Transportasi", "salary_component_id" => 2], ["type" => "fixed pay", "order" => 3, "salary" => "Gaji Variabel", "is_edit" => 1, "is_hide" => 0, "is_active" => 1, "component_id" => 22, "component_name" => "Tunjangan Komunikasi", "salary_component_id" => 3], ["type" => "deductions", "order" => 1, "salary" => "Gaji Variabel", "is_edit" => 1, "is_hide" => 0, "is_active" => 1, "component_id" => 23, "component_name" => "Tunjangan BPJS", "salary_component_id" => 4], ["type" => "fixed pay", "order" => 4, "salary" => "Gaji Variabel", "is_edit" => 1, "is_hide" => 0, "is_active" => 1, "component_id" => 24, "component_name" => "Tunjangan Makan", "salary_component_id" => null], ["type" => "deductions", "order" => 2, "salary" => "Gaji Variabel", "is_edit" => 1, "is_hide" => 0, "is_active" => 1, "component_id" => 25, "component_name" => "Tunjangan Kesehatan", "salary_component_id" => null], ["type" => "fixed pay", "order" => 3, "salary" => "Gaji Kinerja", "is_edit" => 1, "is_hide" => 0, "is_active" => 1, "component_id" => 17, "component_name" => "Tunjangan Makan", "salary_component_id" => null], ["type" => "fixed pay", "order" => 2, "salary" => "Gaji Kinerja", "is_edit" => 1, "is_hide" => 0, "is_active" => 1, "component_id" => 19, "component_name" => "Tunjangan Kesehatan", "salary_component_id" => null]]), "type_bank" => "Mandiri", "account_number" => "4630357684158", "account_name" => "Paula Gorgen", "created_at" => "2023-10-27 14=>52=>10", "updated_at" => "2023-10-27 14=>52=>10"],
+            ["employee_detail_id" => "19", "salary_detail" => json_encode([["type" => "fixed pay", "order" => 1, "salary" => "Gaji Variabel", "is_edit" => 1, "is_hide" => 0, "is_active" => 1, "component_id" => 20, "component_name" => "Gaji Pokok", "salary_component_id" => 1], ["type" => "fixed pay", "order" => 2, "salary" => "Gaji Variabel", "is_edit" => 1, "is_hide" => 0, "is_active" => 1, "component_id" => 21, "component_name" => "Tunjangan Transportasi", "salary_component_id" => 2], ["type" => "fixed pay", "order" => 3, "salary" => "Gaji Variabel", "is_edit" => 1, "is_hide" => 0, "is_active" => 1, "component_id" => 22, "component_name" => "Tunjangan Komunikasi", "salary_component_id" => 3], ["type" => "deductions", "order" => 1, "salary" => "Gaji Variabel", "is_edit" => 1, "is_hide" => 0, "is_active" => 1, "component_id" => 23, "component_name" => "Tunjangan BPJS", "salary_component_id" => 4], ["type" => "fixed pay", "order" => 4, "salary" => "Gaji Variabel", "is_edit" => 1, "is_hide" => 0, "is_active" => 1, "component_id" => 24, "component_name" => "Tunjangan Makan", "salary_component_id" => null], ["type" => "deductions", "order" => 2, "salary" => "Gaji Variabel", "is_edit" => 1, "is_hide" => 0, "is_active" => 1, "component_id" => 25, "component_name" => "Tunjangan Kesehatan", "salary_component_id" => null], ["type" => "fixed pay", "order" => 3, "salary" => "Gaji Kinerja", "is_edit" => 1, "is_hide" => 0, "is_active" => 1, "component_id" => 17, "component_name" => "Tunjangan Makan", "salary_component_id" => null], ["type" => "fixed pay", "order" => 2, "salary" => "Gaji Kinerja", "is_edit" => 1, "is_hide" => 0, "is_active" => 1, "component_id" => 19, "component_name" => "Tunjangan Kesehatan", "salary_component_id" => null]]), "type_bank" => "Mandiri", "account_number" => "4017955888230537", "account_name" => "Jaymie MacEveley", "created_at" => "2023-10-27 14=>53=>57", "updated_at" => "2023-10-27 14=>53=>57"]
         ];
 
-
-        foreach (range(1, 50) as $eligible) {
-            Eligible::create([
-                "employee_detail_id" => $faker->numberBetween(1, 10),
-                "type_bank" => "BRI",
-                "account_number" => rand(1000, 10000),
-                "account_name" => $faker->name(),
-                "salary_detail" => json_encode($json),
-            ]);
-        }
+        Eligible::insert($eligible);
     }
 }
