@@ -38,8 +38,8 @@ class DatabaseSeeder extends Seeder
             SalarySeeder::class,
             SalaryDetailSeeder::class,
             EligibleSeeder::class,
-            CompensationSeeder::class,
-            EmployeeCompensationSeeder::class,
+            // CompensationSeeder::class,
+            // EmployeeCompensationSeeder::class,
         ]);
     }
 }
