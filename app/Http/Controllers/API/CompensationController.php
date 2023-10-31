@@ -528,7 +528,7 @@ class CompensationController extends Controller
                     // }
                     foreach (json_decode($eligibleInfo) as $item2) {
                         if ($item1['component_name'] == $item2->component_name && $item1['type'] === $item2->type && $item1['salary'] === $item2->salary) {
-                            
+
                             if (isset($item2->nominal)) {
                                 $nominal = $item2->nominal;
                                 if ($item2->type == "deductions") {
@@ -540,9 +540,7 @@ class CompensationController extends Controller
                             $found = 1;
 
                             break;
-
                         }
-
                     }
 
 
@@ -700,22 +698,22 @@ class CompensationController extends Controller
 
                     // foreach (json_decode($eligibleInfo->salary_detail) as $item2) {
                     foreach ($eligibleInfo as $item2) {
-                        if ($item1['component_name'] == $item2->component_name && $item1['type'] === $item2->type && $item1['salary'] === $item2->salary) {
-                            
-                            if (isset($item2->nominal)) {
-                                $nominal = $item2->nominal;
-                                if ($item2->type == "deductions") {
-                                    $deductions += $nominal;
-                                } else {
-                                    $fixed_pay += $nominal;
+                        if (is_object($item2) && property_exists($item2, 'component_name')) {
+                            if ($item1['component_name'] == $item2->component_name && $item1['type'] === $item2->type && $item1['salary'] === $item2->salary) {
+
+                                if (isset($item2->nominal)) {
+                                    $nominal = $item2->nominal;
+                                    if ($item2->type == "deductions") {
+                                        $deductions += $nominal;
+                                    } else {
+                                        $fixed_pay += $nominal;
+                                    }
                                 }
+                                $found = 1;
+
+                                break;
                             }
-                            $found = 1;
-
-                            break;
-
                         }
-
                     }
 
 
@@ -773,14 +771,14 @@ class CompensationController extends Controller
                 'message' => 'Data tidak ditemukan',
             ], 404);
         } else {
-        
+
             $aaaa = json_decode($compensations[0]->eligible);
-                    // // Simpan detail gaji dalam format JSON
+            // // Simpan detail gaji dalam format JSON
             $salaryComponents = [];
             foreach ($request->salary_components as $detail) {
-                if ($detail['is_status'] == 1 && $detail['is_edit'] == 1 ) {
-                    foreach ( $aaaa as  $value) {
-                        if ($detail['component_name'] == $value->component_name) {
+                if ($detail['is_status'] == 1 && $detail['is_edit'] == 1) {
+                    foreach ($aaaa as  $value) {
+                        if (is_object($value) && property_exists($value, 'component_name') && $detail['component_name'] == $value->component_name) {
                             $value->nominal = $detail['nominal'];
                             // break;
                         }
@@ -802,9 +800,7 @@ class CompensationController extends Controller
                 'message' => 'Karyawan berhasil diubah',
                 'data' => json_decode($updatedEligibleJson),
             ], 200);
-            
         }
-        
     }
 
     public function printEmployee()
