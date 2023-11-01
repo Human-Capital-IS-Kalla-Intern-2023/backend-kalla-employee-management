@@ -14,150 +14,172 @@ class EmployeeCompensationSeeder extends Seeder
      */
     public function run(): void
     {
-        $faker = FakerFactory::create();
+        $compensationEmployee = [
 
-        $employee = [
-            "nip" => $faker->numberBetween(1, 100),
-            "fullname" => $faker->name(),
-            "nickname" => $faker->firstName(),
-            "hire_date" => $faker->date(),
-            "company_email" => $faker->unique()->companyEmail(),
-        ];
-
-        $position = [
             [
-                [
-                    'position_name' => 'Human Resources Coordinator',
-                    'company_id' => rand(1, 10),
-                    'directorat_id' => rand(1, 10),
-                    'division_id' => rand(1, 5),
-                    'section_id' => rand(1, 5),
-                    'job_grade_id' => rand(1, 5),
-                    'created_at' => date('Y-m-d H:i:s', time()),
-                    'updated_at' => date('Y-m-d H:i:s', time()),
-                ],
-                [
-                    'position_name' => 'IT Support Specialist',
-                    'company_id' => rand(1, 10),
-                    'directorat_id' => rand(1, 10),
-                    'division_id' => rand(1, 10),
-                    'section_id' => rand(1, 10),
-                    'job_grade_id' => rand(1, 5),
-                    'created_at' => date('Y-m-d H:i:s', time()),
-                    'updated_at' => date('Y-m-d H:i:s', time()),
-                ],
-                [
-                    'position_name' => 'Research Analyst',
-                    'company_id' => rand(1, 10),
-                    'directorat_id' => rand(1, 10),
-                    'division_id' => rand(1, 10),
-                    'section_id' => rand(1, 10),
-                    'job_grade_id' => rand(1, 5),
-                    'created_at' => date('Y-m-d H:i:s', time()),
-                    'updated_at' => date('Y-m-d H:i:s', time()),
-                ],
-                [
-                    'position_name' => 'Staff IT',
-                    'company_id' => rand(1, 10),
-                    'directorat_id' => rand(1, 10),
-                    'division_id' => rand(1, 10),
-                    'section_id' => rand(1, 10),
-                    'job_grade' => rand(1, 5),
-                    'created_at' => date('Y-m-d H:i:s', time()),
-                    'updated_at' => date('Y-m-d H:i:s', time()),
-                ],
-                [
-                    'position_name' => 'Teknisi',
-                    'company_id' => rand(1, 10),
-                    'directorat_id' => rand(1, 10),
-                    'division_id' => rand(1, 10),
-                    'section_id' => rand(1, 10),
-                    'job_grade_id' => rand(1, 5),
-                    'created_at' => date('Y-m-d H:i:s', time()),
-                    'updated_at' => date('Y-m-d H:i:s', time()),
-                ],
-                [
-                    'position_name' => 'Manager',
-                    'company_id' => rand(1, 10),
-                    'directorat_id' => rand(1, 10),
-                    'division_id' => rand(1, 10),
-                    'section_id' => rand(1, 10),
-                    'job_grade_id' => rand(1, 5),
-                    'created_at' => date('Y-m-d H:i:s', time()),
-                    'updated_at' => date('Y-m-d H:i:s', time()),
-                ],
+                "compensations_id" => "1", "employee" => json_encode(["id" => 1, "nip" => "3164111169", "fullname" => "Willa Camm", "nickname" => "Willa", "hire_date" => "2020-08-17",    "company_email" => "wcamm0@simplemachines.org"]),
+                "position" => json_encode(["id" => 1, "company_id" => 1,  "grade_name" => "Grade D", "section_id" => 4,  "division_id" => 10, "location_id" => null, "company_name" => "KALLA TOYOTA", "job_grade_id" => 4, "section_name" => "Marketing", "directorat_id" => 9, "division_name" => "Perencanaan", "location_name" => "Kalimantan Tengah", "position_name" => "Software Engineer III", "directorat_name" => "Direktorat Hubungan Masyarakat"]),
+                "eligible" => json_encode([["type" => "fixed pay", "order" => 1, "salary" => "Gaji Tetap", "is_edit" => 1, "is_hide" => 0, "is_active" => 1, "component_id" => 1, "component_name" => "Gaji Pokok", "salary_component_id" => 1], ["type" => "fixed pay", "order" => 2, "salary" => "Gaji Tetap", "is_edit" => 1, "is_hide" => 0, "is_active" => 1, "component_id" => 2, "component_name" => "Tunjangan Transportasi", "salary_component_id" => 2], ["type" => "fixed pay", "order" => 3, "salary" => "Gaji Tetap", "is_edit" => 1, "is_hide" => 0, "is_active" => 1, "component_id" => 3, "component_name" => "Tunjangan Komunikasi", "salary_component_id" => 3], ["type" => "deductions", "order" => 1, "salary" => "Gaji Tetap", "is_edit" => 1, "is_hide" => 0, "is_active" => 1, "component_id" => 4, "component_name" => "Tunjangan BPJS", "salary_component_id" => 4], ["type" => "fixed pay", "order" => 4, "salary" => "Gaji Tetap", "is_edit" => 1, "is_hide" => 0, "is_active" => 1, "component_id" => 5, "component_name" => "Tunjangan Makan", "salary_component_id" => 1]]),
+                "created_at" => date('Y-m-d H:i:s', time()), "updated_at" => date('Y-m-d H:i:s', time())
             ],
-        ];
 
-        $eligible = [
             [
-                "employee_detail_id" => $faker->numberBetween(1, 10),
-                "type_bank" => "BRI",
-                "account_number" => rand(1000, 10000),
-                "account_name" => $faker->name(),
-                "salary_detail" => [
-                    [
-                        "component_id" => 1,
-                        "order" => 1,
-                        "component_name" => "Gaji Pokok",
-                        "type" => "fixed pay",
-                        "is_hide" => 0,
-                        "is_edit" => 1,
-                        "is_active" => 1,
-                        "is_status" => 1
-                    ],
-                    [
-                        "component_id" => 1,
-                        "order" => 2,
-                        "component_name" => "Tunjangan Transportasi",
-                        "type" => "fixed pay",
-                        "is_hide" => 0,
-                        "is_edit" => 1,
-                        "is_active" => 1,
-                        "is_status" => 1,
-                    ],
-                    [
-                        "component_id" => 1,
-                        "order" => 3,
-                        "component_name" => "Tunjangan Komunikasi",
-                        "type" => "fixed pay",
-                        "is_hide" => 0,
-                        "is_edit" => 1,
-                        "is_active" => 1,
-                        "is_status" => 1
-                    ],
-                    [
-                        "component_id" => 1,
-                        "order" => 1,
-                        "component_name" => "Tunjangan BPJS",
-                        "type" => "deductions",
-                        "is_hide" => 0,
-                        "is_edit" => 1,
-                        "is_active" => 1,
-                        "is_status" => 1
-                    ],
-                    [
-                        "component_id" => 1,
-                        "order" => 2,
-                        "component_name" => "Gaji Makan",
-                        "type" => "fixed pay",
-                        "is_hide" => 0,
-                        "is_edit" => 1,
-                        "is_active" => 1,
-                        "is_status" => 1
-                    ]
-                ],
+                "compensations_id" => "1", "employee" => json_encode(["id" => 2, "nip" => "8722726373", "fullname" => "Dennis Peret", "nickname" => "Dennis", "hire_date" => "2024-02-03",    "company_email" => "dperet1@domainmarket.com"]),
+                "position" => json_encode(["id" => 1, "company_id" => 1,  "grade_name" => "Grade D", "section_id" => 4,  "division_id" => 10, "location_id" => null, "company_name" => "KALLA TOYOTA", "job_grade_id" => 4, "section_name" => "Marketing", "directorat_id" => 9, "division_name" => "Perencanaan", "location_name" => "Kalimantan Tengah", "position_name" => "Software Engineer III", "directorat_name" => "Direktorat Hubungan Masyarakat"]),
+                "eligible" => json_encode([["type" => "fixed pay", "order" => 1, "salary" => "Gaji Tetap", "is_edit" => 1, "is_hide" => 0, "is_active" => 1, "component_id" => 1, "component_name" => "Gaji Pokok", "salary_component_id" => 1], ["type" => "fixed pay", "order" => 2, "salary" => "Gaji Tetap", "is_edit" => 1, "is_hide" => 0, "is_active" => 1, "component_id" => 2, "component_name" => "Tunjangan Transportasi", "salary_component_id" => 2], ["type" => "fixed pay", "order" => 3, "salary" => "Gaji Tetap", "is_edit" => 1, "is_hide" => 0, "is_active" => 1, "component_id" => 3, "component_name" => "Tunjangan Komunikasi", "salary_component_id" => 3], ["type" => "deductions", "order" => 1, "salary" => "Gaji Tetap", "is_edit" => 1, "is_hide" => 0, "is_active" => 1, "component_id" => 4, "component_name" => "Tunjangan BPJS", "salary_component_id" => 4], ["type" => "fixed pay", "order" => 4, "salary" => "Gaji Tetap", "is_edit" => 1, "is_hide" => 0, "is_active" => 1, "component_id" => 5, "component_name" => "Tunjangan Makan", "salary_component_id" => 1]]),
+                "created_at" => date('Y-m-d H:i:s', time()), "updated_at" => date('Y-m-d H:i:s', time())
             ],
+
+            [
+                "compensations_id" => "1", "employee" => json_encode(["id" => 3, "nip" => "0061383562", "fullname" => "Tybalt Camacke", "nickname" => "Tybalt", "hire_date" => "2023-07-08",    "company_email" => "tcamacke2@auda.org.au"]),
+                "position" => json_encode(["id" => 1, "company_id" => 1,  "grade_name" => "Grade D", "section_id" => 4,  "division_id" => 10, "location_id" => null, "company_name" => "KALLA TOYOTA", "job_grade_id" => 4, "section_name" => "Marketing", "directorat_id" => 9, "division_name" => "Perencanaan", "location_name" => "Kalimantan Tengah", "position_name" => "Software Engineer III", "directorat_name" => "Direktorat Hubungan Masyarakat"]),
+                "eligible" => json_encode([["type" => "fixed pay", "order" => 1, "salary" => "Gaji Tetap", "is_edit" => 1, "is_hide" => 0, "is_active" => 1, "component_id" => 1, "component_name" => "Gaji Pokok", "salary_component_id" => 1], ["type" => "fixed pay", "order" => 2, "salary" => "Gaji Tetap", "is_edit" => 1, "is_hide" => 0, "is_active" => 1, "component_id" => 2, "component_name" => "Tunjangan Transportasi", "salary_component_id" => 2], ["type" => "fixed pay", "order" => 3, "salary" => "Gaji Tetap", "is_edit" => 1, "is_hide" => 0, "is_active" => 1, "component_id" => 3, "component_name" => "Tunjangan Komunikasi", "salary_component_id" => 3], ["type" => "deductions", "order" => 1, "salary" => "Gaji Tetap", "is_edit" => 1, "is_hide" => 0, "is_active" => 1, "component_id" => 4, "component_name" => "Tunjangan BPJS", "salary_component_id" => 4], ["type" => "fixed pay", "order" => 4, "salary" => "Gaji Tetap", "is_edit" => 1, "is_hide" => 0, "is_active" => 1, "component_id" => 5, "component_name" => "Tunjangan Makan", "salary_component_id" => 1]]),
+                "created_at" => date('Y-m-d H:i:s', time()), "updated_at" => date('Y-m-d H:i:s', time())
+            ],
+
+            [
+                "compensations_id" => "1", "employee" => json_encode(["id" => 4, "nip" => "3631579713", "fullname" => "Darnell Vedyashkin", "nickname" => "Darnell", "hire_date" => "2024-01-27",    "company_email" => "dvedyashkin3@webeden.co.uk"]),
+                "position" => json_encode(["id" => 1, "company_id" => 1,  "grade_name" => "Grade D", "section_id" => 4,  "division_id" => 10, "location_id" => null, "company_name" => "KALLA TOYOTA", "job_grade_id" => 4, "section_name" => "Marketing", "directorat_id" => 9, "division_name" => "Perencanaan", "location_name" => "Kalimantan Tengah", "position_name" => "Software Engineer III", "directorat_name" => "Direktorat Hubungan Masyarakat"]),
+                "eligible" => json_encode([["type" => "fixed pay", "order" => 1, "salary" => "Gaji Tetap", "is_edit" => 1, "is_hide" => 0, "is_active" => 1, "component_id" => 1, "component_name" => "Gaji Pokok", "salary_component_id" => 1], ["type" => "fixed pay", "order" => 2, "salary" => "Gaji Tetap", "is_edit" => 1, "is_hide" => 0, "is_active" => 1, "component_id" => 2, "component_name" => "Tunjangan Transportasi", "salary_component_id" => 2], ["type" => "fixed pay", "order" => 3, "salary" => "Gaji Tetap", "is_edit" => 1, "is_hide" => 0, "is_active" => 1, "component_id" => 3, "component_name" => "Tunjangan Komunikasi", "salary_component_id" => 3], ["type" => "deductions", "order" => 1, "salary" => "Gaji Tetap", "is_edit" => 1, "is_hide" => 0, "is_active" => 1, "component_id" => 4, "component_name" => "Tunjangan BPJS", "salary_component_id" => 4], ["type" => "fixed pay", "order" => 4, "salary" => "Gaji Tetap", "is_edit" => 1, "is_hide" => 0, "is_active" => 1, "component_id" => 5, "component_name" => "Tunjangan Makan", "salary_component_id" => 1]]),
+                "created_at" => date('Y-m-d H:i:s', time()), "updated_at" => date('Y-m-d H:i:s', time())
+            ],
+
+            [
+                "compensations_id" => "1", "employee" => json_encode(["id" => 5, "nip" => "1588558398", "fullname" => "Lizzie Del Dello", "nickname" => "Lizzie", "hire_date" => "2024-08-24",    "company_email" => "ldel4@intel.com"]),
+                "position" => json_encode(["id" => 1, "company_id" => 1,  "grade_name" => "Grade D", "section_id" => 4,  "division_id" => 10, "location_id" => null, "company_name" => "KALLA TOYOTA", "job_grade_id" => 4, "section_name" => "Marketing", "directorat_id" => 9, "division_name" => "Perencanaan", "location_name" => "Kalimantan Tengah", "position_name" => "Software Engineer III", "directorat_name" => "Direktorat Hubungan Masyarakat"]),
+                "eligible" => json_encode([["type" => "fixed pay", "order" => 1, "salary" => "Gaji Tetap", "is_edit" => 1, "is_hide" => 0, "is_active" => 1, "component_id" => 1, "component_name" => "Gaji Pokok", "salary_component_id" => 1], ["type" => "fixed pay", "order" => 2, "salary" => "Gaji Tetap", "is_edit" => 1, "is_hide" => 0, "is_active" => 1, "component_id" => 2, "component_name" => "Tunjangan Transportasi", "salary_component_id" => 2], ["type" => "fixed pay", "order" => 3, "salary" => "Gaji Tetap", "is_edit" => 1, "is_hide" => 0, "is_active" => 1, "component_id" => 3, "component_name" => "Tunjangan Komunikasi", "salary_component_id" => 3], ["type" => "deductions", "order" => 1, "salary" => "Gaji Tetap", "is_edit" => 1, "is_hide" => 0, "is_active" => 1, "component_id" => 4, "component_name" => "Tunjangan BPJS", "salary_component_id" => 4], ["type" => "fixed pay", "order" => 4, "salary" => "Gaji Tetap", "is_edit" => 1, "is_hide" => 0, "is_active" => 1, "component_id" => 5, "component_name" => "Tunjangan Makan", "salary_component_id" => 1]]),
+                "created_at" => date('Y-m-d H:i:s', time()), "updated_at" => date('Y-m-d H:i:s', time())
+            ],
+
+            [
+                "compensations_id" => "1", "employee" => json_encode(["id" => 6, "nip" => "4117140485", "fullname" => "Paula Gorgen", "nickname" => "Paula", "hire_date" => "2020-03-16",    "company_email" => "pgorgen5@sciencedirect.com"]),
+                "position" => json_encode(["id" => 1, "company_id" => 1,  "grade_name" => "Grade D", "section_id" => 4,  "division_id" => 10, "location_id" => null, "company_name" => "KALLA TOYOTA", "job_grade_id" => 4, "section_name" => "Marketing", "directorat_id" => 9, "division_name" => "Perencanaan", "location_name" => "Kalimantan Tengah", "position_name" => "Software Engineer III", "directorat_name" => "Direktorat Hubungan Masyarakat"]),
+                "eligible" => json_encode([["type" => "fixed pay", "order" => 1, "salary" => "Gaji Tetap", "is_edit" => 1, "is_hide" => 0, "is_active" => 1, "component_id" => 1, "component_name" => "Gaji Pokok", "salary_component_id" => 1], ["type" => "fixed pay", "order" => 2, "salary" => "Gaji Tetap", "is_edit" => 1, "is_hide" => 0, "is_active" => 1, "component_id" => 2, "component_name" => "Tunjangan Transportasi", "salary_component_id" => 2], ["type" => "fixed pay", "order" => 3, "salary" => "Gaji Tetap", "is_edit" => 1, "is_hide" => 0, "is_active" => 1, "component_id" => 3, "component_name" => "Tunjangan Komunikasi", "salary_component_id" => 3], ["type" => "deductions", "order" => 1, "salary" => "Gaji Tetap", "is_edit" => 1, "is_hide" => 0, "is_active" => 1, "component_id" => 4, "component_name" => "Tunjangan BPJS", "salary_component_id" => 4], ["type" => "fixed pay", "order" => 4, "salary" => "Gaji Tetap", "is_edit" => 1, "is_hide" => 0, "is_active" => 1, "component_id" => 5, "component_name" => "Tunjangan Makan", "salary_component_id" => 1]]),
+                "created_at" => date('Y-m-d H:i:s', time()), "updated_at" => date('Y-m-d H:i:s', time())
+            ],
+
+            [
+                "compensations_id" => "1", "employee" => json_encode(["id" => 1, "nip" => "3164111169", "fullname" => "Willa Camm", "nickname" => "Willa", "hire_date" => "2020-08-17",    "company_email" => "wcamm0@simplemachines.org"]),
+                "position" => json_encode(["id" => 2, "company_id" => 1,  "grade_name" => "Grade B", "section_id" => 19,  "division_id" => 4, "location_id" => null, "company_name" => "KALLA TOYOTA", "job_grade_id" => 2, "section_name" => "Legal Affairs Division", "directorat_id" => 18, "division_name" => "Marketing", "location_name" => "Kalimantan Tengah", "position_name" => "VP Quality Control", "directorat_name" => "Customer Support"]),
+                "eligible" => json_encode([["type" => "fixed pay", "order" => 1, "salary" => "Gaji Tetap", "is_edit" => 1, "is_hide" => 0, "is_active" => 1, "component_id" => 1, "component_name" => "Gaji Pokok", "salary_component_id" => 1], ["type" => "fixed pay", "order" => 2, "salary" => "Gaji Tetap", "is_edit" => 1, "is_hide" => 0, "is_active" => 1, "component_id" => 2, "component_name" => "Tunjangan Transportasi", "salary_component_id" => 2], ["type" => "fixed pay", "order" => 3, "salary" => "Gaji Tetap", "is_edit" => 1, "is_hide" => 0, "is_active" => 1, "component_id" => 3, "component_name" => "Tunjangan Komunikasi", "salary_component_id" => 3], ["type" => "deductions", "order" => 1, "salary" => "Gaji Tetap", "is_edit" => 1, "is_hide" => 0, "is_active" => 1, "component_id" => 4, "component_name" => "Tunjangan BPJS", "salary_component_id" => 4], ["type" => "fixed pay", "order" => 4, "salary" => "Gaji Tetap", "is_edit" => 1, "is_hide" => 0, "is_active" => 1, "component_id" => 5, "component_name" => "Tunjangan Makan", "salary_component_id" => 1]]),
+                "created_at" => date('Y-m-d H:i:s', time()), "updated_at" => date('Y-m-d H:i:s', time())
+            ],
+
+            [
+                "compensations_id" => "1", "employee" => json_encode(["id" => 2, "nip" => "8722726373", "fullname" => "Dennis Peret", "nickname" => "Dennis", "hire_date" => "2024-02-03",    "company_email" => "dperet1@domainmarket.com"]),
+                "position" => json_encode(["id" => 2, "company_id" => 1,  "grade_name" => "Grade B", "section_id" => 19,  "division_id" => 4, "location_id" => null, "company_name" => "KALLA TOYOTA", "job_grade_id" => 2, "section_name" => "Legal Affairs Division", "directorat_id" => 18, "division_name" => "Marketing", "location_name" => "Kalimantan Tengah", "position_name" => "VP Quality Control", "directorat_name" => "Customer Support"]),
+                "eligible" => json_encode([["type" => "fixed pay", "order" => 1, "salary" => "Gaji Tetap", "is_edit" => 1, "is_hide" => 0, "is_active" => 1, "component_id" => 1, "component_name" => "Gaji Pokok", "salary_component_id" => 1], ["type" => "fixed pay", "order" => 2, "salary" => "Gaji Tetap", "is_edit" => 1, "is_hide" => 0, "is_active" => 1, "component_id" => 2, "component_name" => "Tunjangan Transportasi", "salary_component_id" => 2], ["type" => "fixed pay", "order" => 3, "salary" => "Gaji Tetap", "is_edit" => 1, "is_hide" => 0, "is_active" => 1, "component_id" => 3, "component_name" => "Tunjangan Komunikasi", "salary_component_id" => 3], ["type" => "deductions", "order" => 1, "salary" => "Gaji Tetap", "is_edit" => 1, "is_hide" => 0, "is_active" => 1, "component_id" => 4, "component_name" => "Tunjangan BPJS", "salary_component_id" => 4], ["type" => "fixed pay", "order" => 4, "salary" => "Gaji Tetap", "is_edit" => 1, "is_hide" => 0, "is_active" => 1, "component_id" => 5, "component_name" => "Tunjangan Makan", "salary_component_id" => 1]]),
+                "created_at" => date('Y-m-d H:i:s', time()), "updated_at" => date('Y-m-d H:i:s', time())
+            ],
+
+            [
+                "compensations_id" => "1", "employee" => json_encode(["id" => 3, "nip" => "0061383562", "fullname" => "Tybalt Camacke", "nickname" => "Tybalt", "hire_date" => "2023-07-08",    "company_email" => "tcamacke2@auda.org.au"]),
+                "position" => json_encode(["id" => 2, "company_id" => 1,  "grade_name" => "Grade B", "section_id" => 19,  "division_id" => 4, "location_id" => null, "company_name" => "KALLA TOYOTA", "job_grade_id" => 2, "section_name" => "Legal Affairs Division", "directorat_id" => 18, "division_name" => "Marketing", "location_name" => "Kalimantan Tengah", "position_name" => "VP Quality Control", "directorat_name" => "Customer Support"]),
+                "eligible" => json_encode([["type" => "fixed pay", "order" => 1, "salary" => "Gaji Tetap", "is_edit" => 1, "is_hide" => 0, "is_active" => 1, "component_id" => 1, "component_name" => "Gaji Pokok", "salary_component_id" => 1], ["type" => "fixed pay", "order" => 2, "salary" => "Gaji Tetap", "is_edit" => 1, "is_hide" => 0, "is_active" => 1, "component_id" => 2, "component_name" => "Tunjangan Transportasi", "salary_component_id" => 2], ["type" => "fixed pay", "order" => 3, "salary" => "Gaji Tetap", "is_edit" => 1, "is_hide" => 0, "is_active" => 1, "component_id" => 3, "component_name" => "Tunjangan Komunikasi", "salary_component_id" => 3], ["type" => "deductions", "order" => 1, "salary" => "Gaji Tetap", "is_edit" => 1, "is_hide" => 0, "is_active" => 1, "component_id" => 4, "component_name" => "Tunjangan BPJS", "salary_component_id" => 4], ["type" => "fixed pay", "order" => 4, "salary" => "Gaji Tetap", "is_edit" => 1, "is_hide" => 0, "is_active" => 1, "component_id" => 5, "component_name" => "Tunjangan Makan", "salary_component_id" => 1]]),
+                "created_at" => date('Y-m-d H:i:s', time()), "updated_at" => date('Y-m-d H:i:s', time())
+            ],
+
+            [
+                "compensations_id" => "1", "employee" => json_encode(["id" => 4, "nip" => "3631579713", "fullname" => "Darnell Vedyashkin", "nickname" => "Darnell", "hire_date" => "2024-01-27",    "company_email" => "dvedyashkin3@webeden.co.uk"]),
+                "position" => json_encode(["id" => 2, "company_id" => 1,  "grade_name" => "Grade B", "section_id" => 19,  "division_id" => 4, "location_id" => null, "company_name" => "KALLA TOYOTA", "job_grade_id" => 2, "section_name" => "Legal Affairs Division", "directorat_id" => 18, "division_name" => "Marketing", "location_name" => "Kalimantan Tengah", "position_name" => "VP Quality Control", "directorat_name" => "Customer Support"]),
+                "eligible" => json_encode([["type" => "fixed pay", "order" => 1, "salary" => "Gaji Tetap", "is_edit" => 1, "is_hide" => 0, "is_active" => 1, "component_id" => 1, "component_name" => "Gaji Pokok", "salary_component_id" => 1], ["type" => "fixed pay", "order" => 2, "salary" => "Gaji Tetap", "is_edit" => 1, "is_hide" => 0, "is_active" => 1, "component_id" => 2, "component_name" => "Tunjangan Transportasi", "salary_component_id" => 2], ["type" => "fixed pay", "order" => 3, "salary" => "Gaji Tetap", "is_edit" => 1, "is_hide" => 0, "is_active" => 1, "component_id" => 3, "component_name" => "Tunjangan Komunikasi", "salary_component_id" => 3], ["type" => "deductions", "order" => 1, "salary" => "Gaji Tetap", "is_edit" => 1, "is_hide" => 0, "is_active" => 1, "component_id" => 4, "component_name" => "Tunjangan BPJS", "salary_component_id" => 4], ["type" => "fixed pay", "order" => 4, "salary" => "Gaji Tetap", "is_edit" => 1, "is_hide" => 0, "is_active" => 1, "component_id" => 5, "component_name" => "Tunjangan Makan", "salary_component_id" => 1]]),
+                "created_at" => date('Y-m-d H:i:s', time()), "updated_at" => date('Y-m-d H:i:s', time())
+            ],
+
+            [
+                "compensations_id" => "1", "employee" => json_encode(["id" => 5, "nip" => "1588558398", "fullname" => "Lizzie Del Dello", "nickname" => "Lizzie", "hire_date" => "2024-08-24",    "company_email" => "ldel4@intel.com"]),
+                "position" => json_encode(["id" => 2, "company_id" => 1,  "grade_name" => "Grade B", "section_id" => 19,  "division_id" => 4, "location_id" => null, "company_name" => "KALLA TOYOTA", "job_grade_id" => 2, "section_name" => "Legal Affairs Division", "directorat_id" => 18, "division_name" => "Marketing", "location_name" => "Kalimantan Tengah", "position_name" => "VP Quality Control", "directorat_name" => "Customer Support"]),
+                "eligible" => json_encode([["type" => "fixed pay", "order" => 1, "salary" => "Gaji Tetap", "is_edit" => 1, "is_hide" => 0, "is_active" => 1, "component_id" => 1, "component_name" => "Gaji Pokok", "salary_component_id" => 1], ["type" => "fixed pay", "order" => 2, "salary" => "Gaji Tetap", "is_edit" => 1, "is_hide" => 0, "is_active" => 1, "component_id" => 2, "component_name" => "Tunjangan Transportasi", "salary_component_id" => 2], ["type" => "fixed pay", "order" => 3, "salary" => "Gaji Tetap", "is_edit" => 1, "is_hide" => 0, "is_active" => 1, "component_id" => 3, "component_name" => "Tunjangan Komunikasi", "salary_component_id" => 3], ["type" => "deductions", "order" => 1, "salary" => "Gaji Tetap", "is_edit" => 1, "is_hide" => 0, "is_active" => 1, "component_id" => 4, "component_name" => "Tunjangan BPJS", "salary_component_id" => 4], ["type" => "fixed pay", "order" => 4, "salary" => "Gaji Tetap", "is_edit" => 1, "is_hide" => 0, "is_active" => 1, "component_id" => 5, "component_name" => "Tunjangan Makan", "salary_component_id" => 1]]),
+                "created_at" => date('Y-m-d H:i:s', time()), "updated_at" => date('Y-m-d H:i:s', time())
+            ],
+
+            [
+                "compensations_id" => "1", "employee" => json_encode(["id" => 1, "nip" => "3164111169", "fullname" => "Willa Camm", "nickname" => "Willa", "hire_date" => "2020-08-17",    "company_email" => "wcamm0@simplemachines.org"]),
+                "position" => json_encode(["id" => 3, "company_id" => 1,  "grade_name" => "Grade E", "section_id" => 11,  "division_id" => 1, "location_id" => null, "company_name" => "KALLA TOYOTA", "job_grade_id" => 5, "section_name" => "Sales Team", "directorat_id" => 4, "division_name" => "CICT", "location_name" => "Kalimantan Tengah", "position_name" => "Registered Nurse", "directorat_name" => "Direktorat Produksi"]),
+                "eligible" => json_encode([["type" => "fixed pay", "order" => 1, "salary" => "Gaji Tetap", "is_edit" => 1, "is_hide" => 0, "is_active" => 1, "component_id" => 1, "component_name" => "Gaji Pokok", "salary_component_id" => 1], ["type" => "fixed pay", "order" => 2, "salary" => "Gaji Tetap", "is_edit" => 1, "is_hide" => 0, "is_active" => 1, "component_id" => 2, "component_name" => "Tunjangan Transportasi", "salary_component_id" => 2], ["type" => "fixed pay", "order" => 3, "salary" => "Gaji Tetap", "is_edit" => 1, "is_hide" => 0, "is_active" => 1, "component_id" => 3, "component_name" => "Tunjangan Komunikasi", "salary_component_id" => 3], ["type" => "deductions", "order" => 1, "salary" => "Gaji Tetap", "is_edit" => 1, "is_hide" => 0, "is_active" => 1, "component_id" => 4, "component_name" => "Tunjangan BPJS", "salary_component_id" => 4], ["type" => "fixed pay", "order" => 4, "salary" => "Gaji Tetap", "is_edit" => 1, "is_hide" => 0, "is_active" => 1, "component_id" => 5, "component_name" => "Tunjangan Makan", "salary_component_id" => 1]]),
+                "created_at" => date('Y-m-d H:i:s', time()), "updated_at" => date('Y-m-d H:i:s', time())
+            ],
+
+            [
+                "compensations_id" => "1", "employee" => json_encode(["id" => 2, "nip" => "8722726373", "fullname" => "Dennis Peret", "nickname" => "Dennis", "hire_date" => "2024-02-03",    "company_email" => "dperet1@domainmarket.com"]),
+                "position" => json_encode(["id" => 3, "company_id" => 1,  "grade_name" => "Grade E", "section_id" => 11,  "division_id" => 1, "location_id" => null, "company_name" => "KALLA TOYOTA", "job_grade_id" => 5, "section_name" => "Sales Team", "directorat_id" => 4, "division_name" => "CICT", "location_name" => "Kalimantan Tengah", "position_name" => "Registered Nurse", "directorat_name" => "Direktorat Produksi"]),
+                "eligible" => json_encode([["type" => "fixed pay", "order" => 1, "salary" => "Gaji Tetap", "is_edit" => 1, "is_hide" => 0, "is_active" => 1, "component_id" => 1, "component_name" => "Gaji Pokok", "salary_component_id" => 1], ["type" => "fixed pay", "order" => 2, "salary" => "Gaji Tetap", "is_edit" => 1, "is_hide" => 0, "is_active" => 1, "component_id" => 2, "component_name" => "Tunjangan Transportasi", "salary_component_id" => 2], ["type" => "fixed pay", "order" => 3, "salary" => "Gaji Tetap", "is_edit" => 1, "is_hide" => 0, "is_active" => 1, "component_id" => 3, "component_name" => "Tunjangan Komunikasi", "salary_component_id" => 3], ["type" => "deductions", "order" => 1, "salary" => "Gaji Tetap", "is_edit" => 1, "is_hide" => 0, "is_active" => 1, "component_id" => 4, "component_name" => "Tunjangan BPJS", "salary_component_id" => 4], ["type" => "fixed pay", "order" => 4, "salary" => "Gaji Tetap", "is_edit" => 1, "is_hide" => 0, "is_active" => 1, "component_id" => 5, "component_name" => "Tunjangan Makan", "salary_component_id" => 1]]),
+                "created_at" => date('Y-m-d H:i:s', time()), "updated_at" => date('Y-m-d H:i:s', time())
+            ],
+
+            [
+                "compensations_id" => "2", "employee" => json_encode(["id" => 3, "nip" => "0061383562", "fullname" => "Tybalt Camacke", "nickname" => "Tybalt", "hire_date" => "2023-07-08",    "company_email" => "tcamacke2@auda.org.au"]),
+                "position" => json_encode(["id" => 5, "company_id" => 2,  "grade_name" => "Grade A", "section_id" => 16,  "division_id" => 20, "location_id" => null, "company_name" => "KALLA KARS", "job_grade_id" => 1, "section_name" => "Finance Department", "directorat_id" => 16, "division_name" => "Services", "location_name" => "Kepulauan Bangka Belitung", "position_name" => "Analog Circuit Design manager", "directorat_name" => "Research and Development"]),
+                "eligible" => json_encode([["type" => "fixed pay", "order" => 1, "salary" => "Gaji Per Jam", "is_edit" => 1, "is_hide" => 0, "is_active" => 1, "component_id" => 6, "component_name" => "Gaji Pokok", "salary_component_id" => 1], ["type" => "fixed pay", "order" => 2, "salary" => "Gaji Per Jam", "is_edit" => 1, "is_hide" => 0, "is_active" => 1, "component_id" => 7, "component_name" => "Tunjangan Transportasi", "salary_component_id" => 2], ["type" => "fixed pay", "order" => 3, "salary" => "Gaji Per Jam", "is_edit" => 1, "is_hide" => 0, "is_active" => 1, "component_id" => 8, "component_name" => "Tunjangan Komunikasi", "salary_component_id" => 3], ["type" => "fixed pay", "order" => 4, "salary" => "Gaji Per Jam", "is_edit" => 1, "is_hide" => 0, "is_active" => 1, "component_id" => 9, "component_name" => "Tunjangan Makan", "salary_component_id" => null], ["type" => "deductions", "order" => 1, "salary" => "Gaji Per Jam", "is_edit" => 1, "is_hide" => 0, "is_active" => 1, "component_id" => 10, "component_name" => "Tunjangan BPJS", "salary_component_id" => 4], ["type" => "deductions", "order" => 2, "salary" => "Gaji Per Jam", "is_edit" => 1, "is_hide" => 0, "is_active" => 1, "component_id" => 11, "component_name" => "Tunjangan Kesehatan", "salary_component_id" => null]]),
+                "created_at" => date('Y-m-d H:i:s', time()), "updated_at" => date('Y-m-d H:i:s', time())
+            ],
+
+            [
+                "compensations_id" => "2", "employee" => json_encode(["id" => 4, "nip" => "3631579713", "fullname" => "Darnell Vedyashkin", "nickname" => "Darnell", "hire_date" => "2024-01-27",    "company_email" => "dvedyashkin3@webeden.co.uk"]),
+                "position" => json_encode(["id" => 5, "company_id" => 2,  "grade_name" => "Grade A", "section_id" => 16,  "division_id" => 20, "location_id" => null, "company_name" => "KALLA KARS", "job_grade_id" => 1, "section_name" => "Finance Department", "directorat_id" => 16, "division_name" => "Services", "location_name" => "Kepulauan Bangka Belitung", "position_name" => "Analog Circuit Design manager", "directorat_name" => "Research and Development"]),
+                "eligible" => json_encode([["type" => "fixed pay", "order" => 1, "salary" => "Gaji Per Jam", "is_edit" => 1, "is_hide" => 0, "is_active" => 1, "component_id" => 6, "component_name" => "Gaji Pokok", "salary_component_id" => 1], ["type" => "fixed pay", "order" => 2, "salary" => "Gaji Per Jam", "is_edit" => 1, "is_hide" => 0, "is_active" => 1, "component_id" => 7, "component_name" => "Tunjangan Transportasi", "salary_component_id" => 2], ["type" => "fixed pay", "order" => 3, "salary" => "Gaji Per Jam", "is_edit" => 1, "is_hide" => 0, "is_active" => 1, "component_id" => 8, "component_name" => "Tunjangan Komunikasi", "salary_component_id" => 3], ["type" => "fixed pay", "order" => 4, "salary" => "Gaji Per Jam", "is_edit" => 1, "is_hide" => 0, "is_active" => 1, "component_id" => 9, "component_name" => "Tunjangan Makan", "salary_component_id" => null], ["type" => "deductions", "order" => 1, "salary" => "Gaji Per Jam", "is_edit" => 1, "is_hide" => 0, "is_active" => 1, "component_id" => 10, "component_name" => "Tunjangan BPJS", "salary_component_id" => 4], ["type" => "deductions", "order" => 2, "salary" => "Gaji Per Jam", "is_edit" => 1, "is_hide" => 0, "is_active" => 1, "component_id" => 11, "component_name" => "Tunjangan Kesehatan", "salary_component_id" => null]]),
+                "created_at" => date('Y-m-d H:i:s', time()), "updated_at" => date('Y-m-d H:i:s', time())
+            ],
+
+            [
+                "compensations_id" => "2", "employee" => json_encode(["id" => 5, "nip" => "1588558398", "fullname" => "Lizzie Del Dello", "nickname" => "Lizzie", "hire_date" => "2024-08-24",    "company_email" => "ldel4@intel.com"]),
+                "position" => json_encode(["id" => 5, "company_id" => 2,  "grade_name" => "Grade A", "section_id" => 16,  "division_id" => 20, "location_id" => null, "company_name" => "KALLA KARS", "job_grade_id" => 1, "section_name" => "Finance Department", "directorat_id" => 16, "division_name" => "Services", "location_name" => "Kepulauan Bangka Belitung", "position_name" => "Analog Circuit Design manager", "directorat_name" => "Research and Development"]),
+                "eligible" => json_encode([["type" => "fixed pay", "order" => 1, "salary" => "Gaji Per Jam", "is_edit" => 1, "is_hide" => 0, "is_active" => 1, "component_id" => 6, "component_name" => "Gaji Pokok", "salary_component_id" => 1], ["type" => "fixed pay", "order" => 2, "salary" => "Gaji Per Jam", "is_edit" => 1, "is_hide" => 0, "is_active" => 1, "component_id" => 7, "component_name" => "Tunjangan Transportasi", "salary_component_id" => 2], ["type" => "fixed pay", "order" => 3, "salary" => "Gaji Per Jam", "is_edit" => 1, "is_hide" => 0, "is_active" => 1, "component_id" => 8, "component_name" => "Tunjangan Komunikasi", "salary_component_id" => 3], ["type" => "fixed pay", "order" => 4, "salary" => "Gaji Per Jam", "is_edit" => 1, "is_hide" => 0, "is_active" => 1, "component_id" => 9, "component_name" => "Tunjangan Makan", "salary_component_id" => null], ["type" => "deductions", "order" => 1, "salary" => "Gaji Per Jam", "is_edit" => 1, "is_hide" => 0, "is_active" => 1, "component_id" => 10, "component_name" => "Tunjangan BPJS", "salary_component_id" => 4], ["type" => "deductions", "order" => 2, "salary" => "Gaji Per Jam", "is_edit" => 1, "is_hide" => 0, "is_active" => 1, "component_id" => 11, "component_name" => "Tunjangan Kesehatan", "salary_component_id" => null]]),
+                "created_at" => date('Y-m-d H:i:s', time()), "updated_at" => date('Y-m-d H:i:s', time())
+            ],
+
+            [
+                "compensations_id" => "3", "employee" => json_encode(["id" => 3, "nip" => "0061383562", "fullname" => "Tybalt Camacke", "nickname" => "Tybalt", "hire_date" => "2023-07-08",    "company_email" => "tcamacke2@auda.org.au"]),
+                "position" => json_encode(["id" => 5, "company_id" => 2,  "grade_name" => "Grade A", "section_id" => 16,  "division_id" => 20, "location_id" => null, "company_name" => "KALLA KARS", "job_grade_id" => 1, "section_name" => "Finance Department", "directorat_id" => 16, "division_name" => "Services", "location_name" => "Kepulauan Bangka Belitung", "position_name" => "Analog Circuit Design manager", "directorat_name" => "Research and Development"]),
+                "eligible" => json_encode([["type" => "fixed pay", "order" => 1, "salary" => "Gaji Per Jam", "is_edit" => 1, "is_hide" => 0, "is_active" => 1, "component_id" => 6, "component_name" => "Gaji Pokok", "salary_component_id" => 1], ["type" => "fixed pay", "order" => 2, "salary" => "Gaji Per Jam", "is_edit" => 1, "is_hide" => 0, "is_active" => 1, "component_id" => 7, "component_name" => "Tunjangan Transportasi", "salary_component_id" => 2], ["type" => "fixed pay", "order" => 3, "salary" => "Gaji Per Jam", "is_edit" => 1, "is_hide" => 0, "is_active" => 1, "component_id" => 8, "component_name" => "Tunjangan Komunikasi", "salary_component_id" => 3], ["type" => "fixed pay", "order" => 4, "salary" => "Gaji Per Jam", "is_edit" => 1, "is_hide" => 0, "is_active" => 1, "component_id" => 9, "component_name" => "Tunjangan Makan", "salary_component_id" => null], ["type" => "deductions", "order" => 1, "salary" => "Gaji Per Jam", "is_edit" => 1, "is_hide" => 0, "is_active" => 1, "component_id" => 10, "component_name" => "Tunjangan BPJS", "salary_component_id" => 4], ["type" => "deductions", "order" => 2, "salary" => "Gaji Per Jam", "is_edit" => 1, "is_hide" => 0, "is_active" => 1, "component_id" => 11, "component_name" => "Tunjangan Kesehatan", "salary_component_id" => null]]),
+                "created_at" => date('Y-m-d H:i:s', time()), "updated_at" => date('Y-m-d H:i:s', time())
+            ],
+
+            [
+                "compensations_id" => "3", "employee" => json_encode(["id" => 4, "nip" => "3631579713", "fullname" => "Darnell Vedyashkin", "nickname" => "Darnell", "hire_date" => "2024-01-27",    "company_email" => "dvedyashkin3@webeden.co.uk"]),
+                "position" => json_encode(["id" => 5, "company_id" => 2,  "grade_name" => "Grade A", "section_id" => 16,  "division_id" => 20, "location_id" => null, "company_name" => "KALLA KARS", "job_grade_id" => 1, "section_name" => "Finance Department", "directorat_id" => 16, "division_name" => "Services", "location_name" => "Kepulauan Bangka Belitung", "position_name" => "Analog Circuit Design manager", "directorat_name" => "Research and Development"]),
+                "eligible" => json_encode([["type" => "fixed pay", "order" => 1, "salary" => "Gaji Per Jam", "is_edit" => 1, "is_hide" => 0, "is_active" => 1, "component_id" => 6, "component_name" => "Gaji Pokok", "salary_component_id" => 1], ["type" => "fixed pay", "order" => 2, "salary" => "Gaji Per Jam", "is_edit" => 1, "is_hide" => 0, "is_active" => 1, "component_id" => 7, "component_name" => "Tunjangan Transportasi", "salary_component_id" => 2], ["type" => "fixed pay", "order" => 3, "salary" => "Gaji Per Jam", "is_edit" => 1, "is_hide" => 0, "is_active" => 1, "component_id" => 8, "component_name" => "Tunjangan Komunikasi", "salary_component_id" => 3], ["type" => "fixed pay", "order" => 4, "salary" => "Gaji Per Jam", "is_edit" => 1, "is_hide" => 0, "is_active" => 1, "component_id" => 9, "component_name" => "Tunjangan Makan", "salary_component_id" => null], ["type" => "deductions", "order" => 1, "salary" => "Gaji Per Jam", "is_edit" => 1, "is_hide" => 0, "is_active" => 1, "component_id" => 10, "component_name" => "Tunjangan BPJS", "salary_component_id" => 4], ["type" => "deductions", "order" => 2, "salary" => "Gaji Per Jam", "is_edit" => 1, "is_hide" => 0, "is_active" => 1, "component_id" => 11, "component_name" => "Tunjangan Kesehatan", "salary_component_id" => null]]),
+                "created_at" => date('Y-m-d H:i:s', time()), "updated_at" => date('Y-m-d H:i:s', time())
+            ],
+
+            [
+                "compensations_id" => "3", "employee" => json_encode(["id" => 5, "nip" => "1588558398", "fullname" => "Lizzie Del Dello", "nickname" => "Lizzie", "hire_date" => "2024-08-24",    "company_email" => "ldel4@intel.com"]),
+                "position" => json_encode(["id" => 5, "company_id" => 2,  "grade_name" => "Grade A", "section_id" => 16,  "division_id" => 20, "location_id" => null, "company_name" => "KALLA KARS", "job_grade_id" => 1, "section_name" => "Finance Department", "directorat_id" => 16, "division_name" => "Services", "location_name" => "Kepulauan Bangka Belitung", "position_name" => "Analog Circuit Design manager", "directorat_name" => "Research and Development"]),
+                "eligible" => json_encode([["type" => "fixed pay", "order" => 1, "salary" => "Gaji Per Jam", "is_edit" => 1, "is_hide" => 0, "is_active" => 1, "component_id" => 6, "component_name" => "Gaji Pokok", "salary_component_id" => 1], ["type" => "fixed pay", "order" => 2, "salary" => "Gaji Per Jam", "is_edit" => 1, "is_hide" => 0, "is_active" => 1, "component_id" => 7, "component_name" => "Tunjangan Transportasi", "salary_component_id" => 2], ["type" => "fixed pay", "order" => 3, "salary" => "Gaji Per Jam", "is_edit" => 1, "is_hide" => 0, "is_active" => 1, "component_id" => 8, "component_name" => "Tunjangan Komunikasi", "salary_component_id" => 3], ["type" => "fixed pay", "order" => 4, "salary" => "Gaji Per Jam", "is_edit" => 1, "is_hide" => 0, "is_active" => 1, "component_id" => 9, "component_name" => "Tunjangan Makan", "salary_component_id" => null], ["type" => "deductions", "order" => 1, "salary" => "Gaji Per Jam", "is_edit" => 1, "is_hide" => 0, "is_active" => 1, "component_id" => 10, "component_name" => "Tunjangan BPJS", "salary_component_id" => 4], ["type" => "deductions", "order" => 2, "salary" => "Gaji Per Jam", "is_edit" => 1, "is_hide" => 0, "is_active" => 1, "component_id" => 11, "component_name" => "Tunjangan Kesehatan", "salary_component_id" => null]]),
+                "created_at" => date('Y-m-d H:i:s', time()), "updated_at" => date('Y-m-d H:i:s', time())
+            ],
+
+            [
+                "compensations_id" => "4", "employee" => json_encode(["id" => 6, "nip" => "4117140485", "fullname" => "Paula Gorgen", "nickname" => "Paula", "hire_date" => "2020-03-16",    "company_email" => "pgorgen5@sciencedirect.com"]),
+                "position" => json_encode(["id" => 8, "company_id" => 3,  "grade_name" => "Grade B", "section_id" => 20,  "division_id" => 18, "location_id" => null, "company_name" => "OTOEXPERT", "job_grade_id" => 2, "section_name" => "Operations Team", "directorat_id" => 11, "division_name" => "Engineering", "location_name" => "Nusa Tenggara Timur", "position_name" => "Computer Systems Analyst III", "directorat_name" => "Human Resources"]),
+                "eligible" => json_encode([["type" => "fixed pay", "order" => 1, "salary" => "Gaji Variabel", "is_edit" => 1, "is_hide" => 0, "is_active" => 1, "component_id" => 20, "component_name" => "Gaji Pokok", "salary_component_id" => 1], ["type" => "fixed pay", "order" => 2, "salary" => "Gaji Variabel", "is_edit" => 1, "is_hide" => 0, "is_active" => 1, "component_id" => 21, "component_name" => "Tunjangan Transportasi", "salary_component_id" => 2], ["type" => "fixed pay", "order" => 3, "salary" => "Gaji Variabel", "is_edit" => 1, "is_hide" => 0, "is_active" => 1, "component_id" => 22, "component_name" => "Tunjangan Komunikasi", "salary_component_id" => 3], ["type" => "deductions", "order" => 1, "salary" => "Gaji Variabel", "is_edit" => 1, "is_hide" => 0, "is_active" => 1, "component_id" => 23, "component_name" => "Tunjangan BPJS", "salary_component_id" => 4], ["type" => "fixed pay", "order" => 4, "salary" => "Gaji Variabel", "is_edit" => 1, "is_hide" => 0, "is_active" => 1, "component_id" => 24, "component_name" => "Tunjangan Makan", "salary_component_id" => null], ["type" => "deductions", "order" => 2, "salary" => "Gaji Variabel", "is_edit" => 1, "is_hide" => 0, "is_active" => 1, "component_id" => 25, "component_name" => "Tunjangan Kesehatan", "salary_component_id" => null], ["type" => "fixed pay", "order" => 3, "salary" => "Gaji Kinerja", "is_edit" => 1, "is_hide" => 0, "is_active" => 1, "component_id" => 17, "component_name" => "Tunjangan Makan", "salary_component_id" => null], ["type" => "fixed pay", "order" => 2, "salary" => "Gaji Kinerja", "is_edit" => 1, "is_hide" => 0, "is_active" => 1, "component_id" => 19, "component_name" => "Tunjangan Kesehatan", "salary_component_id" => null]]),
+                "created_at" => date('Y-m-d H:i:s', time()), "updated_at" => date('Y-m-d H:i:s', time())
+            ],
+
+            [
+                "compensations_id" => "4", "employee" => json_encode(["id" => 7, "nip" => "3798753601", "fullname" => "Jaymie MacEveley", "nickname" => "Jaymie", "hire_date" => "2021-06-11",    "company_email" => "jmaceveley6@tripadvisor.com"]),
+                "position" => json_encode(["id" => 8, "company_id" => 3,  "grade_name" => "Grade B", "section_id" => 20,  "division_id" => 18, "location_id" => null, "company_name" => "OTOEXPERT", "job_grade_id" => 2, "section_name" => "Operations Team", "directorat_id" => 11, "division_name" => "Engineering", "location_name" => "Nusa Tenggara Timur", "position_name" => "Computer Systems Analyst III", "directorat_name" => "Human Resources"]),
+                "eligible" => json_encode([["type" => "fixed pay", "order" => 1, "salary" => "Gaji Variabel", "is_edit" => 1, "is_hide" => 0, "is_active" => 1, "component_id" => 20, "component_name" => "Gaji Pokok", "salary_component_id" => 1], ["type" => "fixed pay", "order" => 2, "salary" => "Gaji Variabel", "is_edit" => 1, "is_hide" => 0, "is_active" => 1, "component_id" => 21, "component_name" => "Tunjangan Transportasi", "salary_component_id" => 2], ["type" => "fixed pay", "order" => 3, "salary" => "Gaji Variabel", "is_edit" => 1, "is_hide" => 0, "is_active" => 1, "component_id" => 22, "component_name" => "Tunjangan Komunikasi", "salary_component_id" => 3], ["type" => "deductions", "order" => 1, "salary" => "Gaji Variabel", "is_edit" => 1, "is_hide" => 0, "is_active" => 1, "component_id" => 23, "component_name" => "Tunjangan BPJS", "salary_component_id" => 4], ["type" => "fixed pay", "order" => 4, "salary" => "Gaji Variabel", "is_edit" => 1, "is_hide" => 0, "is_active" => 1, "component_id" => 24, "component_name" => "Tunjangan Makan", "salary_component_id" => null], ["type" => "deductions", "order" => 2, "salary" => "Gaji Variabel", "is_edit" => 1, "is_hide" => 0, "is_active" => 1, "component_id" => 25, "component_name" => "Tunjangan Kesehatan", "salary_component_id" => null], ["type" => "fixed pay", "order" => 3, "salary" => "Gaji Kinerja", "is_edit" => 1, "is_hide" => 0, "is_active" => 1, "component_id" => 17, "component_name" => "Tunjangan Makan", "salary_component_id" => null], ["type" => "fixed pay", "order" => 2, "salary" => "Gaji Kinerja", "is_edit" => 1, "is_hide" => 0, "is_active" => 1, "component_id" => 19, "component_name" => "Tunjangan Kesehatan", "salary_component_id" => null]]),
+                "created_at" => date('Y-m-d H:i:s', time()), "updated_at" => date('Y-m-d H:i:s', time())
+            ],
+
+            [
+                "compensations_id" => "5", "employee" => json_encode(["id" => 6, "nip" => "4117140485", "fullname" => "Paula Gorgen", "nickname" => "Paula", "hire_date" => "2020-03-16",    "company_email" => "pgorgen5@sciencedirect.com"]),
+                "position" => json_encode(["id" => 8, "company_id" => 3,  "grade_name" => "Grade B", "section_id" => 20,  "division_id" => 18, "location_id" => null, "company_name" => "OTOEXPERT", "job_grade_id" => 2, "section_name" => "Operations Team", "directorat_id" => 11, "division_name" => "Engineering", "location_name" => "Nusa Tenggara Timur", "position_name" => "Computer Systems Analyst III", "directorat_name" => "Human Resources"]),
+                "eligible" => json_encode([["type" => "fixed pay", "order" => 1, "salary" => "Gaji Variabel", "is_edit" => 1, "is_hide" => 0, "is_active" => 1, "component_id" => 20, "component_name" => "Gaji Pokok", "salary_component_id" => 1], ["type" => "fixed pay", "order" => 2, "salary" => "Gaji Variabel", "is_edit" => 1, "is_hide" => 0, "is_active" => 1, "component_id" => 21, "component_name" => "Tunjangan Transportasi", "salary_component_id" => 2], ["type" => "fixed pay", "order" => 3, "salary" => "Gaji Variabel", "is_edit" => 1, "is_hide" => 0, "is_active" => 1, "component_id" => 22, "component_name" => "Tunjangan Komunikasi", "salary_component_id" => 3], ["type" => "deductions", "order" => 1, "salary" => "Gaji Variabel", "is_edit" => 1, "is_hide" => 0, "is_active" => 1, "component_id" => 23, "component_name" => "Tunjangan BPJS", "salary_component_id" => 4], ["type" => "fixed pay", "order" => 4, "salary" => "Gaji Variabel", "is_edit" => 1, "is_hide" => 0, "is_active" => 1, "component_id" => 24, "component_name" => "Tunjangan Makan", "salary_component_id" => null], ["type" => "deductions", "order" => 2, "salary" => "Gaji Variabel", "is_edit" => 1, "is_hide" => 0, "is_active" => 1, "component_id" => 25, "component_name" => "Tunjangan Kesehatan", "salary_component_id" => null], ["type" => "fixed pay", "order" => 3, "salary" => "Gaji Kinerja", "is_edit" => 1, "is_hide" => 0, "is_active" => 1, "component_id" => 17, "component_name" => "Tunjangan Makan", "salary_component_id" => null], ["type" => "fixed pay", "order" => 2, "salary" => "Gaji Kinerja", "is_edit" => 1, "is_hide" => 0, "is_active" => 1, "component_id" => 19, "component_name" => "Tunjangan Kesehatan", "salary_component_id" => null]]),
+                "created_at" => date('Y-m-d H:i:s', time()), "updated_at" => date('Y-m-d H:i:s', time())
+            ],
+
+            [
+                "compensations_id" => "5", "employee" => json_encode(["id" => 7, "nip" => "3798753601", "fullname" => "Jaymie MacEveley", "nickname" => "Jaymie", "hire_date" => "2021-06-11",    "company_email" => "jmaceveley6@tripadvisor.com"]),
+                "position" => json_encode(["id" => 8, "company_id" => 3,  "grade_name" => "Grade B", "section_id" => 20,  "division_id" => 18, "location_id" => null, "company_name" => "OTOEXPERT", "job_grade_id" => 2, "section_name" => "Operations Team", "directorat_id" => 11, "division_name" => "Engineering", "location_name" => "Nusa Tenggara Timur", "position_name" => "Computer Systems Analyst III", "directorat_name" => "Human Resources"]),
+                "eligible" => json_encode([["type" => "fixed pay", "order" => 1, "salary" => "Gaji Variabel", "is_edit" => 1, "is_hide" => 0, "is_active" => 1, "component_id" => 20, "component_name" => "Gaji Pokok", "salary_component_id" => 1], ["type" => "fixed pay", "order" => 2, "salary" => "Gaji Variabel", "is_edit" => 1, "is_hide" => 0, "is_active" => 1, "component_id" => 21, "component_name" => "Tunjangan Transportasi", "salary_component_id" => 2], ["type" => "fixed pay", "order" => 3, "salary" => "Gaji Variabel", "is_edit" => 1, "is_hide" => 0, "is_active" => 1, "component_id" => 22, "component_name" => "Tunjangan Komunikasi", "salary_component_id" => 3], ["type" => "deductions", "order" => 1, "salary" => "Gaji Variabel", "is_edit" => 1, "is_hide" => 0, "is_active" => 1, "component_id" => 23, "component_name" => "Tunjangan BPJS", "salary_component_id" => 4], ["type" => "fixed pay", "order" => 4, "salary" => "Gaji Variabel", "is_edit" => 1, "is_hide" => 0, "is_active" => 1, "component_id" => 24, "component_name" => "Tunjangan Makan", "salary_component_id" => null], ["type" => "deductions", "order" => 2, "salary" => "Gaji Variabel", "is_edit" => 1, "is_hide" => 0, "is_active" => 1, "component_id" => 25, "component_name" => "Tunjangan Kesehatan", "salary_component_id" => null], ["type" => "fixed pay", "order" => 3, "salary" => "Gaji Kinerja", "is_edit" => 1, "is_hide" => 0, "is_active" => 1, "component_id" => 17, "component_name" => "Tunjangan Makan", "salary_component_id" => null], ["type" => "fixed pay", "order" => 2, "salary" => "Gaji Kinerja", "is_edit" => 1, "is_hide" => 0, "is_active" => 1, "component_id" => 19, "component_name" => "Tunjangan Kesehatan", "salary_component_id" => null]]),
+                "created_at" => date('Y-m-d H:i:s', time()), "updated_at" => date('Y-m-d H:i:s', time())
+            ]
+
+
         ];
 
-
-        for ($i = 0; $i < 20; $i++) {
-            $employeeCompensation = EmployeeCompensation::create([
-                'compensations_id' => rand(1, 10),
-                'employee' => json_encode($employee),
-                'position' => json_encode($position),
-                'eligble' => json_encode($eligible),
-            ]);
-        }
+        EmployeeCompensation::insert($compensationEmployee);
     }
 }
