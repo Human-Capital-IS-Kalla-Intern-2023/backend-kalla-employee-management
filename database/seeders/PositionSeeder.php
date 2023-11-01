@@ -193,7 +193,7 @@ class PositionSeeder extends Seeder
                 'updated_at' => date('Y-m-d H:i:s', time())
             ],
             [
-                "position_name" => "Software Engineer III", "company_id" => "20", "directorat_id" => "16", "division_id" => "5", "section_id" => "16", "job_grade_id" => "1", 'created_at' => date('Y-m-d H:i:s', time()),
+                "position_name" => "Database Administrator I", "company_id" => "20", "directorat_id" => "16", "division_id" => "5", "section_id" => "16", "job_grade_id" => "1", 'created_at' => date('Y-m-d H:i:s', time()),
                 'updated_at' => date('Y-m-d H:i:s', time())
             ],
             [
@@ -213,7 +213,7 @@ class PositionSeeder extends Seeder
                 'updated_at' => date('Y-m-d H:i:s', time())
             ],
             [
-                "position_name" => "Help Desk Technician", "company_id" => "16", "directorat_id" => "20", "division_id" => "16", "section_id" => "7", "job_grade_id" => "3", 'created_at' => date('Y-m-d H:i:s', time()),
+                "position_name" => "Senior Cost Accountant", "company_id" => "16", "directorat_id" => "20", "division_id" => "16", "section_id" => "7", "job_grade_id" => "3", 'created_at' => date('Y-m-d H:i:s', time()),
                 'updated_at' => date('Y-m-d H:i:s', time())
             ],
             [
@@ -241,7 +241,7 @@ class PositionSeeder extends Seeder
                 'updated_at' => date('Y-m-d H:i:s', time())
             ],
             [
-                "position_name" => "Help Desk Operator", "company_id" => "14", "directorat_id" => "4", "division_id" => "6", "section_id" => "2", "job_grade_id" => "5", 'created_at' => date('Y-m-d H:i:s', time()),
+                "position_name" => "VP Product Management", "company_id" => "14", "directorat_id" => "4", "division_id" => "6", "section_id" => "2", "job_grade_id" => "5", 'created_at' => date('Y-m-d H:i:s', time()),
                 'updated_at' => date('Y-m-d H:i:s', time())
             ],
             [
@@ -257,7 +257,7 @@ class PositionSeeder extends Seeder
                 'updated_at' => date('Y-m-d H:i:s', time())
             ],
             [
-                "position_name" => "Safety Technician II", "company_id" => "18", "directorat_id" => "5", "division_id" => "1", "section_id" => "11", "job_grade_id" => "3", 'created_at' => date('Y-m-d H:i:s', time()),
+                "position_name" => "Developer IV", "company_id" => "18", "directorat_id" => "5", "division_id" => "1", "section_id" => "11", "job_grade_id" => "3", 'created_at' => date('Y-m-d H:i:s', time()),
                 'updated_at' => date('Y-m-d H:i:s', time())
             ],
             [
@@ -285,15 +285,15 @@ class PositionSeeder extends Seeder
                 'updated_at' => date('Y-m-d H:i:s', time())
             ],
             [
-                "position_name" => "Administrative Officer", "company_id" => "16", "directorat_id" => "11", "division_id" => "2", "section_id" => "11", "job_grade_id" => "2", 'created_at' => date('Y-m-d H:i:s', time()),
+                "position_name" => "Accounting Assistant II", "company_id" => "16", "directorat_id" => "11", "division_id" => "2", "section_id" => "11", "job_grade_id" => "2", 'created_at' => date('Y-m-d H:i:s', time()),
                 'updated_at' => date('Y-m-d H:i:s', time())
             ],
             [
-                "position_name" => "Actuary", "company_id" => "18", "directorat_id" => "11", "division_id" => "17", "section_id" => "18", "job_grade_id" => "2", 'created_at' => date('Y-m-d H:i:s', time()),
+                "position_name" => "Human Resources Assistant III", "company_id" => "18", "directorat_id" => "11", "division_id" => "17", "section_id" => "18", "job_grade_id" => "2", 'created_at' => date('Y-m-d H:i:s', time()),
                 'updated_at' => date('Y-m-d H:i:s', time())
             ],
             [
-                "position_name" => "Assistant Manager", "company_id" => "16", "directorat_id" => "3", "division_id" => "11", "section_id" => "16", "job_grade_id" => "4", 'created_at' => date('Y-m-d H:i:s', time()),
+                "position_name" => "Recruiter", "company_id" => "16", "directorat_id" => "3", "division_id" => "11", "section_id" => "16", "job_grade_id" => "4", 'created_at' => date('Y-m-d H:i:s', time()),
                 'updated_at' => date('Y-m-d H:i:s', time())
             ],
             [
@@ -305,7 +305,7 @@ class PositionSeeder extends Seeder
                 'updated_at' => date('Y-m-d H:i:s', time())
             ],
             [
-                "position_name" => "Help Desk Operator", "company_id" => "11", "directorat_id" => "4", "division_id" => "12", "section_id" => "5", "job_grade_id" => "3", 'created_at' => date('Y-m-d H:i:s', time()),
+                "position_name" => "Quality Engineer", "company_id" => "11", "directorat_id" => "4", "division_id" => "12", "section_id" => "5", "job_grade_id" => "3", 'created_at' => date('Y-m-d H:i:s', time()),
                 'updated_at' => date('Y-m-d H:i:s', time())
             ],
             [
@@ -313,7 +313,7 @@ class PositionSeeder extends Seeder
                 'updated_at' => date('Y-m-d H:i:s', time())
             ],
             [
-                "position_name" => "Web Designer II", "company_id" => "15", "directorat_id" => "1", "division_id" => "4", "section_id" => "8", "job_grade_id" => "5", 'created_at' => date('Y-m-d H:i:s', time()),
+                "position_name" => "Sales Associate", "company_id" => "15", "directorat_id" => "1", "division_id" => "4", "section_id" => "8", "job_grade_id" => "5", 'created_at' => date('Y-m-d H:i:s', time()),
                 'updated_at' => date('Y-m-d H:i:s', time())
             ],
             [
@@ -329,7 +329,7 @@ class PositionSeeder extends Seeder
                 'updated_at' => date('Y-m-d H:i:s', time())
             ],
             [
-                "position_name" => "Financial Analyst", "company_id" => "16", "directorat_id" => "20", "division_id" => "5", "section_id" => "20", "job_grade_id" => "4", 'created_at' => date('Y-m-d H:i:s', time()),
+                "position_name" => "Web Developer IV", "company_id" => "16", "directorat_id" => "20", "division_id" => "5", "section_id" => "20", "job_grade_id" => "4", 'created_at' => date('Y-m-d H:i:s', time()),
                 'updated_at' => date('Y-m-d H:i:s', time())
             ],
 
