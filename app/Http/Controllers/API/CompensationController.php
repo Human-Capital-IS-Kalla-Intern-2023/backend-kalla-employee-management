@@ -438,7 +438,8 @@ class CompensationController extends Controller
                 $positionInfo = json_decode($compensation['position']);
                 $eligibleInfo = $compensation['eligible'];
 
-
+                $compensationName = $compensation->compensation->compensation_name;
+                $compensationId = $compensation->compensation->id;
 
                 // ambil data dari tabel salary, salarydetail
                 $querySalaryComponents = Salary::with(['salaryDetail'])->where('company_id', $positionInfo->company_id)->where('is_active', 1)->get();
@@ -562,6 +563,8 @@ class CompensationController extends Controller
 
                 return [
                     'employee_compensation_id' =>  $compensation->id,
+                    'employee_compensation_name' => $compensationName,
+                    'compensation_id' => $compensationId,
                     'employee_id' =>  $employeeInfo->id,
                     'fullname' => $employeeInfo->fullname,
                     'nip' => $employeeInfo->nip,
@@ -808,21 +811,21 @@ class CompensationController extends Controller
                     'message' => 'Data tidak ditemukan',
                 ], 404);
             } else {
-    
+
                 // Transformasi data sesuai format yang Anda inginkan
-    
-    
+
+
                 $transformedCompensations = $compensations->map(function ($compensation) {
-    
+
                     $employeeInfo = json_decode($compensation['employee']);
                     $positionInfo = json_decode($compensation['position']);
                     $eligibleInfo = $compensation['eligible'];
-    
-    
-    
+
+
+
                     // ambil data dari tabel salary, salarydetail
                     $querySalaryComponents = Salary::with(['salaryDetail'])->where('company_id', $positionInfo->company_id)->where('is_active', 1)->get();
-    
+
                     // format data querySalaryComponents
                     $salaryDetails = $querySalaryComponents->flatMap(function ($salary) {
                         return $salary->salaryDetail->map(function ($detail) use ($salary) {
@@ -830,17 +833,17 @@ class CompensationController extends Controller
                             return $detail;
                         });
                     });
-    
-    
+
+
                     // Destruktur Data
                     $destructureSalaryDetail = [];
                     foreach ($salaryDetails as $item) {
                         $checkData = null;
-    
+
                         if (is_null($item->component_name)) {
                             $checkData = SalaryComponent::where('id', $item->salary_component_id)->get()->first();
                         }
-    
+
                         if ($item->is_active) {
                             $salaryComponent = [
                                 "component_id" => $item->id,
@@ -853,19 +856,19 @@ class CompensationController extends Controller
                                 "is_active" =>  $item->is_active,
                                 "salary" => $item->salary_name,
                             ];
-    
+
                             $destructureSalaryDetail[] = $salaryComponent;
                         }
                     }
-    
+
                     // Mengambil Hanya unik data
                     $uniqueSalaryDetails = [];
-    
+
                     $seen = [];
-    
+
                     foreach ($destructureSalaryDetail as $item) {
                         $key = $item['component_name'];
-    
+
                         // Jika salary_component_id tidak null, maka tambahkan ke hasil jika belum ada
                         if ($item['salary_component_id'] !== null) {
                             if (!isset($seen[$key])) {
@@ -889,7 +892,7 @@ class CompensationController extends Controller
                     foreach ($uniqueSalaryDetails  as $item1) {
                         $nominal = 0;
                         $found = 0;
-    
+
 
                         foreach (json_decode($eligibleInfo) as $item2) {
                             if ($item1['component_name'] == $item2->component_name && $item1['type'] === $item2->type && $item1['salary'] === $item2->salary) {
@@ -902,12 +905,12 @@ class CompensationController extends Controller
                                     }
                                 }
                                 $found = 1;
-    
+
                                 break;
                             }
                         }
-    
-                        if($item1['is_hide'] != 1  && $nominal >= 1)  {
+
+                        if ($item1['is_hide'] != 1  && $nominal >= 1) {
                             $result[] = [
                                 'component_id' => $item1["component_id"],
                                 'salary_component_id' => $item1["salary_component_id"],
@@ -922,16 +925,15 @@ class CompensationController extends Controller
                                 "salary" => $item1["salary"],
                             ];
                         }
-                        
                     }
-    
+
                     return [
                         'employee_compensation_id' =>  $compensation->id,
                         'employee_id' =>  $employeeInfo->id,
                         'fullname' => $employeeInfo->fullname,
                         'nip' => $employeeInfo->nip,
                         'company_name' => $positionInfo->company_name,
-                        'location_name' => $positionInfo->location_name, 
+                        'location_name' => $positionInfo->location_name,
                         'position_id' => $positionInfo->id,
                         'position_name' => $positionInfo->position_name,
                         'salary_components' => $result,
@@ -940,10 +942,10 @@ class CompensationController extends Controller
                         'total_pay' => $fixed_pay - $deductions,
                         'created_at' => $compensation->created_at,
                         'updated_at' => $compensation->updated_at,
-    
+
                     ];
                 });
-    
+
                 return response()->json([
                     'status_code' => 200,
                     'status' => 'success',
@@ -951,13 +953,12 @@ class CompensationController extends Controller
                     'data' =>  $transformedCompensations,
                 ]);
             }
-    
-            } catch (Exception $error) {
-                return response()->json([
-                    'status_code' => 500,
-                    'status' => 'error',
-                    'message' => 'Terjadi Kesalahan',
-                ], 500);
-            }
+        } catch (Exception $error) {
+            return response()->json([
+                'status_code' => 500,
+                'status' => 'error',
+                'message' => 'Terjadi Kesalahan',
+            ], 500);
+        }
     }
 }
