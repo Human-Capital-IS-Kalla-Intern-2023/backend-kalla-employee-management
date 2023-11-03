@@ -912,7 +912,8 @@ class CompensationController extends Controller
                             }
                         }
 
-                        if ($item1['is_hide'] != 1  && $nominal >= 1) {
+                        if ($nominal >= 1) {
+
                             $result[] = [
                                 'component_id' => $item1["component_id"],
                                 'salary_component_id' => $item1["salary_component_id"],
