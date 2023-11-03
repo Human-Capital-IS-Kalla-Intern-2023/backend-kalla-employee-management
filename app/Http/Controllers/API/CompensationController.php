@@ -737,6 +737,8 @@ class CompensationController extends Controller
                     'nip' => $employeeInfo->nip,
                     'position_id' => $positionInfo->id,
                     'position_name' => $positionInfo->position_name,
+                    'company_name' => $positionInfo->company_name,
+                    'grade_name' => $positionInfo->grade_name,
                     'salary_components' => $result,
                     'fixed_pay' => $fixed_pay,
                     'deductions' => $deductions,
