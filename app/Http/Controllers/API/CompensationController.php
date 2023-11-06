@@ -823,7 +823,8 @@ class CompensationController extends Controller
                     $positionInfo = json_decode($compensation['position']);
                     $eligibleInfo = $compensation['eligible'];
 
-
+                    $compensationName = $compensation->compensation->compensation_name;
+                    $compensationId = $compensation->compensation->id;
 
                     // ambil data dari tabel salary, salarydetail
                     $querySalaryComponents = Salary::with(['salaryDetail'])->where('company_id', $positionInfo->company_id)->where('is_active', 1)->get();
@@ -912,8 +913,8 @@ class CompensationController extends Controller
                             }
                         }
 
-                        if ($nominal >= 1) {
-
+                        // if ($item1['is_hide'] == 0 && $nominal >= 0) {
+                        if ($item1['is_hide'] != 1  && $nominal >= 1) {
                             $result[] = [
                                 'component_id' => $item1["component_id"],
                                 'salary_component_id' => $item1["salary_component_id"],
@@ -928,11 +929,18 @@ class CompensationController extends Controller
                                 "salary" => $item1["salary"],
                             ];
                         }
+                        // }
                     }
+
+                    list($bulan, $tahun) = explode(' ', $compensationName);
 
                     return [
                         'employee_compensation_id' =>  $compensation->id,
                         'employee_id' =>  $employeeInfo->id,
+                        'employee_compensation_name' => $compensationName,
+                        'bulan' => $bulan, // Tambahkan ini
+                        'tahun' => $tahun, // Tambahkan ini
+                        'compensation_id' => $compensationId,
                         'fullname' => $employeeInfo->fullname,
                         'nip' => $employeeInfo->nip,
                         'company_name' => $positionInfo->company_name,
