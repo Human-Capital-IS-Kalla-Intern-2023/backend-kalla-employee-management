@@ -826,6 +826,11 @@ class CompensationController extends Controller
                     $compensationName = $compensation->compensation->compensation_name;
                     $compensationId = $compensation->compensation->id;
 
+                    // menggunakan carbon untuk mengubah data
+                    $period = Carbon::parse($compensation->period);
+                    $bulan = $period->format('F'); // Month name
+                    $tahun = $period->format('Y'); // Year
+
                     // ambil data dari tabel salary, salarydetail
                     $querySalaryComponents = Salary::with(['salaryDetail'])->where('company_id', $positionInfo->company_id)->where('is_active', 1)->get();
 
@@ -932,7 +937,7 @@ class CompensationController extends Controller
                         // }
                     }
 
-                    list($bulan, $tahun) = explode(' ', $compensationName);
+                    // list($bulan, $tahun) = explode(' ', $compensationName);
 
                     return [
                         'employee_compensation_id' =>  $compensation->id,
