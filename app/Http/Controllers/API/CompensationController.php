@@ -938,8 +938,8 @@ class CompensationController extends Controller
                         'employee_compensation_id' =>  $compensation->id,
                         'employee_id' =>  $employeeInfo->id,
                         'employee_compensation_name' => $compensationName,
-                        'bulan' => $bulan, // Tambahkan ini
-                        'tahun' => $tahun, // Tambahkan ini
+                        'bulan' => $bulan,
+                        'tahun' => $tahun,
                         'compensation_id' => $compensationId,
                         'fullname' => $employeeInfo->fullname,
                         'nip' => $employeeInfo->nip,
