@@ -803,8 +803,13 @@ class CompensationController extends Controller
 
     public function printEmployee(String $id)
     {
+        $bulanIndonesia = [
+            'JANUARI', 'FEBRUARI', 'MARET', 'APRIL', 'MEI', 'JUNI',
+            'JULI', 'AGUSTUS', 'SEPTEMBER', 'OKTOBER', 'NOVEMBER', 'DESEMBER'
+        ];
+
         try {
-            $compensations = EmployeeCompensation::where('id', $id)->limit(1)->get();
+            $compensations = EmployeeCompensation::with('compensation')->where('id', $id)->limit(1)->get();
 
             if ($compensations->count() <= 0) {
                 return response()->json([
@@ -814,22 +819,42 @@ class CompensationController extends Controller
                 ], 404);
             } else {
 
+
+
                 // Transformasi data sesuai format yang Anda inginkan
 
 
                 $transformedCompensations = $compensations->map(function ($compensation) {
 
+                    $compensationName = $compensation->compensation->compensation_name;
+                    $compensationId = $compensation->compensation->id;
                     $employeeInfo = json_decode($compensation['employee']);
                     $positionInfo = json_decode($compensation['position']);
                     $eligibleInfo = $compensation['eligible'];
 
-                    $compensationName = $compensation->compensation->compensation_name;
-                    $compensationId = $compensation->compensation->id;
 
-                    // menggunakan carbon untuk mengubah data
-                    $period = Carbon::parse($compensation->period);
-                    $bulan = $period->format('F'); // Month name
-                    $tahun = $period->format('Y'); // Year
+
+                    $bulanIndonesia = [
+                        'JANUARI', 'FEBRUARI', 'MARET', 'APRIL', 'MEI', 'JUNI',
+                        'JULI', 'AGUSTUS', 'SEPTEMBER', 'OKTOBER', 'NOVEMBER', 'DESEMBER'
+                    ];
+
+                    $carbonDate = Carbon::parse($compensation->compensation->period);
+
+                    // Ambil bulan dalam bentuk angka (1-12)
+                    $bulanAngka = $carbonDate->month;
+
+                    // Konversi angka bulan menjadi nama bulan dalam bahasa Indonesia
+                    $bulanIndo = $bulanIndonesia[$bulanAngka - 1]; // -1 karena array dimulai dari 0
+
+
+                    // Ambil data period dari database
+                    // $periodDate = Carbon::parse($compensation->period);
+
+                    // // Konversi period ke format month dan year
+                    // $periodMonth = $periodDate->format('F'); // Contoh: "November"
+                    // $periodYear = $periodDate->year; // Contoh: 2023
+
 
                     // ambil data dari tabel salary, salarydetail
                     $querySalaryComponents = Salary::with(['salaryDetail'])->where('company_id', $positionInfo->company_id)->where('is_active', 1)->get();
@@ -937,15 +962,13 @@ class CompensationController extends Controller
                         // }
                     }
 
-                    // list($bulan, $tahun) = explode(' ', $compensationName);
-
                     return [
                         'employee_compensation_id' =>  $compensation->id,
                         'employee_id' =>  $employeeInfo->id,
                         'employee_compensation_name' => $compensationName,
-                        'bulan' => $bulan,
-                        'tahun' => $tahun,
                         'compensation_id' => $compensationId,
+                        'month' => $bulanIndo, // Menyimpan bulan
+                        'year' => date('Y', strtotime($compensation->compensation->period)), // Menyimpan tahun
                         'fullname' => $employeeInfo->fullname,
                         'nip' => $employeeInfo->nip,
                         'company_name' => $positionInfo->company_name,
